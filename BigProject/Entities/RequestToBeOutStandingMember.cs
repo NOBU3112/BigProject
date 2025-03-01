@@ -1,4 +1,6 @@
-﻿namespace BigProject.Entities
+﻿using BigProject.Enums;
+
+namespace BigProject.Entities
 {
     public class RequestToBeOutStandingMember : EntityBase
     {

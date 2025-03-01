@@ -16,7 +16,7 @@ namespace BigProject.Entities
         public DateTime DateOfJoining {  get; set; }
         public string PlaceOfJoining { get; set; } 
         public bool IsOutstandingMember { get; set; }
-        public MemberInfoEnum Status { get; set; }
+        public MemberInfoEnum Status { get; set; } = MemberInfoEnum.studying;
         public int UserId { get; set; }
         public User User { get; set; }
         public ICollection<RequestToBeOutStandingMember> requestToBeOutStandingMembers { get; set; }
