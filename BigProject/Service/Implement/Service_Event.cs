@@ -18,11 +18,13 @@ namespace BigProject.Service.Implement
         private readonly Converter_EventJoin converter_EventJoin;
         private readonly ResponseBase responseBase;
 
-        public Service_Event(AppDbContext dbContext, ResponseObject<DTO_Event> responseObject, Converter_Event converter_Event, ResponseBase responseBase)
+        public Service_Event(AppDbContext dbContext, ResponseObject<DTO_Event> responseObject, ResponseObject<DTO_EventJoin> responseObjectEventJoin, Converter_Event converter_Event, Converter_EventJoin converter_EventJoin, ResponseBase responseBase)
         {
             this.dbContext = dbContext;
             this.responseObject = responseObject;
+            this.responseObjectEventJoin = responseObjectEventJoin;
             this.converter_Event = converter_Event;
+            this.converter_EventJoin = converter_EventJoin;
             this.responseBase = responseBase;
         }
 
@@ -102,9 +104,15 @@ namespace BigProject.Service.Implement
             {
                 return responseObjectEventJoin.ResponseObjectError(StatusCodes.Status404NotFound, "Hoạt động này không tồn tại!",null);
             }
+            var eventJoinCheck = await dbContext.eventJoins.FirstOrDefaultAsync(x=>x.EventId==eventId && x.UserId==userId);
+            if(eventJoinCheck != null)
+            {
+                return responseObjectEventJoin.ResponseObjectError(StatusCodes.Status400BadRequest, "Bạn đã tham gia hoạt động này!", null);
+            }
             var eventJoin = new EventJoin();
             eventJoin.EventId = eventId;
             eventJoin.UserId = userId;
+            eventJoin.Status = Enums.EventJointEnum.registered;
             dbContext.eventJoins.Add(eventJoin);
             await dbContext.SaveChangesAsync();
             return responseObjectEventJoin.ResponseObjectSuccess("Tham gia thành công!", converter_EventJoin.EntityToDTO(eventJoin));
