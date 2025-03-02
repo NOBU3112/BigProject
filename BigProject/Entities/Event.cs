@@ -9,7 +9,7 @@
         public DateTime EventEndDate { get; set; }
         public string EventLocation { get; set; }
         public EventType EventType { get; set; }
-        public ICollection<EventJoint> eventJoints { get; set; }
+        public ICollection<EventJoin> eventJoints { get; set; }
 
     }
 }

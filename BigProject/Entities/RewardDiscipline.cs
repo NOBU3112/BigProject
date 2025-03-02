@@ -8,7 +8,7 @@
         public String Status { get; set; }
         public int RewardDisciplineTypeId { get; set; }
         public int RecipientId { get; set; }
-        public User Recipient { get; set; }
+        public User Recipient { get; set; } 
         public int ProposerId { get; set; }
         public User Proposer { get; set; }
         public RewardDisciplineType RewardDisciplineType { get; set; }

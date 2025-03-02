@@ -14,9 +14,9 @@ namespace BigProject.Entities
         public string UrlAvatar { get; set; }
         public string? PoliticalTheory{ get; set; }
         public DateTime DateOfJoining {  get; set; }
-        public string PlaceOfJoining { get; set; } 
-        public bool IsOutstandingMember { get; set; }
-        public MemberInfoEnum Status { get; set; } = MemberInfoEnum.studying;
+        public string PlaceOfJoining { get; set; }
+        public bool IsOutstandingMember { get; set; } = false;
+        public MemberInfoEnum Status { get; set; } = MemberInfoEnum.instudying;
         public int UserId { get; set; }
         public User User { get; set; }
         public ICollection<RequestToBeOutStandingMember> requestToBeOutStandingMembers { get; set; }

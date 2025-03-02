@@ -3,7 +3,7 @@
     public enum MemberInfoEnum
     {
         graduate,
-        studying,
-        drop_out,
+        instudying,
+        dropout,
     }
 }
