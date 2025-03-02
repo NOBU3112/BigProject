@@ -18,34 +18,34 @@ namespace BigProject.Controllers
             this.service_Authentic = service_Authentic;
         }
         [HttpPost("Đăng kí")]
-        public IActionResult Register(Request_Register request)
+        public IActionResult Register([FromForm] Request_Register request)
         {
             return Ok(service_Authentic.Register(request));
         }
 
         [HttpPut("Quên mật khẩu")]
-        public IActionResult ForgotPassword(Request_forgot request)
+        public IActionResult ForgotPassword([FromForm] Request_forgot request)
         {
             return Ok(service_Authentic.ForgotPassword(request));
         }
         [HttpPost("Đăng nhập")]
-        public IActionResult Login(Request_Login request)
+        public IActionResult Login([FromForm] Request_Login request)
         {
             return Ok(service_Authentic.Login(request));
         }
         [HttpPut("kích hoạt tài khoản")]
-        public IActionResult Activate(string Opt)
+        public IActionResult Activate([FromForm] string Opt)
         {
             return Ok(service_Authentic.Activate(Opt));
         }
         [HttpGet("phân quyền")]
 
-        public IActionResult Authorization(string KeyRole)
+        public IActionResult Authorization([FromForm] string KeyRole)
         {
             return Ok(service_Authentic.Authorization(KeyRole));
         }
         [HttpPut("đổi mật khẩu")]
-        public IActionResult ChangePassword(Request_ChangePassword request)
+        public IActionResult ChangePassword([FromForm] Request_ChangePassword request)
         {
             return Ok(service_Authentic.ChangePassword(request));
         }
