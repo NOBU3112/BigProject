@@ -131,27 +131,10 @@ namespace BigProject.Service.Implement
                 return responseObject.ResponseObjectError(StatusCodes.Status400BadRequest, "Email không hợp lệ (thiếu ký tự đặc biệt hoặc sai định dạng)", null);
             }
 
-            string UrlAvt = null;
-            var cloudinary = new CloudinaryService();
-            if (request.UrlAvatar == null)
-            {
-                UrlAvt = "https://media.istockphoto.com/id/1300845620/vector/user-icon-flat-isolated-on-white-background-user-symbol-vector-illustration.jpg?s=612x612&w=0&k=20&c=yBeyba0hUkh14_jgv1OKqIH0CCSWU_4ckRkAoy2p73o=";
-            }
-            else
-            {
-                if (!CheckInput.IsImage(request.UrlAvatar))
-                {
-                    return responseObject.ResponseObjectError(StatusCodes.Status400BadRequest, "Định dạng ảnh không hợp lệ !", null);
-                }
-
-                UrlAvt = await cloudinary.UploadImage(request.UrlAvatar);
-            }
-
             var register = new User();
             register.MaTV = request.MaTV;
-            request.Class = request.Class;
             register.Username = request.Username;
-            register.Password = request.Password;
+            register.Password = request.Password;   
             register.Email = request.Email;
            
 
@@ -301,8 +284,8 @@ namespace BigProject.Service.Implement
                 return responseBase.ResponseBaseError(404, CheckInput.IsPassWord(requset.newpassword));
             }
 
-            change.Password = BCrypt.Net.BCrypt.HashPassword(requset.Password);
-            dbContext.Update(change);
+            change.Password = BCrypt.Net.BCrypt.HashPassword(requset.newpassword);
+            dbContext.users.Update(change);
             dbContext.SaveChanges();
 
             return responseBase.ResponseBaseSuccess("Đổi mật khẩu thành công");
