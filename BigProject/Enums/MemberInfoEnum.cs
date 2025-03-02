@@ -4,6 +4,6 @@
     {
         graduate,
         studying,
-        drop_out,
+        dropout,
     }
 }

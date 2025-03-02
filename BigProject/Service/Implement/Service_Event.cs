@@ -13,7 +13,9 @@ namespace BigProject.Service.Implement
     {
         private readonly AppDbContext dbContext;
         private readonly ResponseObject<DTO_Event> responseObject;
+        private readonly ResponseObject<DTO_EventJoin> responseObjectEventJoin;
         private readonly Converter_Event converter_Event;
+        private readonly Converter_EventJoin converter_EventJoin;
         private readonly ResponseBase responseBase;
 
         public Service_Event(AppDbContext dbContext, ResponseObject<DTO_Event> responseObject, Converter_Event converter_Event, ResponseBase responseBase)
@@ -93,6 +95,40 @@ namespace BigProject.Service.Implement
             return responseObject.ResponseObjectSuccess("Thêm thành công!", converter_Event.EntityToDTO(event1));
         }
 
-        
+        public async Task<ResponseObject<DTO_EventJoin>> JoinAnEvent(int userId, int eventId)
+        {
+            var eventCheck = await dbContext.events.FirstOrDefaultAsync(x=>x.Id==eventId);
+            if(eventCheck == null)
+            {
+                return responseObjectEventJoin.ResponseObjectError(StatusCodes.Status404NotFound, "Hoạt động này không tồn tại!",null);
+            }
+            var eventJoin = new EventJoin();
+            eventJoin.EventId = eventId;
+            eventJoin.UserId = userId;
+            dbContext.eventJoins.Add(eventJoin);
+            await dbContext.SaveChangesAsync();
+            return responseObjectEventJoin.ResponseObjectSuccess("Tham gia thành công!", converter_EventJoin.EntityToDTO(eventJoin));
+        }
+
+        public async Task<ResponseBase> WithdrawFromAnEvent(int eventJoinId)
+        {
+            var eventJoin = await dbContext.eventJoins.FirstOrDefaultAsync(x=>x.Id == eventJoinId);
+            if(eventJoin == null)
+            {
+                return responseBase.ResponseBaseError(StatusCodes.Status404NotFound, "Bạn chưa tham gia hoạt động này!");
+            }
+            dbContext.eventJoins.Remove(eventJoin);
+            await dbContext.SaveChangesAsync();
+            return responseBase.ResponseBaseSuccess("Bỏ tham gia thành công!");
+        }
+        public IQueryable<DTO_EventJoin> GetListAllEventUserJoin(int pageSize, int pageNumber, int userId)
+        {
+            return dbContext.eventJoins.Skip((pageNumber - 1) * pageSize).Take(pageSize).Where(x=>x.UserId == userId).Select(x => converter_EventJoin.EntityToDTO(x));
+        }
+
+        public IQueryable<DTO_EventJoin> GetListAllParticipantInAnEvent(int pageSize, int pageNumber, int eventId)
+        {
+            return dbContext.eventJoins.Skip((pageNumber - 1) * pageSize).Take(pageSize).Where(x => x.EventId == eventId).Select(x => converter_EventJoin.EntityToDTO(x));
+        }
     }
 }

@@ -30,7 +30,7 @@ namespace BigProject.DataContext
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
         public DbSet<EmailConfirm> emailConfirms { get; set; }
         public DbSet<Event> events { get; set; }
-        public DbSet<EventJoint> eventJoints { get; set; }
+        public DbSet<EventJoin> eventJoins { get; set; }
         public DbSet<EventType> eventTypes { get; set; }
         public DbSet<RefreshToken> refreshTokens { get; set; }
         public DbSet<RewardDiscipline> rewardDisciplines { get; set; }
