@@ -7,6 +7,7 @@ using BigProject.PayLoad.Request;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection.Metadata.Ecma335;
 using BigProject.Entities;
+using BigProject.Enums;
 
 namespace BigProject.Service.Implement
 {
@@ -69,7 +70,7 @@ namespace BigProject.Service.Implement
             proposer.RewardOrDiscipline = true;
             proposer.Description = request.Description;
             proposer.RewardDisciplineTypeId = request.RewardDisciplineTypeId;
-            proposer.Status = "Waiting";
+            proposer.Status = RequestEnum.waiting;
             proposer.RecipientId = request.RecipientId;
             proposer.ProposerId = proposerId;
             dbContext.rewardDisciplines.Add(proposer);
@@ -98,7 +99,7 @@ namespace BigProject.Service.Implement
             proposer.RewardOrDiscipline = false;
             proposer.Description = request.Description;
             proposer.RewardDisciplineTypeId = request.RewardDisciplineTypeId;
-            proposer.Status = "Waiting";
+            proposer.Status = RequestEnum.waiting;
             proposer.RecipientId = request.RecipientId;
             proposer.ProposerId = proposerId;
             dbContext.rewardDisciplines.Add(proposer);
@@ -113,7 +114,7 @@ namespace BigProject.Service.Implement
             {
                 return responseObject.ResponseObjectError(StatusCodes.Status404NotFound, "Đề xuất không tồn tại!", null);
             }
-            propose.Status = "Accept";
+            propose.Status = RequestEnum.accept;
             dbContext.rewardDisciplines.Update(propose);
             await dbContext.SaveChangesAsync();
             return responseObject.ResponseObjectSuccess("Chấp nhận!", converter_RewardDiscipline.EntityToDTO(propose));
@@ -126,7 +127,7 @@ namespace BigProject.Service.Implement
             {
                 return responseObject.ResponseObjectError(StatusCodes.Status404NotFound, "Đề xuất không tồn tại!", null);
             }
-            propose.Status = "Reject";
+            propose.Status = RequestEnum.reject;
             dbContext.rewardDisciplines.Update(propose);
             await dbContext.SaveChangesAsync();
             return responseObject.ResponseObjectSuccess("Từ chối!", converter_RewardDiscipline.EntityToDTO(propose));

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BigProject.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250302105914_ver2")]
-    partial class ver2
+    [Migration("20250305100737_ver1")]
+    partial class ver1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,43 @@ namespace BigProject.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("BigProject.Entities.ApprovalHistory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ApprovedById")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("ApprovedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsAccept")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("RejectReason")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("RequestToBeOutstandingMemberId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("RewardDisciplineId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApprovedById");
+
+                    b.HasIndex("RequestToBeOutstandingMemberId");
+
+                    b.HasIndex("RewardDisciplineId");
+
+                    b.ToTable("approvalHistories");
+                });
 
             modelBuilder.Entity("BigProject.Entities.Document", b =>
                 {
@@ -315,9 +352,8 @@ namespace BigProject.Migrations
                     b.Property<bool>("RewardOrDiscipline")
                         .HasColumnType("bit");
 
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -379,6 +415,9 @@ namespace BigProject.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
                     b.Property<string>("MaTV")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -399,6 +438,29 @@ namespace BigProject.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("users");
+                });
+
+            modelBuilder.Entity("BigProject.Entities.ApprovalHistory", b =>
+                {
+                    b.HasOne("BigProject.Entities.User", "ApprovedBy")
+                        .WithMany()
+                        .HasForeignKey("ApprovedById")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BigProject.Entities.RequestToBeOutStandingMember", "RequestToBeOutstandingMember")
+                        .WithMany()
+                        .HasForeignKey("RequestToBeOutstandingMemberId");
+
+                    b.HasOne("BigProject.Entities.RewardDiscipline", "RewardDiscipline")
+                        .WithMany()
+                        .HasForeignKey("RewardDisciplineId");
+
+                    b.Navigation("ApprovedBy");
+
+                    b.Navigation("RequestToBeOutstandingMember");
+
+                    b.Navigation("RewardDiscipline");
                 });
 
             modelBuilder.Entity("BigProject.Entities.Document", b =>

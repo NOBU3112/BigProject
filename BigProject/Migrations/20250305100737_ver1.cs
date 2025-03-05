@@ -85,6 +85,7 @@ namespace BigProject.Migrations
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     MaTV = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
                     RoleId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -146,26 +147,26 @@ namespace BigProject.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "eventJoints",
+                name: "eventJoins",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     EventId = table.Column<int>(type: "int", nullable: false),
                     UserId = table.Column<int>(type: "int", nullable: false),
-                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Status = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_eventJoints", x => x.Id);
+                    table.PrimaryKey("PK_eventJoins", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_eventJoints_events_EventId",
+                        name: "FK_eventJoins_events_EventId",
                         column: x => x.EventId,
                         principalTable: "events",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_eventJoints_users_UserId",
+                        name: "FK_eventJoins_users_UserId",
                         column: x => x.UserId,
                         principalTable: "users",
                         principalColumn: "Id",
@@ -234,7 +235,7 @@ namespace BigProject.Migrations
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     RewardOrDiscipline = table.Column<bool>(type: "bit", nullable: false),
-                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
                     RewardDisciplineTypeId = table.Column<int>(type: "int", nullable: false),
                     RecipientId = table.Column<int>(type: "int", nullable: false),
                     ProposerId = table.Column<int>(type: "int", nullable: false)
@@ -270,7 +271,7 @@ namespace BigProject.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     MemberInfoId = table.Column<int>(type: "int", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
                     RejectReason = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
@@ -284,6 +285,55 @@ namespace BigProject.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "approvalHistories",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    RequestToBeOutstandingMemberId = table.Column<int>(type: "int", nullable: true),
+                    RewardDisciplineId = table.Column<int>(type: "int", nullable: true),
+                    ApprovedById = table.Column<int>(type: "int", nullable: false),
+                    ApprovedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsAccept = table.Column<bool>(type: "bit", nullable: false),
+                    RejectReason = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_approvalHistories", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_approvalHistories_requestToBeOutStandingMembers_RequestToBeOutstandingMemberId",
+                        column: x => x.RequestToBeOutstandingMemberId,
+                        principalTable: "requestToBeOutStandingMembers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_approvalHistories_rewardDisciplines_RewardDisciplineId",
+                        column: x => x.RewardDisciplineId,
+                        principalTable: "rewardDisciplines",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_approvalHistories_users_ApprovedById",
+                        column: x => x.ApprovedById,
+                        principalTable: "users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_approvalHistories_ApprovedById",
+                table: "approvalHistories",
+                column: "ApprovedById");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_approvalHistories_RequestToBeOutstandingMemberId",
+                table: "approvalHistories",
+                column: "RequestToBeOutstandingMemberId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_approvalHistories_RewardDisciplineId",
+                table: "approvalHistories",
+                column: "RewardDisciplineId");
+
             migrationBuilder.CreateIndex(
                 name: "IX_documents_UserId",
                 table: "documents",
@@ -295,13 +345,13 @@ namespace BigProject.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_eventJoints_EventId",
-                table: "eventJoints",
+                name: "IX_eventJoins_EventId",
+                table: "eventJoins",
                 column: "EventId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_eventJoints_UserId",
-                table: "eventJoints",
+                name: "IX_eventJoins_UserId",
+                table: "eventJoins",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
@@ -349,13 +399,16 @@ namespace BigProject.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "approvalHistories");
+
+            migrationBuilder.DropTable(
                 name: "documents");
 
             migrationBuilder.DropTable(
                 name: "emailConfirms");
 
             migrationBuilder.DropTable(
-                name: "eventJoints");
+                name: "eventJoins");
 
             migrationBuilder.DropTable(
                 name: "refreshTokens");

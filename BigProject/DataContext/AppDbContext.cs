@@ -40,5 +40,6 @@ namespace BigProject.DataContext
         public DbSet<MemberInfo> memberInfos { get; set; }
         public DbSet<Document> documents { get; set; }
         public DbSet<RequestToBeOutStandingMember> requestToBeOutStandingMembers {  get; set; }
+        public DbSet<ApprovalHistory> approvalHistories { get; set; }   
     }
 }

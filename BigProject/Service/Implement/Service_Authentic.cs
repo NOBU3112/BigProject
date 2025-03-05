@@ -87,7 +87,12 @@ namespace BigProject.Service.Implement
             {
                 return responseObjectToken.ResponseObjectError(404, "Tài khoản không tồn tại !", null);
             }
-           
+            if (user.IsActive == false)
+            {
+                return responseObjectToken.ResponseObjectError(400, "Tài khoản đã bị đóng !", null);
+
+            }
+
             if (!BCrypt.Net.BCrypt.Verify(request.Password, user.Password))
             {
                 return responseObjectToken.ResponseObjectError(404, "Sai mk !", null);
@@ -136,6 +141,7 @@ namespace BigProject.Service.Implement
             register.Username = request.Username;
             register.Password = request.Password;   
             register.Email = request.Email;
+            register.IsActive = true;
            
 
             register.Password = BCrypt.Net.BCrypt.HashPassword(request.Password);

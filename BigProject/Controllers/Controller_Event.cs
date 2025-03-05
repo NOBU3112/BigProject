@@ -53,7 +53,7 @@ namespace BigProject.Controllers
                 return  Ok("Vui lòng đăng nhập !");
             }
             int userId = int.Parse(HttpContext.User.FindFirst("Id").Value);
-            return Ok(await service_Event.JoinAnEvent(eventId, userId));
+            return Ok(await service_Event.JoinAnEvent(userId, eventId));
         }
 
         [HttpDelete("Bỏ đăng ký tham gia hoạt động")]
