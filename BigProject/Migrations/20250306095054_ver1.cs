@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace BigProject.Migrations
 {
     /// <inheritdoc />
@@ -317,6 +319,36 @@ namespace BigProject.Migrations
                         principalTable: "users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.InsertData(
+                table: "roles",
+                columns: new[] { "Id", "Name" },
+                values: new object[,]
+                {
+                    { 1, "Đoàn viên" },
+                    { 2, "Bí thư đoàn viên" },
+                    { 3, "Liên chi đoàn khoa" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "users",
+                columns: new[] { "Id", "Email", "IsActive", "MaTV", "Password", "RoleId", "Username" },
+                values: new object[,]
+                {
+                    { 1, "admin@gmail.com", true, "1111111111", "$2a$12$umDEKg3yORpv174r7kzKxO7Z.BVbw0HDzb44jCsvgjHGGn5rM6/Ky", 3, "admin" },
+                    { 2, "member@gmail.com", true, "1111111111", "$2a$12$umDEKg3yORpv174r7kzKxO7Z.BVbw0HDzb44jCsvgjHGGn5rM6/Ky", 1, "member" },
+                    { 3, "secretary@gmail.com", true, "1111111111", "$2a$12$umDEKg3yORpv174r7kzKxO7Z.BVbw0HDzb44jCsvgjHGGn5rM6/Ky", 2, "secretary" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "memberInfos",
+                columns: new[] { "Id", "Birthdate", "Class", "DateOfJoining", "FullName", "IsOutstandingMember", "MemberId", "Nation", "PhoneNumber", "PlaceOfJoining", "PoliticalTheory", "Status", "UrlAvatar", "UserId", "religion" },
+                values: new object[,]
+                {
+                    { 1, new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "string", new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "string", false, "string", "string", "string", "string", "string", 1, "string", 1, "string" },
+                    { 2, new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "string", new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "string", false, "string", "string", "string", "string", "string", 1, "string", 2, "string" },
+                    { 3, new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "string", new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "string", false, "string", "string", "string", "string", "string", 1, "string", 3, "string" }
                 });
 
             migrationBuilder.CreateIndex(
