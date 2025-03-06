@@ -8,15 +8,19 @@ namespace BigProject.Service.Interface
     {
         Task <ResponseObject<DTO_Register>> Register(Request_Register request);
 
-        ResponseObject<DTO_Register> ForgotPassword(Request_forgot request);
+        Task<ResponseObject<DTO_Register>> ForgotPassword(Request_forgot request);
 
-        ResponseObject<DTO_Token> Login(Request_Login request);
+
+        Task<ResponseObject<DTO_Token>> Login(Request_Login request);
+
 
         ResponseBase Activate(string Opt);
 
-        ResponseBase ChangePassword(Request_ChangePassword requset);
+        ResponseBase Activate_Password (string code, string email);
 
-        ResponseObject<List<DTO_Register>> Authorization(string KeyRole);
+        ResponseBase ChangePassword(Request_ChangePassword requset, int userId);
+
+        Task<ResponseObject<List<DTO_Register>>> Authorization(string KeyRole);
 
         IQueryable<DTO_Register> GetListMember(int pageSize, int pageNumber);
     }

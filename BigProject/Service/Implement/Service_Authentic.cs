@@ -1,4 +1,5 @@
-﻿using BigProject.DataContext;
+﻿using Azure.Core;
+using BigProject.DataContext;
 using BigProject.Entities;
 using BigProject.Helper;
 using BigProject.Payload.Response;
@@ -9,6 +10,7 @@ using BigProject.Service.Interface;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.Win32;
 using SixLabors.ImageSharp;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -45,12 +47,19 @@ namespace BigProject.Service.Implement
 
         public ResponseBase Activate(string Opt)
         {
-            var comfirmEmail = dbContext.emailConfirms.FirstOrDefault(x => x.Code == Opt);
+            var comfirmEmail = dbContext.emailConfirms.FirstOrDefault(x => x.Code == Opt && x.IsActiveAccount==true);
             if (comfirmEmail == null)
             {
                 return responseBase.ResponseBaseError(400, "Mã xác nhận không đúng !");
             }
-
+            if (comfirmEmail.Exprired < DateTime.Now)
+            {
+                return responseBase.ResponseBaseError(400, "Mã xác nhận đã hết hạn !");
+            }
+            if (comfirmEmail.IsConfirmed)
+            {
+                return responseBase.ResponseBaseError(400, "Mã xác nhận đã được sử dụng!");
+            }
             comfirmEmail.IsConfirmed = true;
             dbContext.emailConfirms.Update(comfirmEmail);
             dbContext.SaveChanges();
@@ -58,31 +67,61 @@ namespace BigProject.Service.Implement
             return responseBase.ResponseBaseSuccess("Kích hoạt tài khoản thành công !");
         }
 
-        public  ResponseObject<DTO_Register> ForgotPassword(Request_forgot request)
+        public  async Task<ResponseObject<DTO_Register>> ForgotPassword(Request_forgot request)
         {
-            var user =  dbContext.users.FirstOrDefault(x => x.Email == request.Email);
+            //var user =  dbContext.users.FirstOrDefault(x => x.Email == request.Email);
+            //if (user == null)
+            //{
+            //    return  responseObject.ResponseObjectError(StatusCodes.Status404NotFound, "Email  không tồn tại !", null);
+            //}
+
+            //Random random = new Random(); 
+            //int code = random.Next(100000, 999999);
+
+            //EmailTo emailTo = new EmailTo();
+            //emailTo.Mail = request.Email;
+            //emailTo.Subject = "MÃ XÁC NHẬN !";
+            //emailTo.Content = $"Mật khẩu là {code} mã sẽ hết hạn sau 5 phút!";
+            //emailTo.SendEmailAsync(emailTo);
+            //user.Password = BCrypt.Net.BCrypt.HashPassword(code.ToString());
+            //dbContext.users.Update(user);
+            //dbContext.SaveChanges();
+            //return responseObject.ResponseObjectSuccess("Đã gửi mật khẩu qua Email ", null);
+            var user = await dbContext.users.FirstOrDefaultAsync(x => x.Email == request.Email);
             if (user == null)
             {
                 return  responseObject.ResponseObjectError(StatusCodes.Status404NotFound, "Email  không tồn tại !", null);
             }
+           
 
-            Random random = new Random(); 
+            Random random = new Random();
             int code = random.Next(100000, 999999);
+
 
             EmailTo emailTo = new EmailTo();
             emailTo.Mail = request.Email;
             emailTo.Subject = "MÃ XÁC NHẬN !";
-            emailTo.Content = $"Mật khẩu là {code} mã sẽ hết hạn sau 5 phút!";
+            emailTo.Content = $"Mã xác nhận của bạn là: {code} mã sẽ hết hạn sau 5 phút!";
             emailTo.SendEmailAsync(emailTo);
             user.Password = BCrypt.Net.BCrypt.HashPassword(code.ToString());
             dbContext.users.Update(user);
-            dbContext.SaveChanges();
-            return responseObject.ResponseObjectSuccess("Đã gửi mật khẩu qua Email ", null);
+           await dbContext.SaveChangesAsync();
+
+            EmailConfirm comfirmEmail = new EmailConfirm();
+            comfirmEmail.UserId = user.Id;
+            comfirmEmail.Code = $"{code}";
+            comfirmEmail.Exprired = DateTime.Now.AddMinutes(5);
+            comfirmEmail.IsActiveAccount = false;
+            dbContext.emailConfirms.Add(comfirmEmail);
+            await dbContext.SaveChangesAsync();
+
+            return responseObject.ResponseObjectSuccess("gửi thành công",null);
+
         }
 
-        public ResponseObject<DTO_Token> Login(Request_Login request)
+        public async Task<ResponseObject<DTO_Token>> Login(Request_Login request)
         {
-            var user = dbContext.users.FirstOrDefault(x => x.Username == request.UserName || x.Email == request.UserName ||  x.MaTV == request.UserName);
+            var user = await dbContext.users.FirstOrDefaultAsync(x => x.Username == request.UserName || x.Email == request.UserName ||  x.MaTV == request.UserName);
             if (user == null)
             {
                 return responseObjectToken.ResponseObjectError(404, "Tài khoản không tồn tại !", null);
@@ -107,7 +146,7 @@ namespace BigProject.Service.Implement
 
 
 
-            return responseObjectToken.ResponseObjectSuccess("đăng nhập email thành công ", GenerateAccessToken(user));
+            return responseObjectToken.ResponseObjectSuccess("đăng nhập  thành công ", GenerateAccessToken(user));
 
         }
 
@@ -158,14 +197,15 @@ namespace BigProject.Service.Implement
             register.Email = request.Email;
             register.RoleId = 1;
             dbContext.users.Add(register);
-            dbContext.SaveChanges();
+            await dbContext.SaveChangesAsync();
 
             EmailConfirm comfirmEmail = new EmailConfirm();
             comfirmEmail.UserId = register.Id;
             comfirmEmail.Code = $"{code}";
             comfirmEmail.Exprired = DateTime.Now.AddMinutes(5);
+            comfirmEmail.IsActiveAccount = true;
             dbContext.emailConfirms.Add(comfirmEmail);
-            dbContext.SaveChanges();
+            await dbContext.SaveChangesAsync();
 
             return   responseObject.ResponseObjectSuccess("đăng kí thành công",  converter_Register.EntityToDTO(register));
         }
@@ -266,13 +306,10 @@ namespace BigProject.Service.Implement
             return tokenDTO;
         }
 
-        public ResponseBase ChangePassword(Request_ChangePassword requset)
+        public ResponseBase ChangePassword(Request_ChangePassword requset,int userId)
         {
-            var change = dbContext.users.FirstOrDefault(x => x.Username.ToLower() == requset.UserName.ToLower() || x.MaTV.ToLower() == requset.UserName.ToLower() || x.Email.ToLower() == requset.UserName.ToLower());
-            if (change == null)
-            {
-                return responseBase.ResponseBaseError(404, "tên tài khoản không chính xác");
-            }
+            var change = dbContext.users.FirstOrDefault(x => x.Id == userId  );
+
             if (!BCrypt.Net.BCrypt.Verify(requset.Password, change.Password))
             {
                 return responseBase.ResponseBaseError(404, "Mật khẩu không chính xác");
@@ -297,9 +334,9 @@ namespace BigProject.Service.Implement
             return responseBase.ResponseBaseSuccess("Đổi mật khẩu thành công");
         }
 
-        public ResponseObject<List<DTO_Register>> Authorization(string KeyRole)
+        public async Task<ResponseObject<List<DTO_Register>>> Authorization(string KeyRole)
         {
-            var listUserForRoleInput = dbContext.users.Include(user => user.Role).AsNoTracking().Where(user => user.Role.Name.ToLower() == KeyRole.ToLower());
+            var listUserForRoleInput =  dbContext.users.Include(user => user.Role).AsNoTracking().Where(user => user.Role.Name.ToLower() == KeyRole.ToLower());
 
 
 
@@ -313,6 +350,59 @@ namespace BigProject.Service.Implement
         public IQueryable<DTO_Register> GetListMember(int pageSize, int pageNumber)
         {
             return dbContext.users.Skip((pageNumber - 1) * pageSize).Take(pageSize).Select(x => converter_Register.EntityToDTO(x));
+        }
+
+        public ResponseBase Activate_Password(string code, string email)
+        {
+            var confirmEmailCheck = dbContext.emailConfirms.FirstOrDefault(x => x.Code == code&& x.IsActiveAccount==false);
+            if (confirmEmailCheck == null)
+            {
+                return responseBase.ResponseBaseError(400, "Mã xác nhận không đúng !");
+            }
+
+         
+            if (confirmEmailCheck.Exprired < DateTime.Now)
+            {
+                return responseBase.ResponseBaseError(400, "Mã xác nhận đã hết hạn !");
+            }
+            if (confirmEmailCheck.IsConfirmed )
+            {
+                return responseBase.ResponseBaseError(400, "Mã xác nhận đã được sử dụng!");
+            }
+           
+            confirmEmailCheck.IsConfirmed = true;
+            dbContext.SaveChanges();
+
+
+            var user = dbContext.users.FirstOrDefault(x => x.Email == email);
+            if (user == null)
+            {
+                return responseBase.ResponseBaseError(404, "Email không tồn tại !");
+            }
+
+            string newPassword = GenerateRandomPassword(8); 
+
+            EmailTo emailTo = new EmailTo
+            {
+                Mail = email,
+                Subject = "MÃ XÁC NHẬN!",
+                Content = $"Mật khẩu mới của bạn là {newPassword} Mã sẽ hết hạn sau 5 phút!"
+            };
+            emailTo.SendEmailAsync(emailTo);
+
+            user.Password = BCrypt.Net.BCrypt.HashPassword(newPassword);
+            dbContext.users.Update(user);
+            dbContext.SaveChanges();
+
+            return responseBase.ResponseBaseSuccess("Đã gửi mật khẩu qua Email!");
+        }
+        public static string GenerateRandomPassword(int length)
+        {
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*";
+            Random random = new Random();
+
+            return new string(Enumerable.Repeat(chars, length)
+                .Select(s => s[random.Next(s.Length)]).ToArray());
         }
     }
 }
