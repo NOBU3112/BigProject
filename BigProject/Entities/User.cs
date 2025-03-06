@@ -11,7 +11,6 @@
         public Role Role { get; set; }
 
       
-        public ICollection<MemberInfo> memberInfos { get; set; }
         public ICollection<RefreshToken> refreshTokens { get; set; }
         public ICollection<EmailConfirm> emailConfirms { get; set; }
         public ICollection<Document> documents { get; set; }
