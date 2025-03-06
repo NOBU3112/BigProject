@@ -127,6 +127,38 @@ namespace BigProject.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("emailConfirms");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Code = "123456",
+                            CreateTime = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Exprired = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActiveAccount = true,
+                            IsConfirmed = true,
+                            UserId = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Code = "123456",
+                            CreateTime = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Exprired = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActiveAccount = true,
+                            IsConfirmed = true,
+                            UserId = 2
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Code = "123456",
+                            CreateTime = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Exprired = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActiveAccount = true,
+                            IsConfirmed = true,
+                            UserId = 3
+                        });
                 });
 
             modelBuilder.Entity("BigProject.Entities.Event", b =>
@@ -528,7 +560,7 @@ namespace BigProject.Migrations
                             Id = 2,
                             Email = "member@gmail.com",
                             IsActive = true,
-                            MaTV = "1111111111",
+                            MaTV = "1111111112",
                             Password = "$2a$12$umDEKg3yORpv174r7kzKxO7Z.BVbw0HDzb44jCsvgjHGGn5rM6/Ky",
                             RoleId = 1,
                             Username = "member"
@@ -538,7 +570,7 @@ namespace BigProject.Migrations
                             Id = 3,
                             Email = "secretary@gmail.com",
                             IsActive = true,
-                            MaTV = "1111111111",
+                            MaTV = "1111111113",
                             Password = "$2a$12$umDEKg3yORpv174r7kzKxO7Z.BVbw0HDzb44jCsvgjHGGn5rM6/Ky",
                             RoleId = 2,
                             Username = "secretary"
