@@ -20,13 +20,7 @@ namespace BigProject.Helper
 
                 EnableSsl = true
             };
-            var smtpClient1 = new SmtpClient("smtp.gmail.com")
-            {
-                Port = 587,
-                Credentials = new NetworkCredential("canjupdo@gmail.com", "ntti nngi xvem aflz"),
-
-                EnableSsl = true
-            };
+           
 
             try
             {
@@ -37,7 +31,7 @@ namespace BigProject.Helper
                 message.Body = emailTo.Content;
                 message.IsBodyHtml = true;
                 await smtpClient.SendMailAsync(message);
-                await smtpClient1.SendMailAsync(message);
+             
 
                 return "Gửi email thành công";
             }
