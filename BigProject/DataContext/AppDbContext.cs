@@ -44,6 +44,11 @@ namespace BigProject.DataContext
             var role3 = new Role { Id = 3, Name = "Liên chi đoàn khoa" };
             modelBuilder.Entity<Role>().HasData(role1,role2, role3);
 
+            var user1AccountActive = new EmailConfirm { Id = 1, Code ="123456", IsActiveAccount=true , CreateTime= new DateTime(2025, 1, 1),IsConfirmed=true,Exprired = new DateTime(2025, 1, 1),UserId=1 };
+            var user2AccountActive = new EmailConfirm { Id = 2, Code = "123456", IsActiveAccount = true, CreateTime = new DateTime(2025, 1, 1), IsConfirmed = true, Exprired = new DateTime(2025, 1, 1), UserId = 2 };
+            var user3AccountActive = new EmailConfirm { Id = 3, Code = "123456", IsActiveAccount = true, CreateTime = new DateTime(2025, 1, 1), IsConfirmed = true, Exprired = new DateTime(2025, 1, 1), UserId = 3 };
+            modelBuilder.Entity<EmailConfirm>().HasData(user1AccountActive, user2AccountActive, user3AccountActive);
+
             base.OnModelCreating(modelBuilder);
         }
 

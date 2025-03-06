@@ -135,7 +135,8 @@ namespace BigProject.Migrations
                     Code = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Exprired = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IsConfirmed = table.Column<bool>(type: "bit", nullable: false)
+                    IsConfirmed = table.Column<bool>(type: "bit", nullable: false),
+                    IsActiveAccount = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -337,8 +338,18 @@ namespace BigProject.Migrations
                 values: new object[,]
                 {
                     { 1, "admin@gmail.com", true, "1111111111", "$2a$12$umDEKg3yORpv174r7kzKxO7Z.BVbw0HDzb44jCsvgjHGGn5rM6/Ky", 3, "admin" },
-                    { 2, "member@gmail.com", true, "1111111111", "$2a$12$umDEKg3yORpv174r7kzKxO7Z.BVbw0HDzb44jCsvgjHGGn5rM6/Ky", 1, "member" },
-                    { 3, "secretary@gmail.com", true, "1111111111", "$2a$12$umDEKg3yORpv174r7kzKxO7Z.BVbw0HDzb44jCsvgjHGGn5rM6/Ky", 2, "secretary" }
+                    { 2, "member@gmail.com", true, "1111111112", "$2a$12$umDEKg3yORpv174r7kzKxO7Z.BVbw0HDzb44jCsvgjHGGn5rM6/Ky", 1, "member" },
+                    { 3, "secretary@gmail.com", true, "1111111113", "$2a$12$umDEKg3yORpv174r7kzKxO7Z.BVbw0HDzb44jCsvgjHGGn5rM6/Ky", 2, "secretary" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "emailConfirms",
+                columns: new[] { "Id", "Code", "CreateTime", "Exprired", "IsActiveAccount", "IsConfirmed", "UserId" },
+                values: new object[,]
+                {
+                    { 1, "123456", new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), true, true, 1 },
+                    { 2, "123456", new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), true, true, 2 },
+                    { 3, "123456", new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), true, true, 3 }
                 });
 
             migrationBuilder.InsertData(
