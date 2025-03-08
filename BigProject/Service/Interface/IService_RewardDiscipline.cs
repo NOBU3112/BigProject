@@ -9,8 +9,8 @@ namespace BigProject.Service.Interface
         Task<ResponseObject<DTO_RewardDiscipline>> ProposeReward(Request_ProposeRewardDiscipline request,int proposerId);
         Task<ResponseObject<DTO_RewardDiscipline>> ProposeDiscipline(Request_ProposeRewardDiscipline request,int proposerId);
         Task<ResponseBase> DeleteRewardDiscipline(int id);
-        IQueryable<DTO_RewardDiscipline> GetListReward(int pageSize, int pageNumber);
-        IQueryable<DTO_RewardDiscipline> GetListDiscipline(int pageSize, int pageNumber);
+        IEnumerable<DTO_RewardDiscipline> GetListReward(int pageSize, int pageNumber);
+        IEnumerable<DTO_RewardDiscipline> GetListDiscipline(int pageSize, int pageNumber);
         Task<ResponseObject<DTO_RewardDiscipline>> AcceptPropose(int proposeId);
         Task<ResponseObject<DTO_RewardDiscipline>> RejectPropose(int proposeId);
     }

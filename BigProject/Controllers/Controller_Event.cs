@@ -21,31 +21,31 @@ namespace BigProject.Controllers
             this.service_Event = service_Event;
         }
 
-        [HttpPost("Thêm hoạt động")]
+        [HttpPost("Add_Event")]
         public async Task<IActionResult> AddEvent(Request_AddEvent request)
         {
             return Ok(await service_Event.AddEvent(request));
         }
 
-        [HttpPut("Sửa đổi hoạt động")]
+        [HttpPut("Edit_event")]
         public async Task<IActionResult> UpdateEvent(Request_UpdateEvent request)
         {
             return Ok(await service_Event.UpdateEvent(request));
         }
 
-        [HttpDelete("Xóa hoạt động")]
+        [HttpDelete("Delete_Event")]
         public async Task<IActionResult> DeleteEvent(int eventId)
         {
             return Ok(await service_Event.DeleteEvent(eventId));
         }
 
-        [HttpGet("Lấy danh sách hoạt động")]
+        [HttpGet("Get_List_Event")]
         public IActionResult GetListProductFull(int pageSize = 10, int pageNumber = 1)
         {
             return Ok(service_Event.GetListEvent(pageSize, pageNumber));
         }
 
-        [HttpPost("Đăng ký tham gia hoạt động")]
+        [HttpPost("Sign_up_for_the_activity")]
         public async Task<IActionResult> JoinAnEvent(int eventId)
         {
             if (!HttpContext.User.Identity.IsAuthenticated)
@@ -56,20 +56,20 @@ namespace BigProject.Controllers
             return Ok(await service_Event.JoinAnEvent(userId, eventId));
         }
 
-        [HttpDelete("Bỏ đăng ký tham gia hoạt động")]
+        [HttpDelete("Unsubscribe_from_activities")]
         public async Task<IActionResult> WithdrawFromAnEvent(int eventJoinId)
         {
             return Ok(await service_Event.WithdrawFromAnEvent(eventJoinId));
         }
-
-        [HttpGet("Lấy danh sách các sinh viên tham gia hoạt động")]
+        
+        [HttpGet("Get_List_All_Participant_In_An_Event")]
         public IActionResult GetListAllParticipantInAnEvent(int eventId,int pageSize = 10, int pageNumber = 1)
         {
             return Ok(service_Event.GetListAllParticipantInAnEvent(pageSize, pageNumber,eventId));
         }
 
-        [HttpGet("Lấy danh sách các hoạt động tham gia")]
-        public IActionResult GetListAllParticipantInAnEvent(int pageSize = 10, int pageNumber = 1)
+        [HttpGet("Get_List_All_Event_User_Join")]
+        public IActionResult GetListAllEventUserJoin(int pageSize = 10, int pageNumber = 1)
         {
             if (!HttpContext.User.Identity.IsAuthenticated)
             {

@@ -8,6 +8,6 @@ namespace BigProject.Service.Interface
     {
         Task<ResponseObject<DTO_MemberInfo>> AddMenberInfo(Request_AddMemberInfo request, int userId);
         Task<ResponseObject<DTO_MemberInfo>> UpdateMenberInfo(Request_UpdateMemberInfo request);
-        IQueryable<DTO_MemberInfo> GetListMenberInfo(int pageSize, int pageNumber);
+        IEnumerable<DTO_MemberInfo> GetListMenberInfo(int pageSize, int pageNumber);
     }
 }

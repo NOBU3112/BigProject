@@ -64,7 +64,7 @@ namespace BigProject.Service.Implement
             return responseBase.ResponseBaseSuccess("Xóa thành công!");
         }
 
-        public IQueryable<DTO_Event> GetListEvent(int pageSize, int pageNumber)
+        public IEnumerable<DTO_Event> GetListEvent(int pageSize, int pageNumber)
         {
             return dbContext.events.Skip((pageNumber - 1) * pageSize).Take(pageSize).Select(x => converter_Event.EntityToDTO(x));
         }
@@ -129,12 +129,12 @@ namespace BigProject.Service.Implement
             await dbContext.SaveChangesAsync();
             return responseBase.ResponseBaseSuccess("Bỏ tham gia thành công!");
         }
-        public IQueryable<DTO_EventJoin> GetListAllEventUserJoin(int pageSize, int pageNumber, int userId)
+        public IEnumerable<DTO_EventJoin> GetListAllEventUserJoin(int pageSize, int pageNumber, int userId)
         {
             return dbContext.eventJoins.Skip((pageNumber - 1) * pageSize).Take(pageSize).Where(x=>x.UserId == userId).Select(x => converter_EventJoin.EntityToDTO(x));
         }
 
-        public IQueryable<DTO_EventJoin> GetListAllParticipantInAnEvent(int pageSize, int pageNumber, int eventId)
+        public IEnumerable<DTO_EventJoin> GetListAllParticipantInAnEvent(int pageSize, int pageNumber, int eventId)
         {
             return dbContext.eventJoins.Skip((pageNumber - 1) * pageSize).Take(pageSize).Where(x => x.EventId == eventId).Select(x => converter_EventJoin.EntityToDTO(x));
         }

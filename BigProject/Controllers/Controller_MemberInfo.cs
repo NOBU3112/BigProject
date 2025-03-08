@@ -19,7 +19,7 @@ namespace BigProject.Controllers
         {
             this.memberInfo = memberInfo;
         }
-        [HttpPost("Thêm thông tin  đoàn viên")]
+        [HttpPost("Add_Menber_Info")]
         public async Task<IActionResult> AddMenberInfo(Request_AddMemberInfo request)
         {
             if (!HttpContext.User.Identity.IsAuthenticated)
@@ -29,12 +29,12 @@ namespace BigProject.Controllers
             int userId = int.Parse(HttpContext.User.FindFirst("Id").Value);
             return Ok( await memberInfo.AddMenberInfo(request,  userId));
         }
-        [HttpPut("Sửa thông tin đoàn viên")]
+        [HttpPut("Edit_member_info")]
         public async Task<IActionResult> UpdateMenberInfo(Request_UpdateMemberInfo request)
         {
             return Ok(await memberInfo.UpdateMenberInfo(request));
         }
-        [HttpGet("Lấy danh thông tin đoàn viên")]
+        [HttpGet("Get_List_Menber_Info")]
         public IActionResult GetListProductFull(int pageSize = 10, int pageNumber = 1)
         {
             return Ok(memberInfo.GetListMenberInfo(pageSize, pageNumber));
