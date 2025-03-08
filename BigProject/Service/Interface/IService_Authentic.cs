@@ -20,7 +20,7 @@ namespace BigProject.Service.Interface
 
         ResponseBase ChangePassword(Request_ChangePassword requset, int userId);
 
-        Task<ResponseObject<List<DTO_Register>>> Authorization(string KeyRole);
+        Task<ResponseObject<List<DTO_Register>>> Authorization(int RoleId);
 
         IEnumerable<DTO_Register> GetListMember(int pageSize, int pageNumber);
     }

@@ -1,6 +1,8 @@
 ﻿using BigProject.PayLoad.Request;
 using BigProject.Service.Implement;
 using BigProject.Service.Interface;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -28,7 +30,7 @@ namespace BigProject.Controllers
             return Ok(await service_OutstandingMember.WaitingOutstandingMenber(request));
         }
         [HttpPut("Accept_OutstandingMember")]
-
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]// check đăng nhập 
         public async Task<IActionResult> AcceptOutstandingMember([FromForm] Request_acceptOutstandingMember request )
         {
             if (!HttpContext.User.Identity.IsAuthenticated)

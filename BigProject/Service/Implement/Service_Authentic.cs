@@ -334,9 +334,9 @@ namespace BigProject.Service.Implement
             return responseBase.ResponseBaseSuccess("Đổi mật khẩu thành công");
         }
 
-        public async Task<ResponseObject<List<DTO_Register>>> Authorization(string KeyRole)
+        public async Task<ResponseObject<List<DTO_Register>>> Authorization(int RoleId)
         {
-            var listUserForRoleInput =  dbContext.users.Include(user => user.Role).AsNoTracking().Where(user => user.Role.Name.ToLower() == KeyRole.ToLower());
+            var listUserForRoleInput =  dbContext.users.Include(user => user.Role).AsNoTracking().Where(user => user.Role.Id == RoleId);
 
 
 

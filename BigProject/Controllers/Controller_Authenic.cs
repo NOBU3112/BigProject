@@ -41,9 +41,9 @@ namespace BigProject.Controllers
         }
         [HttpGet("Authorization")]
 
-        public IActionResult Authorization([FromForm] string KeyRole)
+        public IActionResult Authorization([FromQuery] int RoleId)
         {
-            return Ok(service_Authentic.Authorization(KeyRole));
+            return Ok(service_Authentic.Authorization(RoleId));
         }
         [HttpPut("Change_Password")]
         public IActionResult ChangePassword([FromForm] Request_ChangePassword request)
