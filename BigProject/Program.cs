@@ -73,7 +73,8 @@
         builder.Services.AddScoped<Converter_RewardDisciplineType>();
         builder.Services.AddScoped<Converter_MemberInfo>();
         builder.Services.AddScoped<Converter_EventJoin>();
-
+        builder.Services.AddScoped<Converter_OutstandingMember>();
+        builder.Services.AddScoped<Converter_ApprovalHistory>();
 
 
         builder.Services.AddScoped<IService_Authentic, Service_Authentic>();
@@ -81,6 +82,8 @@
         builder.Services.AddScoped<IService_RewardDiscipline, Service_RewardDiscipline>();
         builder.Services.AddScoped<IService_RewardDisciplineType, Service_RewardDisciplineType>();
         builder.Services.AddScoped<IService_MemberInfo, Service_MemberInfo>();
+        builder.Services.AddScoped<IService_OutstandingMember, Service_OutstandingMember>();
+        builder.Services.AddScoped<IService_ApprovalHistory, Service_ApprovalHistory>();
 
         builder.Services.AddScoped<ResponseObject<DTO_Register>>(); 
         builder.Services.AddScoped<ResponseObject<DTO_Login>>();
@@ -91,8 +94,10 @@
         builder.Services.AddScoped<ResponseObject<DTO_RewardDisciplineType>>();
         builder.Services.AddScoped<ResponseObject<DTO_MemberInfo>>();
         builder.Services.AddScoped<ResponseObject<DTO_EventJoin>>();
+        builder.Services.AddScoped<ResponseObject<DTO_OutstandingMember>>();
+        builder.Services.AddScoped<ResponseObject<DTO_ApprovalHistory>>();
 
-builder.Services.AddControllers();
+        builder.Services.AddControllers();
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Logging.AddConsole();
         builder.Logging.AddDebug();
