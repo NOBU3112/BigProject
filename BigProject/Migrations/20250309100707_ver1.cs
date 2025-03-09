@@ -239,6 +239,7 @@ namespace BigProject.Migrations
                     CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     RewardOrDiscipline = table.Column<bool>(type: "bit", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
+                    RejectReason = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     RewardDisciplineTypeId = table.Column<int>(type: "int", nullable: false),
                     RecipientId = table.Column<int>(type: "int", nullable: false),
                     ProposerId = table.Column<int>(type: "int", nullable: false)
@@ -274,7 +275,7 @@ namespace BigProject.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     MemberInfoId = table.Column<int>(type: "int", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Status = table.Column<int>(type: "int", nullable: false),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     RejectReason = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>

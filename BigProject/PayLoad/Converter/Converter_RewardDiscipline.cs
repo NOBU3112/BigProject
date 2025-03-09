@@ -20,10 +20,11 @@ namespace BigProject.PayLoad.Converter
                 Id = rewardDiscipline.Id,   
                 Description = rewardDiscipline.Description,
                 CreateDate = rewardDiscipline.CreateDate,
-                ProposerName = appDbContext.memberInfos.Include(x=> x.User).AsNoTracking().FirstOrDefault(x => x.UserId == rewardDiscipline.ProposerId).FullName,
-                RecipientName = appDbContext.memberInfos.Include(x => x.User).AsNoTracking().FirstOrDefault(x => x.UserId == rewardDiscipline.RecipientId).FullName,
+                ProposerName = appDbContext.users.FirstOrDefault(x => x.Id == rewardDiscipline.ProposerId).Username,
+                RecipientName = appDbContext.users.FirstOrDefault(x => x.Id == rewardDiscipline.RecipientId).Username,
                 RewardDisciplineType = appDbContext.rewardDisciplineTypes.SingleOrDefault(x=>x.Id == rewardDiscipline.RewardDisciplineTypeId).RewardDisciplineTypeName,
                 Status = rewardDiscipline.Status,
+                RejectReason = rewardDiscipline.RejectReason,
             };
         }
     }

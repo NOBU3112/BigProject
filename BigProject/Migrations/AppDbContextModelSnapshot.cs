@@ -436,6 +436,9 @@ namespace BigProject.Migrations
                     b.Property<int>("RecipientId")
                         .HasColumnType("int");
 
+                    b.Property<string>("RejectReason")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("RewardDisciplineTypeId")
                         .HasColumnType("int");
 

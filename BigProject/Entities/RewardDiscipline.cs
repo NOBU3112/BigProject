@@ -8,6 +8,7 @@ namespace BigProject.Entities
         public DateTime CreateDate { get; set; } = DateTime.Now;
         public bool RewardOrDiscipline { get; set; }
         public RequestEnum Status { get; set; }
+        public string? RejectReason { get; set; }
         public int RewardDisciplineTypeId { get; set; }
         public int RecipientId { get; set; }
         public User Recipient { get; set; } 

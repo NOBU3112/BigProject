@@ -17,7 +17,7 @@ namespace BigProject.Controllers
         }
 
         [HttpPost("Add_Document")]
-        public async Task<IActionResult> AddDocument(Request_AddDocument request)
+        public async Task<IActionResult> AddDocument([FromForm] Request_AddDocument request)
         {
             if (!HttpContext.User.Identity.IsAuthenticated)
             {
@@ -28,19 +28,19 @@ namespace BigProject.Controllers
         }
 
         [HttpPut("Update_Document")]
-        public async Task<IActionResult> UpdateDocument(Request_UpdateDocument request)
+        public async Task<IActionResult> UpdateDocument([FromForm] Request_UpdateDocument request)
         {
             return Ok(await service_Document.UpdateDocument(request));
         }
 
         [HttpDelete("Delete_Document")]
-        public async Task<IActionResult> DeleteDocument(int Id)
+        public async Task<IActionResult> DeleteDocument([FromForm] int Id)
         {
             return Ok(await service_Document.DeleteDocument(Id));
         }
 
         [HttpGet("Get_List_Document")]
-        public IActionResult GetListDocument(int pageSize = 10, int pageNumber = 1)
+        public IActionResult GetListDocument([FromForm] int pageSize = 10, int pageNumber = 1)
         {
             return Ok(service_Document.GetListDocument(pageSize, pageNumber));
         }

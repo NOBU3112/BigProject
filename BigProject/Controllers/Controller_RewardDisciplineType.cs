@@ -20,29 +20,29 @@ namespace BigProject.Controllers
         }
 
         [HttpGet("Get_List_Reward_Type")]
-        public IActionResult GetListRewardTypeFull(int pageSize = 10, int pageNumber = 1)
+        public IActionResult GetListRewardTypeFull([FromForm] int pageSize = 10, int pageNumber = 1)
         {
             return Ok(service_RewardDisciplineType.GetListRewardType(pageSize, pageNumber));
         }
         [HttpGet("GetList_Discipline_Type")]
-        public IActionResult GetListDisciplineTypeFull(int pageSize = 10, int pageNumber = 1)
+        public IActionResult GetListDisciplineTypeFull([FromForm] int pageSize = 10, int pageNumber = 1)
         {
             return Ok(service_RewardDisciplineType.GetListDisciplineType(pageSize, pageNumber));
         }
         [HttpPost("Add_Reward_Type")]
-        public async Task<IActionResult> AddRewardType(string rewardTypeName)
+        public async Task<IActionResult> AddRewardType([FromForm] string rewardTypeName)
         {
             return Ok(await service_RewardDisciplineType.AddRewardType(rewardTypeName));
         }
 
         [HttpPost("Add_Discipline_Type")]
-        public async Task<IActionResult> AddDisciplineType(string disciplineTypeName)
+        public async Task<IActionResult> AddDisciplineType([FromForm] string disciplineTypeName)
         {
             return Ok(await service_RewardDisciplineType.AddDisciplineType(disciplineTypeName));
         }
 
         [HttpDelete("Delete_Reward_Discipline_Type")]
-        public async Task<IActionResult> DeleteRewardDisciplineType(int proposeId)
+        public async Task<IActionResult> DeleteRewardDisciplineType([FromForm] int proposeId)
         {
             return Ok(await service_RewardDisciplineType.DeleteRewardDisciplineType(proposeId));
         }

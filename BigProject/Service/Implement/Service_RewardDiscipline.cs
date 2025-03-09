@@ -107,7 +107,7 @@ namespace BigProject.Service.Implement
             return responseObject.ResponseObjectSuccess("Thêm thành công!", converter_RewardDiscipline.EntityToDTO(proposer));
         }
 
-        public async Task<ResponseObject<DTO_RewardDiscipline>> AcceptPropose(int proposeId)
+        public async Task<ResponseObject<DTO_RewardDiscipline>> AcceptPropose(int proposeId,int userId)
         {
             var propose = await dbContext.rewardDisciplines.FirstOrDefaultAsync(x => x.Id == proposeId);
             if (propose == null)
@@ -117,10 +117,18 @@ namespace BigProject.Service.Implement
             propose.Status = RequestEnum.accept;
             dbContext.rewardDisciplines.Update(propose);
             await dbContext.SaveChangesAsync();
+
+            var history = new ApprovalHistory();
+            history.IsAccept = true;
+            history.ApprovedDate = DateTime.Now;
+            history.ApprovedById = userId;
+            history.RewardDisciplineId = propose.Id;
+            dbContext.approvalHistories.Add(history);
+            await dbContext.SaveChangesAsync();
             return responseObject.ResponseObjectSuccess("Chấp nhận!", converter_RewardDiscipline.EntityToDTO(propose));
         }
 
-        public async Task<ResponseObject<DTO_RewardDiscipline>> RejectPropose(int proposeId)
+        public async Task<ResponseObject<DTO_RewardDiscipline>> RejectPropose(int proposeId,int userId, string reject)
         {
             var propose = await dbContext.rewardDisciplines.FirstOrDefaultAsync(x => x.Id == proposeId);
             if (propose == null)
@@ -128,8 +136,19 @@ namespace BigProject.Service.Implement
                 return responseObject.ResponseObjectError(StatusCodes.Status404NotFound, "Đề xuất không tồn tại!", null);
             }
             propose.Status = RequestEnum.reject;
+            propose.RejectReason = reject;
             dbContext.rewardDisciplines.Update(propose);
             await dbContext.SaveChangesAsync();
+
+            var history = new ApprovalHistory();
+            history.IsAccept = false;
+            history.ApprovedDate = DateTime.Now;
+            history.ApprovedById = userId;
+            history.RewardDisciplineId = propose.Id;
+            history.RejectReason = reject;
+            dbContext.approvalHistories.Add(history);
+            await dbContext.SaveChangesAsync();
+
             return responseObject.ResponseObjectSuccess("Từ chối!", converter_RewardDiscipline.EntityToDTO(propose));
         }
     }
