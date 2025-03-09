@@ -6,6 +6,8 @@ using BigProject.Service.Interface;
 using BigProject.PayLoad.Request;
 using BigProject.Entities;
 using Microsoft.EntityFrameworkCore;
+using BigProject.Helper;
+using Microsoft.Extensions.Configuration.UserSecrets;
 
 namespace BigProject.Service.Implement
 {
@@ -40,6 +42,21 @@ namespace BigProject.Service.Implement
             {
                 return responseObject.ResponseObjectError(StatusCodes.Status400BadRequest, " Tên hoạt động không được trùng! ", null);
             }
+            string UrlAvt = null;
+            var cloudinary = new CloudinaryService();
+            if (request.UrlAvatar == null)
+            {
+                UrlAvt = "https://media.istockphoto.com/id/1300845620/vector/user-icon-flat-isolated-on-white-background-user-symbol-vector-illustration.jpg?s=612x612&w=0&k=20&c=yBeyba0hUkh14_jgv1OKqIH0CCSWU_4ckRkAoy2p73o=";
+            }
+            else
+            {
+                if (!CheckInput.IsImage(request.UrlAvatar))
+                {
+                    return responseObject.ResponseObjectError(StatusCodes.Status400BadRequest, "Định dạng ảnh không hợp lệ !", null);
+                }
+
+                UrlAvt = await cloudinary.UploadImage(request.UrlAvatar);
+            }
             var event1 = new Event();
             event1.EventName = request.EventName;
             event1.EventLocation = request.EventLocation;
@@ -47,6 +64,7 @@ namespace BigProject.Service.Implement
             event1.EventEndDate = request.EventEndDate;
             event1.Description = request.Description;
             event1.EventTypeId = request.EventTypeId;
+            event1.UrlAvatar = UrlAvt;
             dbContext.events.Add(event1);
             await dbContext.SaveChangesAsync();
             return responseObject.ResponseObjectSuccess("Thêm thành công!", converter_Event.EntityToDTO(event1));
@@ -86,12 +104,28 @@ namespace BigProject.Service.Implement
             {
                 return responseObject.ResponseObjectError(StatusCodes.Status400BadRequest, "Tên hoạt động không được trùng! ", null);
             }
+            string UrlAvt = null;
+            var cloudinary = new CloudinaryService();
+            if (request.UrlAvatar == null)
+            {
+                UrlAvt = "https://media.istockphoto.com/id/1300845620/vector/user-icon-flat-isolated-on-white-background-user-symbol-vector-illustration.jpg?s=612x612&w=0&k=20&c=yBeyba0hUkh14_jgv1OKqIH0CCSWU_4ckRkAoy2p73o=";
+            }
+            else
+            {
+                if (!CheckInput.IsImage(request.UrlAvatar))
+                {
+                    return responseObject.ResponseObjectError(StatusCodes.Status400BadRequest, "Định dạng ảnh không hợp lệ !", null);
+                }
+
+                UrlAvt = await cloudinary.UploadImage(request.UrlAvatar);
+            }
             event1.EventName = request.EventName;
             event1.EventLocation = request.EventLocation;
             event1.EventStartDate = request.EventStartDate;
             event1.EventEndDate = request.EventEndDate;
             event1.Description = request.Description;
             event1.EventTypeId = request.EventTypeId;
+            event1.UrlAvatar = UrlAvt;
             dbContext.events.Update(event1);
             await dbContext.SaveChangesAsync();
             return responseObject.ResponseObjectSuccess("Thêm thành công!", converter_Event.EntityToDTO(event1));

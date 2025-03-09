@@ -61,6 +61,7 @@ namespace BigProject.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     EventName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UrlAvatar = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     EventTypeId = table.Column<int>(type: "int", nullable: false),
                     EventStartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EventEndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -107,12 +108,11 @@ namespace BigProject.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<int>(type: "int", nullable: false),
-                    DocumentName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IsPublic = table.Column<bool>(type: "bit", nullable: false),
-                    FileType = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    FileData = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
-                    UploadDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    DocumentTitle = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DocumentContent = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UrlAvatar = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreateAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
