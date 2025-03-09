@@ -70,7 +70,7 @@ namespace BigProject.Service.Implement
             return responseBase.ResponseBaseSuccess("Xóa thành công!");
         }
 
-        public IQueryable<DTO_Document> GetListDocument(int pageSize, int pageNumber)
+        public IEnumerable<DTO_Document> GetListDocument(int pageSize, int pageNumber)
         {
             return dbContext.documents.Skip((pageNumber - 1) * pageSize).Take(pageSize).Select(x => converter_Document.EntityToDTO(x));
         }
