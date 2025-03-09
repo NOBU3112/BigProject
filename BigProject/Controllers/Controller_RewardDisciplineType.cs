@@ -20,12 +20,12 @@ namespace BigProject.Controllers
         }
 
         [HttpGet("Get_List_Reward_Type")]
-        public IActionResult GetListRewardTypeFull([FromForm] int pageSize = 10, int pageNumber = 1)
+        public IActionResult GetListRewardTypeFull( int pageSize = 10, int pageNumber = 1)
         {
             return Ok(service_RewardDisciplineType.GetListRewardType(pageSize, pageNumber));
         }
         [HttpGet("GetList_Discipline_Type")]
-        public IActionResult GetListDisciplineTypeFull([FromForm] int pageSize = 10, int pageNumber = 1)
+        public IActionResult GetListDisciplineTypeFull( int pageSize = 10, int pageNumber = 1)
         {
             return Ok(service_RewardDisciplineType.GetListDisciplineType(pageSize, pageNumber));
         }

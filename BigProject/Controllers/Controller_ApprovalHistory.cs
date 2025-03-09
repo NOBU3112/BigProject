@@ -16,7 +16,7 @@ namespace BigProject.Controllers
         }
 
         [HttpGet("Get_List_ApprovalHistories")]
-        public IActionResult GetListApprovalHistories([FromForm]int pageSize = 10, int pageNumber = 1)
+        public IActionResult GetListApprovalHistories(int pageSize = 10, int pageNumber = 1)
         {
             return Ok(serviceApprovalHistory.GetListApprovalHistories(pageSize, pageNumber));
         }

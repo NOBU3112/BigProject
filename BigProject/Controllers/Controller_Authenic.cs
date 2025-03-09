@@ -70,7 +70,7 @@ namespace BigProject.Controllers
         }
 
         [HttpGet("Get_List_Member")]
-        public IActionResult GetListMember([FromForm] int pageSize = 10, int pageNumber = 1)
+        public IActionResult GetListMember(int pageSize = 10, int pageNumber = 1)
         {
             return Ok(service_Authentic.GetListMember(pageSize, pageNumber));
         }
