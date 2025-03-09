@@ -40,7 +40,7 @@ namespace BigProject.Controllers
         }
 
         [HttpGet("Get_List_Document")]
-        public IActionResult GetListDocument([FromForm] int pageSize = 10, int pageNumber = 1)
+        public IActionResult GetListDocument( int pageSize = 10, int pageNumber = 1)
         {
             return Ok(service_Document.GetListDocument(pageSize, pageNumber));
         }
