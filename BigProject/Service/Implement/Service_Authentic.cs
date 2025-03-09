@@ -138,7 +138,7 @@ namespace BigProject.Service.Implement
             }
 
 
-            var comfimEmail = dbContext.emailConfirms.FirstOrDefault(x => x.UserId == user.Id);
+            var comfimEmail = dbContext.emailConfirms.FirstOrDefault(x => x.UserId == user.Id); 
             if (comfimEmail.IsConfirmed == false)
             {
                 return responseObjectToken.ResponseObjectError(404, "Tài khoản chưa được kích hoạt !", null);

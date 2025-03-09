@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BigProject.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250307093942_23")]
-    partial class _23
+    [Migration("20250309100707_ver1")]
+    partial class ver1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -70,23 +70,20 @@ namespace BigProject.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("DocumentName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<byte[]>("FileData")
-                        .IsRequired()
-                        .HasColumnType("varbinary(max)");
-
-                    b.Property<string>("FileType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsPublic")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("UploadDate")
+                    b.Property<DateTime>("CreateAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("DocumentContent")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DocumentTitle")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UrlAvatar")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
@@ -130,6 +127,38 @@ namespace BigProject.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("emailConfirms");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Code = "123456",
+                            CreateTime = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Exprired = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActiveAccount = true,
+                            IsConfirmed = true,
+                            UserId = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Code = "123456",
+                            CreateTime = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Exprired = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActiveAccount = true,
+                            IsConfirmed = true,
+                            UserId = 2
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Code = "123456",
+                            CreateTime = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Exprired = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActiveAccount = true,
+                            IsConfirmed = true,
+                            UserId = 3
+                        });
                 });
 
             modelBuilder.Entity("BigProject.Entities.Event", b =>
@@ -160,6 +189,10 @@ namespace BigProject.Migrations
 
                     b.Property<int>("EventTypeId")
                         .HasColumnType("int");
+
+                    b.Property<string>("UrlAvatar")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -274,6 +307,62 @@ namespace BigProject.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("memberInfos");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Birthdate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Class = "string",
+                            DateOfJoining = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            FullName = "string",
+                            IsOutstandingMember = false,
+                            MemberId = "string",
+                            Nation = "string",
+                            PhoneNumber = "string",
+                            PlaceOfJoining = "string",
+                            PoliticalTheory = "string",
+                            Status = 1,
+                            UrlAvatar = "string",
+                            UserId = 1,
+                            religion = "string"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Birthdate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Class = "string",
+                            DateOfJoining = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            FullName = "string",
+                            IsOutstandingMember = false,
+                            MemberId = "string",
+                            Nation = "string",
+                            PhoneNumber = "string",
+                            PlaceOfJoining = "string",
+                            PoliticalTheory = "string",
+                            Status = 1,
+                            UrlAvatar = "string",
+                            UserId = 2,
+                            religion = "string"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Birthdate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Class = "string",
+                            DateOfJoining = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            FullName = "string",
+                            IsOutstandingMember = false,
+                            MemberId = "string",
+                            Nation = "string",
+                            PhoneNumber = "string",
+                            PlaceOfJoining = "string",
+                            PoliticalTheory = "string",
+                            Status = 1,
+                            UrlAvatar = "string",
+                            UserId = 3,
+                            religion = "string"
+                        });
                 });
 
             modelBuilder.Entity("BigProject.Entities.RefreshToken", b =>
@@ -318,8 +407,9 @@ namespace BigProject.Migrations
                     b.Property<string>("RejectReason")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -348,6 +438,9 @@ namespace BigProject.Migrations
 
                     b.Property<int>("RecipientId")
                         .HasColumnType("int");
+
+                    b.Property<string>("RejectReason")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("RewardDisciplineTypeId")
                         .HasColumnType("int");
@@ -404,6 +497,23 @@ namespace BigProject.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("roles");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Đoàn viên"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Bí thư đoàn viên"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Liên chi đoàn khoa"
+                        });
                 });
 
             modelBuilder.Entity("BigProject.Entities.User", b =>
@@ -441,6 +551,38 @@ namespace BigProject.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("users");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Email = "admin@gmail.com",
+                            IsActive = true,
+                            MaTV = "1111111111",
+                            Password = "$2a$12$umDEKg3yORpv174r7kzKxO7Z.BVbw0HDzb44jCsvgjHGGn5rM6/Ky",
+                            RoleId = 3,
+                            Username = "admin"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Email = "member@gmail.com",
+                            IsActive = true,
+                            MaTV = "1111111112",
+                            Password = "$2a$12$umDEKg3yORpv174r7kzKxO7Z.BVbw0HDzb44jCsvgjHGGn5rM6/Ky",
+                            RoleId = 1,
+                            Username = "member"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Email = "secretary@gmail.com",
+                            IsActive = true,
+                            MaTV = "1111111113",
+                            Password = "$2a$12$umDEKg3yORpv174r7kzKxO7Z.BVbw0HDzb44jCsvgjHGGn5rM6/Ky",
+                            RoleId = 2,
+                            Username = "secretary"
+                        });
                 });
 
             modelBuilder.Entity("BigProject.Entities.ApprovalHistory", b =>
@@ -521,7 +663,7 @@ namespace BigProject.Migrations
             modelBuilder.Entity("BigProject.Entities.MemberInfo", b =>
                 {
                     b.HasOne("BigProject.Entities.User", "User")
-                        .WithMany("memberInfos")
+                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -604,8 +746,6 @@ namespace BigProject.Migrations
                     b.Navigation("documents");
 
                     b.Navigation("emailConfirms");
-
-                    b.Navigation("memberInfos");
 
                     b.Navigation("refreshTokens");
                 });

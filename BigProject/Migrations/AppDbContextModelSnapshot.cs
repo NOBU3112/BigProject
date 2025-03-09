@@ -67,23 +67,20 @@ namespace BigProject.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("DocumentName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<byte[]>("FileData")
-                        .IsRequired()
-                        .HasColumnType("varbinary(max)");
-
-                    b.Property<string>("FileType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsPublic")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("UploadDate")
+                    b.Property<DateTime>("CreateAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("DocumentContent")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DocumentTitle")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UrlAvatar")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
@@ -189,6 +186,10 @@ namespace BigProject.Migrations
 
                     b.Property<int>("EventTypeId")
                         .HasColumnType("int");
+
+                    b.Property<string>("UrlAvatar")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -434,6 +435,9 @@ namespace BigProject.Migrations
 
                     b.Property<int>("RecipientId")
                         .HasColumnType("int");
+
+                    b.Property<string>("RejectReason")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("RewardDisciplineTypeId")
                         .HasColumnType("int");

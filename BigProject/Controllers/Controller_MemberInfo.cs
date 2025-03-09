@@ -20,7 +20,7 @@ namespace BigProject.Controllers
             this.memberInfo = memberInfo;
         }
         [HttpPost("Add_Menber_Info")]
-        public async Task<IActionResult> AddMenberInfo(Request_AddMemberInfo request)
+        public async Task<IActionResult> AddMenberInfo([FromForm] Request_AddMemberInfo request)
         {
             if (!HttpContext.User.Identity.IsAuthenticated)
             {
@@ -30,12 +30,12 @@ namespace BigProject.Controllers
             return Ok( await memberInfo.AddMenberInfo(request,  userId));
         }
         [HttpPut("Edit_member_info")]
-        public async Task<IActionResult> UpdateMenberInfo(Request_UpdateMemberInfo request)
+        public async Task<IActionResult> UpdateMenberInfo([FromForm] Request_UpdateMemberInfo request)
         {
             return Ok(await memberInfo.UpdateMenberInfo(request));
         }
         [HttpGet("Get_List_Menber_Info")]
-        public IActionResult GetListProductFull(int pageSize = 10, int pageNumber = 1)
+        public IActionResult GetListProductFull([FromForm] int pageSize = 10, int pageNumber = 1)
         {
             return Ok(memberInfo.GetListMenberInfo(pageSize, pageNumber));
         }
