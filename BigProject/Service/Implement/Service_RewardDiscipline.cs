@@ -38,12 +38,12 @@ namespace BigProject.Service.Implement
             return responseBase.ResponseBaseSuccess("Xóa thành công!");
         }
 
-        public IQueryable<DTO_RewardDiscipline> GetListDiscipline(int pageSize, int pageNumber)
+        public IEnumerable<DTO_RewardDiscipline> GetListDiscipline(int pageSize, int pageNumber)
         {
             return dbContext.rewardDisciplines.Where(x => x.RewardOrDiscipline == false).Skip((pageNumber - 1) * pageSize).Take(pageSize).Select(x => converter_RewardDiscipline.EntityToDTO(x));
         }
 
-        public IQueryable<DTO_RewardDiscipline> GetListReward(int pageSize, int pageNumber)
+        public IEnumerable<DTO_RewardDiscipline> GetListReward(int pageSize, int pageNumber)
         {
             return dbContext.rewardDisciplines.Where(x => x.RewardOrDiscipline == true).Skip((pageNumber - 1) * pageSize).Take(pageSize).Select(x => converter_RewardDiscipline.EntityToDTO(x));
 

@@ -68,7 +68,7 @@ namespace BigProject.Service.Implement
         }
 
 
-        public IQueryable<DTO_MemberInfo> GetListMenberInfo(int pageSize, int pageNumber)
+        public IEnumerable<DTO_MemberInfo> GetListMenberInfo(int pageSize, int pageNumber)
         {
             return DbContext.memberInfos.Skip((pageNumber - 1) * pageSize).Take(pageSize).Select(x => converter_MemberInfo.EntityToDTO(x));
         }

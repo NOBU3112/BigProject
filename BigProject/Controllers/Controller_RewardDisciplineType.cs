@@ -19,29 +19,29 @@ namespace BigProject.Controllers
             this.service_RewardDisciplineType = service_RewardDisciplineType;
         }
 
-        [HttpGet("Lấy danh sách loại khen thưởng")]
+        [HttpGet("Get_List_Reward_Type")]
         public IActionResult GetListRewardTypeFull(int pageSize = 10, int pageNumber = 1)
         {
             return Ok(service_RewardDisciplineType.GetListRewardType(pageSize, pageNumber));
         }
-        [HttpGet("Lấy danh sách loại kỷ luật")]
+        [HttpGet("GetList_Discipline_Type")]
         public IActionResult GetListDisciplineTypeFull(int pageSize = 10, int pageNumber = 1)
         {
             return Ok(service_RewardDisciplineType.GetListDisciplineType(pageSize, pageNumber));
         }
-        [HttpPost("Thêm loại khen thưởng")]
+        [HttpPost("Add_Reward_Type")]
         public async Task<IActionResult> AddRewardType(string rewardTypeName)
         {
             return Ok(await service_RewardDisciplineType.AddRewardType(rewardTypeName));
         }
 
-        [HttpPost("Thêm loại kỷ luật")]
+        [HttpPost("Add_Discipline_Type")]
         public async Task<IActionResult> AddDisciplineType(string disciplineTypeName)
         {
             return Ok(await service_RewardDisciplineType.AddDisciplineType(disciplineTypeName));
         }
 
-        [HttpDelete("Xóa loại khen thưởng/kỷ luật")]
+        [HttpDelete("Delete_Reward_Discipline_Type")]
         public async Task<IActionResult> DeleteRewardDisciplineType(int proposeId)
         {
             return Ok(await service_RewardDisciplineType.DeleteRewardDisciplineType(proposeId));

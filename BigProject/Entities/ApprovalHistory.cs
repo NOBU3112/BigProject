@@ -2,7 +2,6 @@
 {
     public class ApprovalHistory : EntityBase
     {
-        public int Id { get; set; }
         public int? RequestToBeOutstandingMemberId { get; set; }
         public RequestToBeOutStandingMember? RequestToBeOutstandingMember { get; set; }
         public int? RewardDisciplineId { get; set; }

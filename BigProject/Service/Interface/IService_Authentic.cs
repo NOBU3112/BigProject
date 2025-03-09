@@ -22,6 +22,6 @@ namespace BigProject.Service.Interface
 
         Task<ResponseObject<List<DTO_Register>>> Authorization(string KeyRole);
 
-        IQueryable<DTO_Register> GetListMember(int pageSize, int pageNumber);
+        IEnumerable<DTO_Register> GetListMember(int pageSize, int pageNumber);
     }
 }

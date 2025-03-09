@@ -19,17 +19,17 @@ namespace BigProject.Controllers
         {
             this.service_RewardDiscipline = service_RewardDiscipline;
         }
-        [HttpGet("Lấy danh sách đề xuất khen thưởng")]
+        [HttpGet("Get_List_Reward")]
         public IActionResult GetListProposeRewardFull(int pageSize = 10, int pageNumber = 1)
         {
             return Ok(service_RewardDiscipline.GetListReward(pageSize, pageNumber));
         }
-        [HttpGet("Lấy danh sách đề xuất kỷ luật")]
+        [HttpGet("Get_List_Discipline")]
         public IActionResult GetListProposeDisciplineFull(int pageSize = 10, int pageNumber = 1)
         {
             return Ok(service_RewardDiscipline.GetListDiscipline(pageSize, pageNumber));
         }
-        [HttpPost("Đề xuất khen thưởng")]
+        [HttpPost("Propose_Reward")]
         public async Task<IActionResult> ProposeReward(Request_ProposeRewardDiscipline request)
         {
             if (!HttpContext.User.Identity.IsAuthenticated)
@@ -39,7 +39,7 @@ namespace BigProject.Controllers
             int userId = int.Parse(HttpContext.User.FindFirst("Id").Value);
             return Ok(await service_RewardDiscipline.ProposeReward(request,userId));
         }
-        [HttpPost("Đề xuất kỷ luật")]
+        [HttpPost("Propose_Discipline")]
         public async Task<IActionResult> ProposeDiscipline(Request_ProposeRewardDiscipline request)
         {
             if (!HttpContext.User.Identity.IsAuthenticated)
@@ -49,17 +49,17 @@ namespace BigProject.Controllers
             int userId = int.Parse(HttpContext.User.FindFirst("Id").Value);
             return Ok(await service_RewardDiscipline.ProposeDiscipline(request, userId));
         }
-        [HttpPut("Chấp nhận đề xuất")]
+        [HttpPut("Accept_Propose")]
         public async Task<IActionResult> AcceptPropose(int proposeId)
         {
             return Ok(await service_RewardDiscipline.AcceptPropose(proposeId));
         }
-        [HttpPut("Từ chối đề xuất")]
+        [HttpPut("Reject_Propose")]
         public async Task<IActionResult> RejectPropose(int proposeId)
         {
             return Ok(await service_RewardDiscipline.RejectPropose(proposeId));
         }
-        [HttpDelete("Xóa đề xuất")]
+        [HttpDelete("Delete_Reward_Discipline")]
         public async Task<IActionResult> DeletePropose(int proposeId)
         {
             return Ok(await service_RewardDiscipline.DeleteRewardDiscipline(proposeId));

@@ -39,7 +39,7 @@ namespace BigProject.Controllers
         {
             return Ok(service_Authentic.Activate(Opt));
         }
-        [HttpGet("phân quyền")]
+        [HttpGet("Authorization")]
 
         public IActionResult Authorization([FromForm] string KeyRole)
         {

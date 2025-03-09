@@ -347,7 +347,7 @@ namespace BigProject.Service.Implement
             return responseObjectList.ResponseObjectSuccess("hiện thành công", listUserForRoleInput.Select(x => converter_Register.EntityToDTO(x)).ToList());
         }
 
-        public IQueryable<DTO_Register> GetListMember(int pageSize, int pageNumber)
+        public IEnumerable<DTO_Register> GetListMember(int pageSize, int pageNumber)
         {
             return dbContext.users.Skip((pageNumber - 1) * pageSize).Take(pageSize).Select(x => converter_Register.EntityToDTO(x));
         }
@@ -386,7 +386,7 @@ namespace BigProject.Service.Implement
             {
                 Mail = email,
                 Subject = "MÃ XÁC NHẬN!",
-                Content = $"Mật khẩu mới của bạn là {newPassword} Mã sẽ hết hạn sau 5 phút!"
+                Content = $"Mật khẩu mới của bạn là {newPassword} !"
             };
             emailTo.SendEmailAsync(emailTo);
 
