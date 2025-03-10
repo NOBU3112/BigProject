@@ -10,7 +10,7 @@
         public User ApprovedBy { get; set; }
         public DateTime ApprovedDate { get; set; } = DateTime.Now;
         public bool IsAccept { get; set; }
-        public string? RejectReason { get; set; }
+        public string? RejectReason { get; set; } // bỏ lý do từ chối
     }
 }
 

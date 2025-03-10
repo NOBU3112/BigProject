@@ -20,12 +20,12 @@ namespace BigProject.Controllers
             this.service_RewardDiscipline = service_RewardDiscipline;
         }
         [HttpGet("Get_List_Reward")]
-        public IActionResult GetListProposeRewardFull([FromForm] int pageSize = 10, int pageNumber = 1)
+        public IActionResult GetListProposeRewardFull( int pageSize = 10, int pageNumber = 1)
         {
             return Ok(service_RewardDiscipline.GetListReward(pageSize, pageNumber));
         }
         [HttpGet("Get_List_Discipline")]
-        public IActionResult GetListProposeDisciplineFull([FromForm] int pageSize = 10, int pageNumber = 1)
+        public IActionResult GetListProposeDisciplineFull( int pageSize = 10, int pageNumber = 1)
         {
             return Ok(service_RewardDiscipline.GetListDiscipline(pageSize, pageNumber));
         }

@@ -386,7 +386,7 @@ namespace BigProject.Service.Implement
             {
                 Mail = email,
                 Subject = "MÃ XÁC NHẬN!",
-                Content = $"Mật khẩu mới của bạn là {newPassword} !"
+                Content = $"Mật khẩu mới của bạn là {newPassword}"
             };
             emailTo.SendEmailAsync(emailTo);
 

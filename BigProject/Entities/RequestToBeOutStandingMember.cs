@@ -6,7 +6,7 @@ namespace BigProject.Entities
     {
         public int MemberInfoId { get; set; }
         public DateTime CreatedDate { get; set; } = DateTime.Now;
-        public string Status { get; set; } = RequestEnum.register.ToString();
+        public string Status { get; set; } = RequestEnum.register.ToString(); // đoàn viên nó đăng kí xong liên chi đoàn khoa duyệt 
         public string? RejectReason { get; set; }
         public MemberInfo MemberInfo { get; set; }
     }

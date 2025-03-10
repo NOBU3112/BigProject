@@ -40,7 +40,7 @@ namespace BigProject.Controllers
         }
 
         [HttpGet("Get_List_Event")]
-        public IActionResult GetListProductFull([FromForm] int pageSize = 10, int pageNumber = 1)
+        public IActionResult GetListProductFull( int pageSize = 10, int pageNumber = 1)
         {
             return Ok(service_Event.GetListEvent(pageSize, pageNumber));
         }
@@ -63,13 +63,13 @@ namespace BigProject.Controllers
         }
         
         [HttpGet("Get_List_All_Participant_In_An_Event")]
-        public IActionResult GetListAllParticipantInAnEvent([FromForm] int eventId,int pageSize = 10, int pageNumber = 1)
+        public IActionResult GetListAllParticipantInAnEvent( int eventId,int pageSize = 10, int pageNumber = 1)
         {
             return Ok(service_Event.GetListAllParticipantInAnEvent(pageSize, pageNumber,eventId));
         }
 
         [HttpGet("Get_List_All_Event_User_Join")]
-        public IActionResult GetListAllEventUserJoin([FromForm] int pageSize = 10, int pageNumber = 1)
+        public IActionResult GetListAllEventUserJoin( int pageSize = 10, int pageNumber = 1)
         {
             if (!HttpContext.User.Identity.IsAuthenticated)
             {
