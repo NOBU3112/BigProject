@@ -23,7 +23,7 @@ namespace BigProject.PayLoad.Converter
                 EventName = event1.EventName,
                 EventStartDate = event1.EventStartDate,
                 UrlAvatar = event1.UrlAvatar,
-                EventType = _context.eventTypes.SingleOrDefault(x => x.Id == event1.EventTypeId).EventTypeName,
+                //EventType = _context.eventTypes.SingleOrDefault(x => x.Id == event1.EventTypeId).EventTypeName,
             };
         }
     }

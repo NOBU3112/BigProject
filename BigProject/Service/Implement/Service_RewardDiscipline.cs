@@ -61,15 +61,15 @@ namespace BigProject.Service.Implement
             {
                 return responseObject.ResponseObjectError(StatusCodes.Status404NotFound, "Người được đề xuất không tồn tại!", null);
             }
-            var rewardTypeCheck = await dbContext.rewardDisciplineTypes.FirstOrDefaultAsync(x => x.Id == request.RewardDisciplineTypeId && x.RewardOrDiscipline == true);
-            if(rewardTypeCheck == null)
-            {
-                return responseObject.ResponseObjectError(StatusCodes.Status404NotFound, "Loại giải thưởng không tồn tại!", null);
-            }
+            //var rewardTypeCheck = await dbContext.rewardDisciplineTypes.FirstOrDefaultAsync(x => x.Id == request.RewardDisciplineTypeId && x.RewardOrDiscipline == true);
+            //if(rewardTypeCheck == null)
+            //{
+            //    return responseObject.ResponseObjectError(StatusCodes.Status404NotFound, "Loại giải thưởng không tồn tại!", null);
+            //}
             var proposer = new RewardDiscipline();
             proposer.RewardOrDiscipline = true;
             proposer.Description = request.Description;
-            proposer.RewardDisciplineTypeId = request.RewardDisciplineTypeId;
+            //proposer.RewardDisciplineTypeId = request.RewardDisciplineTypeId;
             proposer.Status = RequestEnum.waiting;
             proposer.RecipientId = request.RecipientId;
             proposer.ProposerId = proposerId;
@@ -90,15 +90,15 @@ namespace BigProject.Service.Implement
             {
                 return responseObject.ResponseObjectError(StatusCodes.Status404NotFound, "Người được đề xuất không tồn tại!", null);
             }
-            var disciplineTypeCheck = await dbContext.rewardDisciplineTypes.FirstOrDefaultAsync(x => x.Id == request.RewardDisciplineTypeId && x.RewardOrDiscipline == false);
-            if (disciplineTypeCheck == null)
-            {
-                return responseObject.ResponseObjectError(StatusCodes.Status404NotFound, "Loại kỷ luật không tồn tại!", null);
-            }
+            ////var disciplineTypeCheck = await dbContext.rewardDisciplineTypes.FirstOrDefaultAsync(x => x.Id == request.RewardDisciplineTypeId && x.RewardOrDiscipline == false);
+            //if (disciplineTypeCheck == null)
+            //{
+            //    return responseObject.ResponseObjectError(StatusCodes.Status404NotFound, "Loại kỷ luật không tồn tại!", null);
+            //}
             var proposer = new RewardDiscipline();
             proposer.RewardOrDiscipline = false;
             proposer.Description = request.Description;
-            proposer.RewardDisciplineTypeId = request.RewardDisciplineTypeId;
+            //proposer.RewardDisciplineTypeId = request.RewardDisciplineTypeId;
             proposer.Status = RequestEnum.waiting;
             proposer.RecipientId = request.RecipientId;
             proposer.ProposerId = proposerId;
@@ -123,6 +123,14 @@ namespace BigProject.Service.Implement
             history.ApprovedDate = DateTime.Now;
             history.ApprovedById = userId;
             history.RewardDisciplineId = propose.Id;
+            if (propose.RewardOrDiscipline)
+            {
+                history.HistoryType = HistoryEnum.reward.ToString();
+            }
+            else
+            {
+                history.HistoryType = HistoryEnum.discipline.ToString();
+            }
             dbContext.approvalHistories.Add(history);
             await dbContext.SaveChangesAsync();
             return responseObject.ResponseObjectSuccess("Chấp nhận!", converter_RewardDiscipline.EntityToDTO(propose));
@@ -145,7 +153,7 @@ namespace BigProject.Service.Implement
             history.ApprovedDate = DateTime.Now;
             history.ApprovedById = userId;
             history.RewardDisciplineId = propose.Id;
-            history.RejectReason = reject;
+            //history.RejectReason = reject;
             dbContext.approvalHistories.Add(history);
             await dbContext.SaveChangesAsync();
 

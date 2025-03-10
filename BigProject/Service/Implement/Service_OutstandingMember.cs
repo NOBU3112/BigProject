@@ -49,6 +49,7 @@ public class Service_OutstandingMember : IService_OutstandingMember
         IsAccept.ApprovedDate = DateTime.Now;
         IsAccept.ApprovedById = UserId;
         IsAccept.RequestToBeOutstandingMemberId = Check_MenberInfoId.Id;
+        IsAccept.HistoryType = HistoryEnum.outstandingMember.ToString();
         _appDbContext.approvalHistories.Add(IsAccept);
         await _appDbContext.SaveChangesAsync();
 
@@ -103,31 +104,32 @@ public class Service_OutstandingMember : IService_OutstandingMember
         IsAccept.ApprovedDate = DateTime.Now;
         IsAccept.ApprovedById = UserId;
         IsAccept.RequestToBeOutstandingMemberId = Check_MenberInfoId.Id;
-        IsAccept.RejectReason = request.RejectReason;
+        IsAccept.HistoryType = HistoryEnum.outstandingMember.ToString();
+        //IsAccept.RejectReason = request.RejectReason;
         _appDbContext.approvalHistories.Add(IsAccept);
         await _appDbContext.SaveChangesAsync();
         return responseObject.ResponseObjectSuccess("Đã từ chối đoàn viên ưu tú", converter_OutstandingMember.EntityToDTO(Check_MenberInfoId));
     }
 
-    public async Task<ResponseObject<DTO_OutstandingMember>> WaitingOutstandingMenber(Request_waitingOutstandingMember request)
-    {
-        var Check_MenberInfoId = await _appDbContext.requestToBeOutStandingMembers.FirstOrDefaultAsync(x=>x.MemberInfoId == request.MemberInfoId);
-        if(Check_MenberInfoId == null)
-        {
-            return responseObject.ResponseObjectError(StatusCodes.Status404NotFound, "Không có đoàn viên ", null);
+    //public async Task<ResponseObject<DTO_OutstandingMember>> WaitingOutstandingMenber(Request_waitingOutstandingMember request)
+    //{
+    //    var Check_MenberInfoId = await _appDbContext.requestToBeOutStandingMembers.FirstOrDefaultAsync(x=>x.MemberInfoId == request.MemberInfoId);
+    //    if(Check_MenberInfoId == null)
+    //    {
+    //        return responseObject.ResponseObjectError(StatusCodes.Status404NotFound, "Không có đoàn viên ", null);
 
-        }
-        if(Check_MenberInfoId.Status == RequestEnum.waiting.ToString() )
-        {
-            return responseObject.ResponseObjectError(StatusCodes.Status404NotFound, "Đoàn viên đã được duyệt rồi ", null);
-        }    
+    //    }
+    //    if(Check_MenberInfoId.Status == RequestEnum.waiting.ToString() )
+    //    {
+    //        return responseObject.ResponseObjectError(StatusCodes.Status404NotFound, "Đoàn viên đã được duyệt rồi ", null);
+    //    }    
 
-        Check_MenberInfoId.MemberInfoId = request.MemberInfoId;
-        Check_MenberInfoId.Status = RequestEnum.waiting.ToString();
-        _appDbContext.requestToBeOutStandingMembers.Update(Check_MenberInfoId);
-        await _appDbContext.SaveChangesAsync();
-        return responseObject.ResponseObjectSuccess("Chấp nhận đoàn viên ưu tú thành công", converter_OutstandingMember.EntityToDTO(Check_MenberInfoId));
+    //    Check_MenberInfoId.MemberInfoId = request.MemberInfoId;
+    //    Check_MenberInfoId.Status = RequestEnum.waiting.ToString();
+    //    _appDbContext.requestToBeOutStandingMembers.Update(Check_MenberInfoId);
+    //    await _appDbContext.SaveChangesAsync();
+    //    return responseObject.ResponseObjectSuccess("Chấp nhận đoàn viên ưu tú thành công", converter_OutstandingMember.EntityToDTO(Check_MenberInfoId));
 
-    }
+    //}
 }
 

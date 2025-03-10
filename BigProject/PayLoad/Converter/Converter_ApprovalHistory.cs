@@ -19,9 +19,10 @@ namespace BigProject.PayLoad.Converter
                 ApprovedById = approvalHistory.ApprovedById,
                 Id = approvalHistory.Id,
                 IsAccept = approvalHistory.IsAccept,
-                RejectReason = approvalHistory.RejectReason,
+                //RejectReason = approvalHistory.RejectReason,
                 RequestToBeOutstandingMemberId = approvalHistory.RequestToBeOutstandingMemberId,
-               RewardDisciplineId = approvalHistory.RewardDisciplineId,
+                RewardDisciplineId = approvalHistory.RewardDisciplineId,
+                HistoryType = approvalHistory.HistoryType,
             };
         }
     }

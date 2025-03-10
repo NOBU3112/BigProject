@@ -27,7 +27,7 @@ namespace BigProject.Controllers
             return Ok(await service_Event.AddEvent(request));
         }
 
-        [HttpPut("Edit_event")]
+        [HttpPut("Update_event")]
         public async Task<IActionResult> UpdateEvent([FromForm] Request_UpdateEvent request)
         {
             return Ok(await service_Event.UpdateEvent(request));

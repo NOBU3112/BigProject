@@ -31,7 +31,7 @@ namespace BigProject.PayLoad.Converter
                religion = memberInfo.religion,
                Status = memberInfo.Status,
                UrlAvatar = memberInfo.UrlAvatar,
-               UserId = memberInfo.UserId  ,   
+               UserId = memberInfo.UserId,   
             };
             }
     }

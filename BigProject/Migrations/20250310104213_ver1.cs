@@ -14,30 +14,21 @@ namespace BigProject.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "eventTypes",
+                name: "events",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    EventTypeName = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    EventName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UrlAvatar = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    EventStartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    EventEndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    EventLocation = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_eventTypes", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "rewardDisciplineTypes",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    RewardDisciplineTypeName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    RewardOrDiscipline = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_rewardDisciplineTypes", x => x.Id);
+                    table.PrimaryKey("PK_events", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -51,31 +42,6 @@ namespace BigProject.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_roles", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "events",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    EventName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UrlAvatar = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EventTypeId = table.Column<int>(type: "int", nullable: false),
-                    EventStartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    EventEndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    EventLocation = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_events", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_events_eventTypes_EventTypeId",
-                        column: x => x.EventTypeId,
-                        principalTable: "eventTypes",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -182,17 +148,17 @@ namespace BigProject.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Class = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Class = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Birthdate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    FullName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    MemberId = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Nation = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    religion = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FullName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    MemberId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Nation = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    religion = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UrlAvatar = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PoliticalTheory = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DateOfJoining = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    PlaceOfJoining = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PlaceOfJoining = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsOutstandingMember = table.Column<bool>(type: "bit", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
                     UserId = table.Column<int>(type: "int", nullable: false)
@@ -240,19 +206,12 @@ namespace BigProject.Migrations
                     RewardOrDiscipline = table.Column<bool>(type: "bit", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
                     RejectReason = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    RewardDisciplineTypeId = table.Column<int>(type: "int", nullable: false),
                     RecipientId = table.Column<int>(type: "int", nullable: false),
                     ProposerId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_rewardDisciplines", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_rewardDisciplines_rewardDisciplineTypes_RewardDisciplineTypeId",
-                        column: x => x.RewardDisciplineTypeId,
-                        principalTable: "rewardDisciplineTypes",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_rewardDisciplines_users_ProposerId",
                         column: x => x.ProposerId,
@@ -299,8 +258,8 @@ namespace BigProject.Migrations
                     RewardDisciplineId = table.Column<int>(type: "int", nullable: true),
                     ApprovedById = table.Column<int>(type: "int", nullable: false),
                     ApprovedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IsAccept = table.Column<bool>(type: "bit", nullable: false),
-                    RejectReason = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    HistoryType = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsAccept = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -399,11 +358,6 @@ namespace BigProject.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_events_EventTypeId",
-                table: "events",
-                column: "EventTypeId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_memberInfos_UserId",
                 table: "memberInfos",
                 column: "UserId");
@@ -427,11 +381,6 @@ namespace BigProject.Migrations
                 name: "IX_rewardDisciplines_RecipientId",
                 table: "rewardDisciplines",
                 column: "RecipientId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_rewardDisciplines_RewardDisciplineTypeId",
-                table: "rewardDisciplines",
-                column: "RewardDisciplineTypeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_users_RoleId",
@@ -468,12 +417,6 @@ namespace BigProject.Migrations
 
             migrationBuilder.DropTable(
                 name: "memberInfos");
-
-            migrationBuilder.DropTable(
-                name: "rewardDisciplineTypes");
-
-            migrationBuilder.DropTable(
-                name: "eventTypes");
 
             migrationBuilder.DropTable(
                 name: "users");

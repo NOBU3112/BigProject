@@ -23,12 +23,12 @@ namespace BigProject.Controllers
         {
             return Ok(await service_OutstandingMember.AddOutstandingMenber(request));
         }
-        [HttpPut("Waiting_OutstandingMember")]
+        //[HttpPut("Waiting_OutstandingMember")]
 
-        public async Task<IActionResult> WaitingOutstandingMenber([FromForm] Request_waitingOutstandingMember request)
-        {
-            return Ok(await service_OutstandingMember.WaitingOutstandingMenber(request));
-        }
+        //public async Task<IActionResult> WaitingOutstandingMenber([FromForm] Request_waitingOutstandingMember request)
+        //{
+        //    return Ok(await service_OutstandingMember.WaitingOutstandingMenber(request));
+        //}
         [HttpPut("Accept_OutstandingMember")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]// check đăng nhập 
         public async Task<IActionResult> AcceptOutstandingMember([FromForm] Request_acceptOutstandingMember request )

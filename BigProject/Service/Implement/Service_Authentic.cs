@@ -138,7 +138,7 @@ namespace BigProject.Service.Implement
             }
 
 
-            var comfimEmail = dbContext.emailConfirms.FirstOrDefault(x => x.UserId == user.Id); 
+            var comfimEmail =await dbContext.emailConfirms.FirstOrDefaultAsync(x => x.UserId == user.Id); 
             if (comfimEmail.IsConfirmed == false)
             {
                 return responseObjectToken.ResponseObjectError(404, "Tài khoản chưa được kích hoạt !", null);
@@ -152,17 +152,17 @@ namespace BigProject.Service.Implement
 
         public async Task<ResponseObject<DTO_Register>>  Register(Request_Register request)
         {
-            var msv_check  = dbContext.users.FirstOrDefault(x => x.MaTV == request.MaTV);
+            var msv_check  = await dbContext.users.FirstOrDefaultAsync(x => x.MaTV == request.MaTV);
             if (msv_check != null)
             {
                 return responseObject.ResponseObjectError(StatusCodes.Status404NotFound, " Mã Sinh viên  đã tồn tại ", null);
             }
-            var name_check = dbContext.users.FirstOrDefault(x => x.Username == request.Username);
+            var name_check = await dbContext.users.FirstOrDefaultAsync(x => x.Username == request.Username);
             if (name_check != null)
             {
                 return  responseObject.ResponseObjectError(StatusCodes.Status404NotFound, "Tài khoản đã tồn tại ", null);
             }
-            var email_check = dbContext.users.FirstOrDefault(x => x.Email == request.Email);
+            var email_check =await dbContext.users.FirstOrDefaultAsync(x => x.Email == request.Email);
             if (email_check != null)
             {
                 return responseObject.ResponseObjectError(StatusCodes.Status404NotFound, "Email đã tồn tại", null);
@@ -198,6 +198,12 @@ namespace BigProject.Service.Implement
             register.RoleId = 1;
             dbContext.users.Add(register);
             await dbContext.SaveChangesAsync();
+
+            var user = await dbContext.users.FirstOrDefaultAsync(x => x.Username == request.Username);
+            var memberInfo = new MemberInfo();
+            memberInfo.UserId = user.Id;
+            memberInfo.UrlAvatar ="https://media.istockphoto.com/id/1300845620/vector/user-icon-flat-isolated-on-white-background-user-symbol-vector-illustration.jpg?s=612x612&w=0&k=20&c=yBeyba0hUkh14_jgv1OKqIH0CCSWU_4ckRkAoy2p73o=";
+            dbContext.memberInfos.Add(memberInfo);
 
             EmailConfirm comfirmEmail = new EmailConfirm();
             comfirmEmail.UserId = register.Id;

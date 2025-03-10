@@ -9,7 +9,7 @@ namespace BigProject.Service.Interface
     {
         Task<ResponseObject<DTO_OutstandingMember>> AddOutstandingMenber(Request_AddOutstandingMember request);
 
-        Task<ResponseObject<DTO_OutstandingMember>> WaitingOutstandingMenber(Request_waitingOutstandingMember request);
+        //Task<ResponseObject<DTO_OutstandingMember>> WaitingOutstandingMenber(Request_waitingOutstandingMember request);
 
         Task<ResponseObject<DTO_OutstandingMember>> AcceptOutstandingMember(Request_acceptOutstandingMember request,int UserId);
 

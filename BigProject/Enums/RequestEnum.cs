@@ -8,6 +8,5 @@ namespace BigProject.Enums
         waiting,
         accept,
         reject,
-        register,
     }
 }

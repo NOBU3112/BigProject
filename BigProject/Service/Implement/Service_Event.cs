@@ -32,11 +32,11 @@ namespace BigProject.Service.Implement
 
         public async Task<ResponseObject<DTO_Event>> AddEvent(Request_AddEvent request)
         {
-            var eventType_check = await dbContext.eventTypes.FirstOrDefaultAsync(x => x.Id == request.EventTypeId);
-            if (eventType_check == null)
-            {
-                return responseObject.ResponseObjectError(StatusCodes.Status404NotFound, " Loại hoạt động không tồn tại! ", null);
-            }
+            //var eventType_check = await dbContext.eventTypes.FirstOrDefaultAsync(x => x.Id == request.EventTypeId);
+            //if (eventType_check == null)
+            //{
+            //    return responseObject.ResponseObjectError(StatusCodes.Status404NotFound, " Loại hoạt động không tồn tại! ", null);
+            //}
             var eventName_check = await dbContext.events.FirstOrDefaultAsync(x => x.EventName == request.EventName);
             if (eventName_check != null)
             {
@@ -63,7 +63,7 @@ namespace BigProject.Service.Implement
             event1.EventStartDate = request.EventStartDate;
             event1.EventEndDate = request.EventEndDate;
             event1.Description = request.Description;
-            event1.EventTypeId = request.EventTypeId;
+            //event1.EventTypeId = request.EventTypeId;
             event1.UrlAvatar = UrlAvt;
             dbContext.events.Add(event1);
             await dbContext.SaveChangesAsync();
@@ -94,11 +94,11 @@ namespace BigProject.Service.Implement
             {
                 return responseObject.ResponseObjectError(StatusCodes.Status404NotFound, "Hoạt động không tồn tại!", null);
             }
-            var eventType_check = await dbContext.eventTypes.FirstOrDefaultAsync(x => x.Id == request.EventTypeId);
-            if (eventType_check == null)
-            {
-                return responseObject.ResponseObjectError(StatusCodes.Status404NotFound, "Loại hoạt động không tồn tại!", null);
-            }
+            //var eventType_check = await dbContext.eventTypes.FirstOrDefaultAsync(x => x.Id == request.EventTypeId);
+            //if (eventType_check == null)
+            //{
+            //    return responseObject.ResponseObjectError(StatusCodes.Status404NotFound, "Loại hoạt động không tồn tại!", null);
+            //}
             var eventName_check = await dbContext.events.FirstOrDefaultAsync(x => x.EventName == request.EventName);
             if (eventName_check != null && event1.EventName != request.EventName)
             {
@@ -124,7 +124,7 @@ namespace BigProject.Service.Implement
             event1.EventStartDate = request.EventStartDate;
             event1.EventEndDate = request.EventEndDate;
             event1.Description = request.Description;
-            event1.EventTypeId = request.EventTypeId;
+            //event1.EventTypeId = request.EventTypeId;
             event1.UrlAvatar = UrlAvt;
             dbContext.events.Update(event1);
             await dbContext.SaveChangesAsync();

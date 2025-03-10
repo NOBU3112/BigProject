@@ -36,11 +36,12 @@ namespace BigProject.Migrations
                     b.Property<DateTime>("ApprovedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("HistoryType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("IsAccept")
                         .HasColumnType("bit");
-
-                    b.Property<string>("RejectReason")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("RequestToBeOutstandingMemberId")
                         .HasColumnType("int");
@@ -184,16 +185,11 @@ namespace BigProject.Migrations
                     b.Property<DateTime>("EventStartDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("EventTypeId")
-                        .HasColumnType("int");
-
                     b.Property<string>("UrlAvatar")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("EventTypeId");
 
                     b.ToTable("events");
                 });
@@ -224,23 +220,6 @@ namespace BigProject.Migrations
                     b.ToTable("eventJoins");
                 });
 
-            modelBuilder.Entity("BigProject.Entities.EventType", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("EventTypeName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("eventTypes");
-                });
-
             modelBuilder.Entity("BigProject.Entities.MemberInfo", b =>
                 {
                     b.Property<int>("Id")
@@ -253,33 +232,27 @@ namespace BigProject.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Class")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("DateOfJoining")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("FullName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsOutstandingMember")
                         .HasColumnType("bit");
 
                     b.Property<string>("MemberId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Nation")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PlaceOfJoining")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PoliticalTheory")
@@ -296,7 +269,6 @@ namespace BigProject.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("religion")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -439,9 +411,6 @@ namespace BigProject.Migrations
                     b.Property<string>("RejectReason")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("RewardDisciplineTypeId")
-                        .HasColumnType("int");
-
                     b.Property<bool>("RewardOrDiscipline")
                         .HasColumnType("bit");
 
@@ -454,29 +423,7 @@ namespace BigProject.Migrations
 
                     b.HasIndex("RecipientId");
 
-                    b.HasIndex("RewardDisciplineTypeId");
-
                     b.ToTable("rewardDisciplines");
-                });
-
-            modelBuilder.Entity("BigProject.Entities.RewardDisciplineType", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("RewardDisciplineTypeName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("RewardOrDiscipline")
-                        .HasColumnType("bit");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("rewardDisciplineTypes");
                 });
 
             modelBuilder.Entity("BigProject.Entities.Role", b =>
@@ -627,17 +574,6 @@ namespace BigProject.Migrations
                     b.Navigation("user");
                 });
 
-            modelBuilder.Entity("BigProject.Entities.Event", b =>
-                {
-                    b.HasOne("BigProject.Entities.EventType", "EventType")
-                        .WithMany()
-                        .HasForeignKey("EventTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("EventType");
-                });
-
             modelBuilder.Entity("BigProject.Entities.EventJoin", b =>
                 {
                     b.HasOne("BigProject.Entities.Event", "Event")
@@ -704,17 +640,9 @@ namespace BigProject.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("BigProject.Entities.RewardDisciplineType", "RewardDisciplineType")
-                        .WithMany()
-                        .HasForeignKey("RewardDisciplineTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Proposer");
 
                     b.Navigation("Recipient");
-
-                    b.Navigation("RewardDisciplineType");
                 });
 
             modelBuilder.Entity("BigProject.Entities.User", b =>

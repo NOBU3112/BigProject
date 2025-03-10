@@ -56,10 +56,10 @@ namespace BigProject.DataContext
         public DbSet<EmailConfirm> emailConfirms { get; set; }
         public DbSet<Event> events { get; set; }
         public DbSet<EventJoin> eventJoins { get; set; }
-        public DbSet<EventType> eventTypes { get; set; }
+        //public DbSet<EventType> eventTypes { get; set; }
         public DbSet<RefreshToken> refreshTokens { get; set; }
         public DbSet<RewardDiscipline> rewardDisciplines { get; set; }
-        public DbSet<RewardDisciplineType> rewardDisciplineTypes { get; set; }
+        //public DbSet<RewardDisciplineType> rewardDisciplineTypes { get; set; }
         public DbSet<Role> roles { get; set; }
         public DbSet<User> users { get; set; }
         public DbSet<MemberInfo> memberInfos { get; set; }
