@@ -12,10 +12,17 @@
 
         var builder = WebApplication.CreateBuilder(args);
         builder.Services.AddDbContext<AppDbContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-        // Add services to the container.
+// Add services to the container.
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll",
+                    policy => policy.AllowAnyOrigin()
+                                    .AllowAnyMethod()
+                                    .AllowAnyHeader());
+            });
+           
 
-
-        builder.Services.AddSwaggerGen(x =>
+builder.Services.AddSwaggerGen(x =>
         {
             x.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "Swagger eShop Solution", Version = "v1" });
             x.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
@@ -115,7 +122,7 @@
             app.UseSwagger();
             app.UseSwaggerUI();
         }
-
+        app.UseCors("AllowAll");
         app.UseHttpsRedirection();
 
         app.UseAuthorization();
@@ -123,3 +130,4 @@
         app.MapControllers();
 
         app.Run();
+
