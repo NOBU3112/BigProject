@@ -287,6 +287,7 @@ namespace BigProject.Service.Implement
             
              new Claim(ClaimTypes.Role, decentralization?.Name ?? "")
          }),
+
                 Expires = DateTime.UtcNow.AddHours(4),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(secretKeyBytes), SecurityAlgorithms.HmacSha256Signature)
             };

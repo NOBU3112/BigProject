@@ -20,7 +20,7 @@ namespace BigProject.Controllers
             this.memberInfo = memberInfo;
         }
        
-        [HttpPut("Edit_member_info")]
+        [HttpPut("Update_member_info")]
         public async Task<IActionResult> UpdateMenberInfo([FromForm] Request_UpdateMemberInfo request)
         {
             return Ok(await memberInfo.UpdateMenberInfo(request));

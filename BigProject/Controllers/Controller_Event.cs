@@ -22,24 +22,28 @@ namespace BigProject.Controllers
         }
 
         [HttpPost("Add_Event")]
+        [Authorize(Roles = "Liên chi đoàn khoa")]
         public async Task<IActionResult> AddEvent([FromForm] Request_AddEvent request)
         {
             return Ok(await service_Event.AddEvent(request));
         }
 
         [HttpPut("Update_event")]
+        [Authorize(Roles = "Liên chi đoàn khoa")]
         public async Task<IActionResult> UpdateEvent([FromForm] Request_UpdateEvent request)
         {
             return Ok(await service_Event.UpdateEvent(request));
         }
 
         [HttpDelete("Delete_Event")]
+        [Authorize(Roles = "Liên chi đoàn khoa")]
         public async Task<IActionResult> DeleteEvent([FromForm] int eventId)
         {
             return Ok(await service_Event.DeleteEvent(eventId));
         }
 
         [HttpGet("Get_List_Event")]
+
         public IActionResult GetListProductFull( int pageSize = 10, int pageNumber = 1)
         {
             return Ok(service_Event.GetListEvent(pageSize, pageNumber));
@@ -63,12 +67,15 @@ namespace BigProject.Controllers
         }
         
         [HttpGet("Get_List_All_Participant_In_An_Event")]
+        [Authorize(Roles = "Liên chi đoàn khoa,Bí thư đoàn viên")]
+       
         public IActionResult GetListAllParticipantInAnEvent( int eventId,int pageSize = 10, int pageNumber = 1)
         {
             return Ok(service_Event.GetListAllParticipantInAnEvent(pageSize, pageNumber,eventId));
         }
 
         [HttpGet("Get_List_All_Event_User_Join")]
+ 
         public IActionResult GetListAllEventUserJoin( int pageSize = 10, int pageNumber = 1)
         {
             if (!HttpContext.User.Identity.IsAuthenticated)

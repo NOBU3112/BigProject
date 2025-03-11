@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Text;
 using System.Security.Cryptography;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 namespace BigProject.Controllers
 {
     [Route("api/[controller]")]
@@ -40,10 +42,12 @@ namespace BigProject.Controllers
             return Ok(service_Authentic.Activate(Opt));
         }
         [HttpGet("Authorization")]
-
+         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize(Roles = "Liên chi đoàn khoa")]
         public IActionResult Authorization([FromQuery] int RoleId)
         {
-            return Ok(service_Authentic.Authorization(RoleId));
+           
+                return Ok(service_Authentic.Authorization(RoleId));
         }
         [HttpPut("Change_Password")]
         public IActionResult ChangePassword([FromForm] Request_ChangePassword request)
@@ -68,7 +72,7 @@ namespace BigProject.Controllers
                 return BitConverter.ToString(hashedBytes).Replace("-", "").ToLower();
             }
         }
-
+        [Authorize(Roles = "Liên chi đoàn khoa")]
         [HttpGet("Get_List_Member")]
         public IActionResult GetListMember(int pageSize = 10, int pageNumber = 1)
         {
