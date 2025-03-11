@@ -1,5 +1,7 @@
 ﻿using BigProject.PayLoad.Request;
 using BigProject.Service.Interface;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,6 +9,7 @@ namespace BigProject.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class Controller_Document : ControllerBase
     {
         private readonly IService_Document service_Document;
@@ -17,6 +20,7 @@ namespace BigProject.Controllers
         }
 
         [HttpPost("Add_Document")]
+        [Authorize(Roles = "Liên chi đoàn khoa")]
         public async Task<IActionResult> AddDocument([FromForm] Request_AddDocument request)
         {
             if (!HttpContext.User.Identity.IsAuthenticated)
@@ -28,12 +32,14 @@ namespace BigProject.Controllers
         }
 
         [HttpPut("Update_Document")]
+        [Authorize(Roles = "Liên chi đoàn khoa")]
         public async Task<IActionResult> UpdateDocument([FromForm] Request_UpdateDocument request)
         {
             return Ok(await service_Document.UpdateDocument(request));
         }
 
         [HttpDelete("Delete_Document")]
+        [Authorize(Roles = "Liên chi đoàn khoa")]
         public async Task<IActionResult> DeleteDocument([FromForm] int Id)
         {
             return Ok(await service_Document.DeleteDocument(Id));
