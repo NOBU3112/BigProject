@@ -4,6 +4,8 @@ using BigProject.PayLoad.Converter;
 using BigProject.PayLoad.Request;
 using BigProject.Service.Implement;
 using BigProject.Service.Interface;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,6 +13,7 @@ namespace BigProject.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class Controller_MemberInfo : ControllerBase
     {
         private readonly IService_MemberInfo memberInfo;
@@ -20,12 +23,13 @@ namespace BigProject.Controllers
             this.memberInfo = memberInfo;
         }
        
-        [HttpPut("Edit_member_info")]
+        [HttpPut("Update_member_info")]
         public async Task<IActionResult> UpdateMenberInfo([FromForm] Request_UpdateMemberInfo request)
         {
             return Ok(await memberInfo.UpdateMenberInfo(request));
         }
         [HttpGet("Get_List_Menber_Info")]
+        [Authorize(Roles = "Liên chi đoàn khoa,Bí thư đoàn viên")]
         public IActionResult GetListProductFull( int pageSize = 10, int pageNumber = 1)
         {
             return Ok(memberInfo.GetListMenberInfo(pageSize, pageNumber));

@@ -10,6 +10,7 @@ namespace BigProject.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class Controller_OutstandingMember : ControllerBase
     {
         private readonly IService_OutstandingMember service_OutstandingMember;
@@ -30,7 +31,7 @@ namespace BigProject.Controllers
         //    return Ok(await service_OutstandingMember.WaitingOutstandingMenber(request));
         //}
         [HttpPut("Accept_OutstandingMember")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]// check đăng nhập 
+        [Authorize(Roles = "Liên chi đoàn khoa")]
         public async Task<IActionResult> AcceptOutstandingMember([FromForm] Request_acceptOutstandingMember request )
         {
             if (!HttpContext.User.Identity.IsAuthenticated)
@@ -41,7 +42,7 @@ namespace BigProject.Controllers
             return Ok(await service_OutstandingMember.AcceptOutstandingMember(request,userId));
         }
         [HttpPut("Reject_OutstandingMember")]
-
+        [Authorize(Roles = "Liên chi đoàn khoa")]
         public async Task<IActionResult> RejectOutstandingMember([FromForm] Request_rejectOutstandingMember request)
         {
             if (!HttpContext.User.Identity.IsAuthenticated)
