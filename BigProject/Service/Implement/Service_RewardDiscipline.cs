@@ -153,6 +153,14 @@ namespace BigProject.Service.Implement
             history.ApprovedDate = DateTime.Now;
             history.ApprovedById = userId;
             history.RewardDisciplineId = propose.Id;
+            if (propose.RewardOrDiscipline)
+            {
+                history.HistoryType = HistoryEnum.reward.ToString();
+            }
+            else
+            {
+                history.HistoryType = HistoryEnum.discipline.ToString();
+            }
             //history.RejectReason = reject;
             dbContext.approvalHistories.Add(history);
             await dbContext.SaveChangesAsync();
