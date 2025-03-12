@@ -7,7 +7,6 @@ namespace BigProject.Entities
         public string? Class { get; set; }
         public DateTime Birthdate { get; set; } = new DateTime(1 / 1 / 1999);
         public string? FullName { get; set; }
-        public string? MemberId {  get; set; }
         public string? Nation { get; set; }  
         public string? religion { get; set; }
         public string? PhoneNumber { get; set; }
