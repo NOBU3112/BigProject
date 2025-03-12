@@ -8,6 +8,7 @@ using BigProject.Service.Interface;
 using Microsoft.EntityFrameworkCore;
 using BigProject.Entities;
 using BigProject.Helper;
+using Azure.Core;
 
 namespace BigProject.Service.Implement
 {
@@ -55,7 +56,6 @@ namespace BigProject.Service.Implement
             memberInfo.Nation = request.Nation;
             memberInfo.DateOfJoining = request.DateOfJoining;
             memberInfo.FullName = request.FullName;
-            memberInfo.MemberId = request.MemberId;
             memberInfo.religion = request.religion;
             memberInfo.UrlAvatar = UrlAvt;
             memberInfo.PlaceOfJoining = request.PlaceOfJoining;
@@ -73,43 +73,62 @@ namespace BigProject.Service.Implement
             return DbContext.memberInfos.Skip((pageNumber - 1) * pageSize).Take(pageSize).Select(x => converter_MemberInfo.EntityToDTO(x));
         }
 
-        public async Task<ResponseObject<DTO_MemberInfo>> UpdateMenberInfo(Request_UpdateMemberInfo request,int useId)
+        public async Task<ResponseObject<DTO_MemberInfo>> GetMemberInfo(int userId)
         {
-            var Check_Id = await DbContext.memberInfos.FirstOrDefaultAsync(x => x.UserId == useId);
-            if (Check_Id == null)
+            var memberInfo = await DbContext.memberInfos.FirstOrDefaultAsync(x => x.UserId == userId);
+            if (memberInfo == null)
             {
                 return responseObject.ResponseObjectError(StatusCodes.Status404NotFound, "Đoàn viên không tồn tại", null);
             }
-            string UrlAvt = null;
-            var cloudinary = new CloudinaryService();
-            if (request.UrlAvatar == null)
-            {
-                UrlAvt = "https://media.istockphoto.com/id/1300845620/vector/user-icon-flat-isolated-on-white-background-user-symbol-vector-illustration.jpg?s=612x612&w=0&k=20&c=yBeyba0hUkh14_jgv1OKqIH0CCSWU_4ckRkAoy2p73o=";
-            }
-            else
-            {
-                if (!CheckInput.IsImage(request.UrlAvatar))
-                {
-                    return responseObject.ResponseObjectError(StatusCodes.Status400BadRequest, "Định dạng ảnh không hợp lệ !", null);
-                }
+            return responseObject.ResponseObjectSuccess("Lấy thông tin thành công!", converter_MemberInfo.EntityToDTO(memberInfo));
+        }
 
-                UrlAvt = await cloudinary.UploadImage(request.UrlAvatar);
+        public async Task<ResponseObject<DTO_MemberInfo>> UpdateMenberInfo(Request_UpdateMemberInfo request, int userId)
+        {
+            var memberInfo = await DbContext.memberInfos.FirstOrDefaultAsync(x => x.UserId == userId);
+            if (memberInfo == null)
+            {
+                return responseObject.ResponseObjectError(StatusCodes.Status404NotFound, "Đoàn viên không tồn tại", null);
             }
-            var memberInfo = new MemberInfo();
             memberInfo.Class = request.Class;
             memberInfo.Birthdate = request.Birthdate;
             memberInfo.PhoneNumber = request.PhoneNumber;
             memberInfo.Nation = request.Nation; 
             memberInfo.DateOfJoining = request.DateOfJoining;
             memberInfo.FullName = request.FullName;
-            memberInfo.MemberId = request.MemberId;
             memberInfo.religion = request.religion;
-            memberInfo.UrlAvatar = UrlAvt;
             memberInfo.PlaceOfJoining = request.PlaceOfJoining;
             memberInfo.PoliticalTheory = request.PoliticalTheory;
-            
 
             DbContext.memberInfos.Update(memberInfo);
+            await DbContext.SaveChangesAsync();
+            return responseObject.ResponseObjectSuccess("Thêm thành công", converter_MemberInfo.EntityToDTO(memberInfo));
+        }
+
+        public async Task<ResponseObject<DTO_MemberInfo>> UpdateUserImg(IFormFile? UrlAvatar, int userId)
+        {
+            var memberInfo = await DbContext.memberInfos.FirstOrDefaultAsync(x => x.UserId == userId);
+            if (memberInfo == null)
+            {
+                return responseObject.ResponseObjectError(StatusCodes.Status404NotFound, "Đoàn viên không tồn tại", null);
+            }
+            string UrlAvt = null;
+            var cloudinary = new CloudinaryService();
+            if (UrlAvatar == null)
+            {
+                UrlAvt = "https://media.istockphoto.com/id/1300845620/vector/user-icon-flat-isolated-on-white-background-user-symbol-vector-illustration.jpg?s=612x612&w=0&k=20&c=yBeyba0hUkh14_jgv1OKqIH0CCSWU_4ckRkAoy2p73o=";
+            }
+            else
+            {
+                if (!CheckInput.IsImage(UrlAvatar))
+                {
+                    return responseObject.ResponseObjectError(StatusCodes.Status400BadRequest, "Định dạng ảnh không hợp lệ !", null);
+                }
+
+                UrlAvt = await cloudinary.UploadImage(UrlAvatar);
+            }
+            memberInfo.UrlAvatar = UrlAvt;
+            DbContext.memberInfos.Add(memberInfo);
             await DbContext.SaveChangesAsync();
             return responseObject.ResponseObjectSuccess("Thêm thành công", converter_MemberInfo.EntityToDTO(memberInfo));
         }

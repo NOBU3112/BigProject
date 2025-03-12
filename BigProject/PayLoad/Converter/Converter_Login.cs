@@ -18,8 +18,7 @@ namespace BigProject.PayLoad.Converter
             {
                 Id = login.Id,
                 UserName = login.Username,
-                Password = login.Password,
-                MaSV = login.MaSV,
+                MaTV = login.MaTV,
                 Email = login.Email,
             };
         }

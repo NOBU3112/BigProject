@@ -11,6 +11,7 @@ namespace BigProject.Service.Interface
         Task<ResponseBase> DeleteRewardDiscipline(int id);
         IEnumerable<DTO_RewardDiscipline> GetListReward(int pageSize, int pageNumber);
         IEnumerable<DTO_RewardDiscipline> GetListDiscipline(int pageSize, int pageNumber);
+        IEnumerable<DTO_RewardDiscipline> GetListWaiting(int pageSize, int pageNumber);
         Task<ResponseObject<DTO_RewardDiscipline>> AcceptPropose(int proposeId, int userId);
         Task<ResponseObject<DTO_RewardDiscipline>> RejectPropose(int proposeId, int userId, string reject);
     }

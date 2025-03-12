@@ -23,7 +23,6 @@ namespace BigProject.PayLoad.Converter
                FullName = memberInfo.FullName,
                Id = memberInfo.Id,
                IsOutstandingMember = memberInfo.IsOutstandingMember,
-               MemberId = memberInfo.MemberId,
                Nation = memberInfo.Nation  ,
                PhoneNumber = memberInfo.PhoneNumber ,
                PlaceOfJoining = memberInfo.PlaceOfJoining,

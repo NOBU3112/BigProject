@@ -168,6 +168,11 @@ namespace BigProject.Service.Implement
 
             return responseObject.ResponseObjectSuccess("Từ chối!", converter_RewardDiscipline.EntityToDTO(propose));
         }
+
+        public IEnumerable<DTO_RewardDiscipline> GetListWaiting(int pageSize, int pageNumber)
+        {
+            return dbContext.rewardDisciplines.Where(x => x.RewardOrDiscipline == true).Skip((pageNumber - 1) * pageSize).Take(pageSize).Select(x => converter_RewardDiscipline.EntityToDTO(x));
+        }
     }
 }
     
