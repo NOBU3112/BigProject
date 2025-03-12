@@ -163,6 +163,7 @@ namespace BigProject.Service.Implement
             }
             //history.RejectReason = reject;
             dbContext.approvalHistories.Add(history);
+
             await dbContext.SaveChangesAsync();
 
             return responseObject.ResponseObjectSuccess("Từ chối!", converter_RewardDiscipline.EntityToDTO(propose));
@@ -174,3 +175,4 @@ namespace BigProject.Service.Implement
         }
     }
 }
+    

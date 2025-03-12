@@ -11,6 +11,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Win32;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using SixLabors.ImageSharp;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -103,9 +105,6 @@ namespace BigProject.Service.Implement
             emailTo.Subject = "MÃ XÁC NHẬN !";
             emailTo.Content = $"Mã xác nhận của bạn là: {code} mã sẽ hết hạn sau 5 phút!";
             emailTo.SendEmailAsync(emailTo);
-            user.Password = BCrypt.Net.BCrypt.HashPassword(code.ToString());
-            dbContext.users.Update(user);
-           await dbContext.SaveChangesAsync();
 
             EmailConfirm comfirmEmail = new EmailConfirm();
             comfirmEmail.UserId = user.Id;
@@ -115,13 +114,13 @@ namespace BigProject.Service.Implement
             dbContext.emailConfirms.Add(comfirmEmail);
             await dbContext.SaveChangesAsync();
 
-            return responseObject.ResponseObjectSuccess("gửi thành công",null);
+            return responseObject.ResponseObjectSuccess("Gửi thành công",null);
 
         }
 
         public async Task<ResponseObject<DTO_Token>> Login(Request_Login request)
         {
-            var user = await dbContext.users.FirstOrDefaultAsync(x => x.Username == request.UserName || x.Email == request.UserName ||  x.MaTV == request.UserName);
+            var user = await dbContext.users.FirstOrDefaultAsync(x => x.Username == request.UserName || x.Email == request.UserName ||  x.MaSV == request.UserName);
             if (user == null)
             {
                 return responseObjectToken.ResponseObjectError(404, "Tài khoản không tồn tại !", null);
@@ -152,7 +151,7 @@ namespace BigProject.Service.Implement
 
         public async Task<ResponseObject<DTO_Register>>  Register(Request_Register request)
         {
-            var msv_check  = await dbContext.users.FirstOrDefaultAsync(x => x.MaTV == request.MaTV);
+            var msv_check  = await dbContext.users.FirstOrDefaultAsync(x => x.MaSV == request.MaSV);
             if (msv_check != null)
             {
                 return responseObject.ResponseObjectError(StatusCodes.Status404NotFound, " Mã Sinh viên  đã tồn tại ", null);
@@ -176,7 +175,7 @@ namespace BigProject.Service.Implement
             }
 
             var register = new User();
-            register.MaTV = request.MaTV;
+            register.MaSV = request.MaSV;
             register.Username = request.Username;
             register.Password = request.Password;   
             register.Email = request.Email;
@@ -275,18 +274,21 @@ namespace BigProject.Service.Implement
 
             var decentralization = dbContext.roles.FirstOrDefault(x => x.Id == user.RoleId);
 
+            var get_FullName = dbContext.memberInfos.FirstOrDefault(x => x.UserId == user.Id);
+
             var tokenDescription = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new[]
                 {
-             new Claim("Id", user.Id.ToString()),
-             new Claim(ClaimTypes.Email, user.Email),
-             new Claim("Username", user.Username),
-             new Claim("RoleId", user.RoleId.ToString()),   
-             
-             //new Claim("UrlAvatar", user.UrlAvatar.ToString()),
+             new Claim("username", user.Username),
+              new Claim("Id", user.Id.ToString()),
+             new Claim("MaSV", user.MaSV),
+              new Claim("Email", user.Email),
+              new Claim("RoleId", user.RoleId.ToString()),
             
-             new Claim(ClaimTypes.Role, decentralization?.Name ?? "")
+            
+             new Claim(ClaimTypes.Role, decentralization?.Name ?? ""),
+                 new Claim("FullName", get_FullName?.FullName ?? "")
          }),
 
                 Expires = DateTime.UtcNow.AddHours(4),
@@ -313,6 +315,8 @@ namespace BigProject.Service.Implement
             };
             return tokenDTO;
         }
+        
+        
 
         public ResponseBase ChangePassword(Request_ChangePassword requset,int userId)
         {
@@ -412,5 +416,40 @@ namespace BigProject.Service.Implement
             return new string(Enumerable.Repeat(chars, length)
                 .Select(s => s[random.Next(s.Length)]).ToArray());
         }
+
+        public async Task<ResponseObject<object>> DecodeJwtTokenAsync(string token)
+        {
+            {
+                var response = new ResponseObject<object>();
+
+                if (string.IsNullOrWhiteSpace(token))
+                {
+                    return await Task.FromResult(response.ResponseObjectError(StatusCodes.Status400BadRequest, "Token không được để trống", null));
+                }
+
+                var handler = new JwtSecurityTokenHandler();
+                try
+                {
+                    var jwtToken = handler.ReadJwtToken(token);
+                    var claims = jwtToken.Claims.ToDictionary(c => c.Type, c => c.Value);
+
+                    var data = new Dictionary<string, string>();
+                    if (claims.ContainsKey("Id")) data["Id"] = claims["Id"];
+                    if (claims.ContainsKey("username")) data["Username"] = claims["username"];
+                    if (claims.ContainsKey("FullName")) data["FullName"] = claims["FullName"];
+                    if (claims.ContainsKey("MaSV")) data["MaSV"] = claims["MaSV"];
+                    if (claims.ContainsKey("Email")) data["Email"] = claims["Email"];
+                    if (claims.ContainsKey("RoleId")) data["RoleId"] = claims["RoleId"];
+
+                    return await Task.FromResult(response.ResponseObjectSuccess("Giải mã token thành công", data));
+                }
+                catch
+                {
+                    return await Task.FromResult(response.ResponseObjectError(StatusCodes.Status400BadRequest, "Token không hợp lệ hoặc bị lỗi", null));
+                }
+            }
+
+        }
+        }
     }
-}
+

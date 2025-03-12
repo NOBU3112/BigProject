@@ -29,9 +29,9 @@ namespace BigProject.DataContext
 
             // Mật khẩu là 123456789@A
             var password ="$2a$12$umDEKg3yORpv174r7kzKxO7Z.BVbw0HDzb44jCsvgjHGGn5rM6/Ky";
-            var user1 = new User { Id =1 ,Username="admin",Email ="admin@gmail.com", Password = password, RoleId=3,MaTV="1111111111", IsActive = true, };
-            var user2 = new User { Id = 2,Username = "member", Email = "member@gmail.com", Password = password, RoleId = 1, MaTV = "1111111112", IsActive = true, };
-            var user3 = new User { Id = 3,Username = "secretary", Email = "secretary@gmail.com", Password = password, RoleId = 2, MaTV = "1111111113", IsActive = true, };
+            var user1 = new User { Id =1 ,Username="admin",Email ="admin@gmail.com", Password = password, RoleId=3,MaSV="1111111111", IsActive = true, };
+            var user2 = new User { Id = 2,Username = "member", Email = "member@gmail.com", Password = password, RoleId = 1, MaSV = "1111111112", IsActive = true, };
+            var user3 = new User { Id = 3,Username = "secretary", Email = "secretary@gmail.com", Password = password, RoleId = 2, MaSV = "1111111113", IsActive = true, };
             modelBuilder.Entity<User>().HasData(user1, user2, user3);
 
             var user1MemberInfo = new MemberInfo { Id = 1, Class = "string", Birthdate = new DateTime(2025,1,1), FullName = "string", Nation = "string", religion = "string", PhoneNumber = "string", UrlAvatar = "string", PoliticalTheory = "string", DateOfJoining = new DateTime(2025, 1, 1), PlaceOfJoining = "string", IsOutstandingMember = false, Status = MemberInfoEnum.studying, UserId = 1 };

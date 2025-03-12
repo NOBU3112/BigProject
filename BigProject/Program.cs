@@ -12,10 +12,17 @@
 
         var builder = WebApplication.CreateBuilder(args);
         builder.Services.AddDbContext<AppDbContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-        // Add services to the container.
+// Add services to the container.
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll",
+                    policy => policy.AllowAnyOrigin()
+                                    .AllowAnyMethod()
+                                    .AllowAnyHeader());
+            });
+           
 
-
-        builder.Services.AddSwaggerGen(x =>
+builder.Services.AddSwaggerGen(x =>
         {
             x.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "Swagger eShop Solution", Version = "v1" });
             x.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
@@ -86,8 +93,9 @@
         builder.Services.AddScoped<IService_OutstandingMember, Service_OutstandingMember>();
         builder.Services.AddScoped<IService_ApprovalHistory, Service_ApprovalHistory>();
         builder.Services.AddScoped<IService_Document, Service_Document>();
+      
 
-        builder.Services.AddScoped<ResponseObject<DTO_Register>>();     
+builder.Services.AddScoped<ResponseObject<DTO_Register>>();     
         builder.Services.AddScoped<ResponseObject<DTO_Login>>();
         builder.Services.AddScoped<ResponseObject<DTO_Token>>();
         builder.Services.AddScoped<ResponseObject<List<DTO_Register>>>();
@@ -115,7 +123,7 @@
             app.UseSwagger();
             app.UseSwaggerUI();
         }
-
+        app.UseCors("AllowAll");
         app.UseHttpsRedirection();
 
         app.UseAuthorization();
@@ -123,3 +131,4 @@
         app.MapControllers();
 
         app.Run();
+
