@@ -29,6 +29,7 @@ namespace BigProject.Controllers
             
             return Ok(await service_Authentic.DecodeJwtTokenAsync(token));
         }
+
         [HttpPost("Register")]
         public async Task<IActionResult> Register([FromForm] Request_Register request)
         {
@@ -40,16 +41,19 @@ namespace BigProject.Controllers
         {
             return  Ok(await service_Authentic.ForgotPassword(request));
         }
+
         [HttpPost("Login")]
         public async Task<IActionResult> Login([FromForm] Request_Login request)
         {
             return Ok(await service_Authentic.Login(request));
         }
+
         [HttpPut("Active_Account")]
         public IActionResult Activate([FromForm] string Opt)
         {
             return Ok(service_Authentic.Activate(Opt));
         }
+
         [HttpGet("Authorization")]
          [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Authorize(Roles = "Liên chi đoàn khoa")]
@@ -58,6 +62,7 @@ namespace BigProject.Controllers
            
                 return Ok(service_Authentic.Authorization(RoleId));
         }
+
         [HttpPut("Change_Password")]
         public IActionResult ChangePassword([FromForm] Request_ChangePassword request)
         {
@@ -68,6 +73,7 @@ namespace BigProject.Controllers
             int userId = int.Parse(HttpContext.User.FindFirst("Id").Value);
             return Ok(service_Authentic.ChangePassword(request,userId));
         }
+
         [HttpPut("Activate_Password")]  
         public IActionResult Activate_Password([FromForm] string code, string email)
         {
@@ -81,6 +87,7 @@ namespace BigProject.Controllers
                 return BitConverter.ToString(hashedBytes).Replace("-", "").ToLower();
             }
         }
+
         [Authorize(Roles = "Liên chi đoàn khoa")]
         [HttpGet("Get_List_Member")]
         public IActionResult GetListMember(int pageSize = 10, int pageNumber = 1)

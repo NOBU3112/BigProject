@@ -243,9 +243,6 @@ namespace BigProject.Migrations
                     b.Property<bool>("IsOutstandingMember")
                         .HasColumnType("bit");
 
-                    b.Property<string>("MemberId")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Nation")
                         .HasColumnType("nvarchar(max)");
 
@@ -286,7 +283,6 @@ namespace BigProject.Migrations
                             DateOfJoining = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             FullName = "string",
                             IsOutstandingMember = false,
-                            MemberId = "string",
                             Nation = "string",
                             PhoneNumber = "string",
                             PlaceOfJoining = "string",
@@ -304,7 +300,6 @@ namespace BigProject.Migrations
                             DateOfJoining = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             FullName = "string",
                             IsOutstandingMember = false,
-                            MemberId = "string",
                             Nation = "string",
                             PhoneNumber = "string",
                             PlaceOfJoining = "string",
@@ -322,7 +317,6 @@ namespace BigProject.Migrations
                             DateOfJoining = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             FullName = "string",
                             IsOutstandingMember = false,
-                            MemberId = "string",
                             Nation = "string",
                             PhoneNumber = "string",
                             PlaceOfJoining = "string",

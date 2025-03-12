@@ -25,6 +25,7 @@ namespace BigProject.PayLoad.Converter
                 //RewardDisciplineType = appDbContext.rewardDisciplineTypes.SingleOrDefault(x=>x.Id == rewardDiscipline.RewardDisciplineTypeId).RewardDisciplineTypeName,
                 Status = rewardDiscipline.Status,
                 RejectReason = rewardDiscipline.RejectReason,
+                RewardOrDiscipline = rewardDiscipline.RewardOrDiscipline,
             };
         }
     }

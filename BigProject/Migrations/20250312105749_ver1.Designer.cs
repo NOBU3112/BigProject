@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BigProject.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250311091728_11")]
-    partial class _11
+    [Migration("20250312105749_ver1")]
+    partial class ver1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -246,9 +246,6 @@ namespace BigProject.Migrations
                     b.Property<bool>("IsOutstandingMember")
                         .HasColumnType("bit");
 
-                    b.Property<string>("MemberId")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Nation")
                         .HasColumnType("nvarchar(max)");
 
@@ -289,7 +286,6 @@ namespace BigProject.Migrations
                             DateOfJoining = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             FullName = "string",
                             IsOutstandingMember = false,
-                            MemberId = "string",
                             Nation = "string",
                             PhoneNumber = "string",
                             PlaceOfJoining = "string",
@@ -307,7 +303,6 @@ namespace BigProject.Migrations
                             DateOfJoining = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             FullName = "string",
                             IsOutstandingMember = false,
-                            MemberId = "string",
                             Nation = "string",
                             PhoneNumber = "string",
                             PlaceOfJoining = "string",
@@ -325,7 +320,6 @@ namespace BigProject.Migrations
                             DateOfJoining = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             FullName = "string",
                             IsOutstandingMember = false,
-                            MemberId = "string",
                             Nation = "string",
                             PhoneNumber = "string",
                             PlaceOfJoining = "string",
@@ -478,7 +472,7 @@ namespace BigProject.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
-                    b.Property<string>("MaTV")
+                    b.Property<string>("MaSV")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -505,7 +499,7 @@ namespace BigProject.Migrations
                             Id = 1,
                             Email = "admin@gmail.com",
                             IsActive = true,
-                            MaTV = "1111111111",
+                            MaSV = "1111111111",
                             Password = "$2a$12$umDEKg3yORpv174r7kzKxO7Z.BVbw0HDzb44jCsvgjHGGn5rM6/Ky",
                             RoleId = 3,
                             Username = "admin"
@@ -515,7 +509,7 @@ namespace BigProject.Migrations
                             Id = 2,
                             Email = "member@gmail.com",
                             IsActive = true,
-                            MaTV = "1111111112",
+                            MaSV = "1111111112",
                             Password = "$2a$12$umDEKg3yORpv174r7kzKxO7Z.BVbw0HDzb44jCsvgjHGGn5rM6/Ky",
                             RoleId = 1,
                             Username = "member"
@@ -525,7 +519,7 @@ namespace BigProject.Migrations
                             Id = 3,
                             Email = "secretary@gmail.com",
                             IsActive = true,
-                            MaTV = "1111111113",
+                            MaSV = "1111111113",
                             Password = "$2a$12$umDEKg3yORpv174r7kzKxO7Z.BVbw0HDzb44jCsvgjHGGn5rM6/Ky",
                             RoleId = 2,
                             Username = "secretary"

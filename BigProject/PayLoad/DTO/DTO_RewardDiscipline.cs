@@ -10,6 +10,7 @@ namespace BigProject.PayLoad.DTO
         public DateTime CreateDate { get; set; }
         public RequestEnum Status { get; set; }
         //public string RewardDisciplineType { get; set; }
+        public bool RewardOrDiscipline { get; set; }
         public string? RejectReason { get; set; }
         public string RecipientName { get; set; }
         public string ProposerName { get; set; }
