@@ -23,12 +23,7 @@ namespace BigProject.Controllers
             this.memberInfo = memberInfo;
         }
        
-        [HttpPut("Update_member_info")]
-        public async Task<IActionResult> UpdateMenberInfo([FromForm] Request_UpdateMemberInfo request)
-        {
-            return Ok(await memberInfo.UpdateMenberInfo(request));
-        }
-        [HttpGet("Get_List_Menber_Info")]
+        [HttpGet("Get_List_Menber_Info")]   
         [Authorize(Roles = "Liên chi đoàn khoa,Bí thư đoàn viên")]
         public IActionResult GetListProductFull( int pageSize = 10, int pageNumber = 1)
         {

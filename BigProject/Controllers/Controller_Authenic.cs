@@ -8,6 +8,7 @@ using System.Text;
 using System.Security.Cryptography;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Azure.Core;
 namespace BigProject.Controllers
 {
     [Route("api/[controller]")]
@@ -19,6 +20,14 @@ namespace BigProject.Controllers
         public Controller_Authenic(IService_Authentic service_Authentic)
         {
             this.service_Authentic = service_Authentic;
+        }
+
+        [HttpGet("Decode_Token")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> DecodeToken([FromQuery] string token)
+        {
+            
+            return Ok(await service_Authentic.DecodeJwtTokenAsync(token));
         }
         [HttpPost("Register")]
         public async Task<IActionResult> Register([FromForm] Request_Register request)
@@ -59,7 +68,7 @@ namespace BigProject.Controllers
             int userId = int.Parse(HttpContext.User.FindFirst("Id").Value);
             return Ok(service_Authentic.ChangePassword(request,userId));
         }
-        [HttpPut("Activate_Password")]
+        [HttpPut("Activate_Password")]  
         public IActionResult Activate_Password([FromForm] string code, string email)
         {
             return Ok(service_Authentic.Activate_Password(code,email));
@@ -78,7 +87,10 @@ namespace BigProject.Controllers
         {
             return Ok(service_Authentic.GetListMember(pageSize, pageNumber));
         }
+
+
     }
-    
+        
+  
 
 }

@@ -155,6 +155,7 @@ namespace BigProject.Service.Implement
             history.RewardDisciplineId = propose.Id;
             //history.RejectReason = reject;
             dbContext.approvalHistories.Add(history);
+
             await dbContext.SaveChangesAsync();
 
             return responseObject.ResponseObjectSuccess("Từ chối!", converter_RewardDiscipline.EntityToDTO(propose));

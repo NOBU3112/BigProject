@@ -20,7 +20,7 @@ namespace BigProject.PayLoad.Converter
                 Class = _context.memberInfos.SingleOrDefault(x => x.UserId == eventJoint.UserId).Class,
                 EventName = _context.events.SingleOrDefault(x => x.Id == eventJoint.EventId).EventName,
                 FullName = _context.memberInfos.SingleOrDefault(x => x.UserId == eventJoint.UserId).FullName,
-                MaTV = _context.users.SingleOrDefault(x => x.Id == eventJoint.UserId).MaTV,
+                MaSV = _context.users.SingleOrDefault(x => x.Id == eventJoint.UserId).MaSV,
                 Status = eventJoint.Status,
             };
         }

@@ -73,9 +73,9 @@ namespace BigProject.Service.Implement
             return DbContext.memberInfos.Skip((pageNumber - 1) * pageSize).Take(pageSize).Select(x => converter_MemberInfo.EntityToDTO(x));
         }
 
-        public async Task<ResponseObject<DTO_MemberInfo>> UpdateMenberInfo(Request_UpdateMemberInfo request)
+        public async Task<ResponseObject<DTO_MemberInfo>> UpdateMenberInfo(Request_UpdateMemberInfo request,int useId)
         {
-            var Check_Id = await DbContext.memberInfos.FirstOrDefaultAsync(x => x.Id == request.Id);
+            var Check_Id = await DbContext.memberInfos.FirstOrDefaultAsync(x => x.UserId == useId);
             if (Check_Id == null)
             {
                 return responseObject.ResponseObjectError(StatusCodes.Status404NotFound, "Đoàn viên không tồn tại", null);

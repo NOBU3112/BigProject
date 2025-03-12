@@ -23,5 +23,8 @@ namespace BigProject.Service.Interface
         Task<ResponseObject<List<DTO_Register>>> Authorization(int RoleId);
 
         IEnumerable<DTO_Register> GetListMember(int pageSize, int pageNumber);
+        Task<ResponseObject<object>> DecodeJwtTokenAsync(string token);
+
+
     }
 }

@@ -20,7 +20,7 @@ namespace BigProject.PayLoad.Converter
                 Email = register.Email,
                 Password = register.Password,
                 Username = register.Username,
-                MaTV = register.MaTV,
+                MaSV = register.MaSV,
                  RoleName = _context.roles.SingleOrDefault(x => x.Id == register.RoleId).Name,
             };
         }
