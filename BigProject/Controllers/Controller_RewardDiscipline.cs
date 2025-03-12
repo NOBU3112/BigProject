@@ -19,18 +19,28 @@ namespace BigProject.Controllers
         {
             this.service_RewardDiscipline = service_RewardDiscipline;
         }
+
         [HttpGet("Get_List_Reward")]
         [Authorize(Roles = "Liên chi đoàn khoa")]
         public IActionResult GetListProposeRewardFull( int pageSize = 10, int pageNumber = 1)
         {
             return Ok(service_RewardDiscipline.GetListReward(pageSize, pageNumber));
         }
+
         [HttpGet("Get_List_Discipline")]
         [Authorize(Roles = "Liên chi đoàn khoa")]
         public IActionResult GetListProposeDisciplineFull( int pageSize = 10, int pageNumber = 1)
         {
             return Ok(service_RewardDiscipline.GetListDiscipline(pageSize, pageNumber));
         }
+
+        [HttpGet("Get_List_Waiting")]
+        [Authorize(Roles = "Liên chi đoàn khoa")]
+        public IActionResult GetListWaiting(int pageSize = 10, int pageNumber = 1)
+        {
+            return Ok(service_RewardDiscipline.GetListWaiting(pageSize, pageNumber));
+        }
+
         [HttpPost("Propose_Reward")]
         [Authorize(Roles = "Bí thư đoàn viên")]
         public async Task<IActionResult> ProposeReward([FromForm] Request_ProposeRewardDiscipline request)
@@ -42,6 +52,7 @@ namespace BigProject.Controllers
             int userId = int.Parse(HttpContext.User.FindFirst("Id").Value);
             return Ok(await service_RewardDiscipline.ProposeReward(request,userId));
         }
+
         [HttpPost("Propose_Discipline")]
         [Authorize(Roles = "Bí thư đoàn viên")]
         public async Task<IActionResult> ProposeDiscipline([FromForm] Request_ProposeRewardDiscipline request)
@@ -53,6 +64,7 @@ namespace BigProject.Controllers
             int userId = int.Parse(HttpContext.User.FindFirst("Id").Value);
             return Ok(await service_RewardDiscipline.ProposeDiscipline(request, userId));
         }
+
         [HttpPut("Accept_Propose")]
         [Authorize(Roles = "Liên chi đoàn khoa")]
         public async Task<IActionResult> AcceptPropose([FromForm] int proposeId)
@@ -64,6 +76,7 @@ namespace BigProject.Controllers
             int userId = int.Parse(HttpContext.User.FindFirst("Id").Value);
             return Ok(await service_RewardDiscipline.AcceptPropose(proposeId,userId));
         }
+
         [HttpPut("Reject_Propose")]
         [Authorize(Roles = "Liên chi đoàn khoa")]
         public async Task<IActionResult> RejectPropose([FromForm] int proposeId, string reject)
@@ -75,6 +88,7 @@ namespace BigProject.Controllers
             int userId = int.Parse(HttpContext.User.FindFirst("Id").Value);
             return Ok(await service_RewardDiscipline.RejectPropose(proposeId, userId, reject));
         }
+
         [HttpDelete("Delete_Reward_Discipline")]
         [Authorize(Roles = "Liên chi đoàn khoa")]
         public async Task<IActionResult> DeletePropose([FromForm] int proposeId)

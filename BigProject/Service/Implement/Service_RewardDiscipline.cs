@@ -171,7 +171,7 @@ namespace BigProject.Service.Implement
 
         public IEnumerable<DTO_RewardDiscipline> GetListWaiting(int pageSize, int pageNumber)
         {
-            return dbContext.rewardDisciplines.Where(x => x.RewardOrDiscipline == true).Skip((pageNumber - 1) * pageSize).Take(pageSize).Select(x => converter_RewardDiscipline.EntityToDTO(x));
+            return dbContext.rewardDisciplines.Where(x => x.Status == RequestEnum.waiting).Skip((pageNumber - 1) * pageSize).Take(pageSize).Select(x => converter_RewardDiscipline.EntityToDTO(x));
         }
     }
 }

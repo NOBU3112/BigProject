@@ -19,17 +19,20 @@ namespace BigProject.Controllers
         {
             this.service_OutstandingMember = service_OutstandingMember;
         }
+
         [HttpPost("Request_OutstandingMember")]
         public async Task<IActionResult> AddOutstandingMember([FromForm] Request_AddOutstandingMember request)
         {
             return Ok(await service_OutstandingMember.AddOutstandingMenber(request));
         }
+
         //[HttpPut("Waiting_OutstandingMember")]
 
         //public async Task<IActionResult> WaitingOutstandingMenber([FromForm] Request_waitingOutstandingMember request)
         //{
         //    return Ok(await service_OutstandingMember.WaitingOutstandingMenber(request));
         //}
+
         [HttpPut("Accept_OutstandingMember")]
         [Authorize(Roles = "Liên chi đoàn khoa")]
         public async Task<IActionResult> AcceptOutstandingMember([FromForm] Request_acceptOutstandingMember request )
@@ -41,6 +44,7 @@ namespace BigProject.Controllers
             int userId = int.Parse(HttpContext.User.FindFirst("Id").Value);
             return Ok(await service_OutstandingMember.AcceptOutstandingMember(request,userId));
         }
+
         [HttpPut("Reject_OutstandingMember")]
         [Authorize(Roles = "Liên chi đoàn khoa")]
         public async Task<IActionResult> RejectOutstandingMember([FromForm] Request_rejectOutstandingMember request)

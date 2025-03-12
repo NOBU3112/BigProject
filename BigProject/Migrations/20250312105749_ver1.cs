@@ -52,7 +52,7 @@ namespace BigProject.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Username = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    MaTV = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    MaSV = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
                     RoleId = table.Column<int>(type: "int", nullable: false)
@@ -151,7 +151,6 @@ namespace BigProject.Migrations
                     Class = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Birthdate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     FullName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    MemberId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Nation = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     religion = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -294,7 +293,7 @@ namespace BigProject.Migrations
 
             migrationBuilder.InsertData(
                 table: "users",
-                columns: new[] { "Id", "Email", "IsActive", "MaTV", "Password", "RoleId", "Username" },
+                columns: new[] { "Id", "Email", "IsActive", "MaSV", "Password", "RoleId", "Username" },
                 values: new object[,]
                 {
                     { 1, "admin@gmail.com", true, "1111111111", "$2a$12$umDEKg3yORpv174r7kzKxO7Z.BVbw0HDzb44jCsvgjHGGn5rM6/Ky", 3, "admin" },
@@ -314,12 +313,12 @@ namespace BigProject.Migrations
 
             migrationBuilder.InsertData(
                 table: "memberInfos",
-                columns: new[] { "Id", "Birthdate", "Class", "DateOfJoining", "FullName", "IsOutstandingMember", "MemberId", "Nation", "PhoneNumber", "PlaceOfJoining", "PoliticalTheory", "Status", "UrlAvatar", "UserId", "religion" },
+                columns: new[] { "Id", "Birthdate", "Class", "DateOfJoining", "FullName", "IsOutstandingMember", "Nation", "PhoneNumber", "PlaceOfJoining", "PoliticalTheory", "Status", "UrlAvatar", "UserId", "religion" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "string", new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "string", false, "string", "string", "string", "string", "string", 1, "string", 1, "string" },
-                    { 2, new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "string", new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "string", false, "string", "string", "string", "string", "string", 1, "string", 2, "string" },
-                    { 3, new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "string", new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "string", false, "string", "string", "string", "string", "string", 1, "string", 3, "string" }
+                    { 1, new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "string", new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "string", false, "string", "string", "string", "string", 1, "string", 1, "string" },
+                    { 2, new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "string", new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "string", false, "string", "string", "string", "string", 1, "string", 2, "string" },
+                    { 3, new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "string", new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "string", false, "string", "string", "string", "string", 1, "string", 3, "string" }
                 });
 
             migrationBuilder.CreateIndex(
