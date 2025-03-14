@@ -13,18 +13,19 @@ namespace BigProject.Service.Interface
 
         Task<ResponseObject<DTO_Token>> Login(Request_Login request);
 
-
-        ResponseBase Activate(string Opt);
+        Task<ResponseBase> Activate(string Opt, string email);
 
         ResponseBase Activate_Password (string code, string email);
 
-        ResponseBase ChangePassword(Request_ChangePassword requset, int userId);
+        Task<ResponseBase> ChangePassword(Request_ChangePassword requset, int userId);
 
         Task<ResponseObject<List<DTO_Register>>> Authorization(int RoleId);
 
         IEnumerable<DTO_Register> GetListMember(int pageSize, int pageNumber);
+
         Task<ResponseObject<object>> DecodeJwtTokenAsync(string token);
 
+        Task<ResponseObject<DTO_Token>> RenewAccessToken(DTO_Token request);
 
     }
 }

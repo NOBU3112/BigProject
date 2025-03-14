@@ -47,26 +47,31 @@ namespace BigProject.Service.Implement
             this.converter_Login = converter_Login;
         }
 
-        public ResponseBase Activate(string Opt)
+        public async Task<ResponseBase> Activate(string Opt,string email)
         {
-            var comfirmEmail = dbContext.emailConfirms.FirstOrDefault(x => x.Code == Opt && x.IsActiveAccount==true);
+            var checkUser = await dbContext.users.FirstOrDefaultAsync(x => x.Email == email);
+            var comfirmEmail = await dbContext.emailConfirms.Where(x => x.Code == Opt && x.IsActiveAccount == true && x.UserId==checkUser.Id).OrderByDescending(x => x.Id).FirstOrDefaultAsync();
+
             if (comfirmEmail == null)
             {
-                return responseBase.ResponseBaseError(400, "Mã xác nhận không đúng !");
+                return responseBase.ResponseBaseError(400, "Mã xác nhận không đúng!");
             }
+
             if (comfirmEmail.Exprired < DateTime.Now)
             {
-                return responseBase.ResponseBaseError(400, "Mã xác nhận đã hết hạn !");
+                return responseBase.ResponseBaseError(400, "Mã xác nhận đã hết hạn!");
             }
+
             if (comfirmEmail.IsConfirmed)
             {
                 return responseBase.ResponseBaseError(400, "Mã xác nhận đã được sử dụng!");
             }
+
             comfirmEmail.IsConfirmed = true;
             dbContext.emailConfirms.Update(comfirmEmail);
-            dbContext.SaveChanges();
+            await dbContext.SaveChangesAsync();
 
-            return responseBase.ResponseBaseSuccess("Kích hoạt tài khoản thành công !");
+            return responseBase.ResponseBaseSuccess("Kích hoạt tài khoản thành công!");
         }
 
         public  async Task<ResponseObject<DTO_Register>> ForgotPassword(Request_forgot request)
@@ -92,9 +97,15 @@ namespace BigProject.Service.Implement
             var user = await dbContext.users.FirstOrDefaultAsync(x => x.Email == request.Email);
             if (user == null)
             {
-                return  responseObject.ResponseObjectError(StatusCodes.Status404NotFound, "Email  không tồn tại !", null);
+                return  responseObject.ResponseObjectError(StatusCodes.Status404NotFound, "Email không tồn tại!", null);
             }
-           
+
+            var oldConfirm = await dbContext.emailConfirms.FirstOrDefaultAsync(x => x.UserId == user.Id && !x.IsConfirmed);
+            if (oldConfirm != null)
+            {
+                dbContext.emailConfirms.Remove(oldConfirm);
+                await dbContext.SaveChangesAsync();
+            }
 
             Random random = new Random();
             int code = random.Next(100000, 999999);
@@ -114,7 +125,7 @@ namespace BigProject.Service.Implement
             dbContext.emailConfirms.Add(comfirmEmail);
             await dbContext.SaveChangesAsync();
 
-            return responseObject.ResponseObjectSuccess("Gửi thành công",null);
+            return responseObject.ResponseObjectSuccess("Gửi thành công!",null);
 
         }
 
@@ -123,70 +134,76 @@ namespace BigProject.Service.Implement
             var user = await dbContext.users.FirstOrDefaultAsync(x => x.Username == request.UserName || x.Email == request.UserName ||  x.MaSV == request.UserName);
             if (user == null)
             {
-                return responseObjectToken.ResponseObjectError(404, "Tài khoản không tồn tại !", null);
+                return responseObjectToken.ResponseObjectError(404, "Tài khoản không tồn tại!", null);
             }
+
             if (user.IsActive == false)
             {
-                return responseObjectToken.ResponseObjectError(400, "Tài khoản đã bị đóng !", null);
+                return responseObjectToken.ResponseObjectError(400, "Tài khoản đã bị đóng!", null);
 
+            }
+
+            var comfirmEmail = dbContext.emailConfirms.Where(x => x.UserId == user.Id).OrderByDescending(x => x.Id).FirstOrDefault();            
+            if (comfirmEmail.IsConfirmed == false)
+            {
+                return responseObjectToken.ResponseObjectError(400, "Tài khoản chưa được kích hoạt!", null);
             }
 
             if (!BCrypt.Net.BCrypt.Verify(request.Password, user.Password))
             {
-                return responseObjectToken.ResponseObjectError(404, "Sai mk !", null);
+                return responseObjectToken.ResponseObjectError(400, "Sai mật khẩu!", null);
             }
 
-
-            var comfimEmail =await dbContext.emailConfirms.FirstOrDefaultAsync(x => x.UserId == user.Id); 
-            if (comfimEmail.IsConfirmed == false)
-            {
-                return responseObjectToken.ResponseObjectError(404, "Tài khoản chưa được kích hoạt !", null);
-            }
-
-
-
-            return responseObjectToken.ResponseObjectSuccess("đăng nhập  thành công ", GenerateAccessToken(user));
-
+            return responseObjectToken.ResponseObjectSuccess("Đăng nhập thành công!", GenerateAccessToken(user));
         }
 
         public async Task<ResponseObject<DTO_Register>>  Register(Request_Register request)
         {
-            var msv_check  = await dbContext.users.FirstOrDefaultAsync(x => x.MaSV == request.MaSV);
-            if (msv_check != null)
+            var existingUser = await dbContext.users.Where(x => x.MaSV == request.MaSV && x.Username == request.Username && x.Email == request.Email).FirstOrDefaultAsync();
+            if (existingUser != null)
             {
-                return responseObject.ResponseObjectError(StatusCodes.Status404NotFound, " Mã Sinh viên  đã tồn tại ", null);
+                var existingCode = await dbContext.emailConfirms.FirstOrDefaultAsync(x => x.UserId == existingUser.Id && x.IsActiveAccount == true && x.IsConfirmed == false);
+                if (existingCode != null)
+                {
+                    var existingMemberInfo = await dbContext.memberInfos.FirstOrDefaultAsync(x => x.UserId == existingUser.Id);
+                    dbContext.memberInfos.Remove(existingMemberInfo);
+                    dbContext.users.Remove(existingUser);
+                    dbContext.emailConfirms.Remove(existingCode);
+                    await dbContext.SaveChangesAsync();
+                }
             }
-            var name_check = await dbContext.users.FirstOrDefaultAsync(x => x.Username == request.Username);
-            if (name_check != null)
+
+            var CheckUser = await dbContext.users.Where(x => x.MaSV == request.MaSV || x.Username == request.Username || x.Email == request.Email).FirstOrDefaultAsync();
+            if (CheckUser != null)
             {
-                return  responseObject.ResponseObjectError(StatusCodes.Status404NotFound, "Tài khoản đã tồn tại ", null);
+                if (CheckUser.Username == request.Username)
+                    return responseObject.ResponseObjectError(StatusCodes.Status400BadRequest, "Tên tài khoản đã tồn tại!", null);
+
+                if (CheckUser.MaSV == request.MaSV)
+                    return responseObject.ResponseObjectError(StatusCodes.Status400BadRequest, "Mã Sinh viên đã tồn tại!", null);
+
+                if (CheckUser.Email == request.Email)
+                    return responseObject.ResponseObjectError(StatusCodes.Status400BadRequest, "Email đã tồn tại!", null);
             }
-            var email_check =await dbContext.users.FirstOrDefaultAsync(x => x.Email == request.Email);
-            if (email_check != null)
-            {
-                return responseObject.ResponseObjectError(StatusCodes.Status404NotFound, "Email đã tồn tại", null);
-            }
-            if (CheckInput.IsPassWord(request.Password) != request.Password)
-                return responseObject.ResponseObjectError(StatusCodes.Status400BadRequest, CheckInput.IsPassWord(request.Password), null);
+
             var checkEmail = CheckInput.IsValiEmail(request.Email);
             if (!checkEmail)
             {
-                return responseObject.ResponseObjectError(StatusCodes.Status400BadRequest, "Email không hợp lệ (thiếu ký tự đặc biệt hoặc sai định dạng)", null);
+                return responseObject.ResponseObjectError(StatusCodes.Status400BadRequest, "Email không hợp lệ (thiếu ký tự đặc biệt hoặc sai định dạng)!", null);
             }
+
+            if (CheckInput.IsPassWord(request.Password) != request.Password)
+                return responseObject.ResponseObjectError(StatusCodes.Status400BadRequest, CheckInput.IsPassWord(request.Password), null);
 
             var register = new User();
             register.MaSV = request.MaSV;
-            register.Username = request.Username;
-            register.Password = request.Password;   
+            register.Username = request.Username;   
             register.Email = request.Email;
             register.IsActive = true;
-           
-
             register.Password = BCrypt.Net.BCrypt.HashPassword(request.Password);
 
             Random random = new Random();
             int code = random.Next(100000, 999999);
-
             EmailTo emailTo = new EmailTo();
             emailTo.Mail = request.Email;
             emailTo.Subject = "MÃ XÁC NHẬN !";
@@ -213,8 +230,9 @@ namespace BigProject.Service.Implement
             dbContext.emailConfirms.Add(comfirmEmail);
             await dbContext.SaveChangesAsync();
 
-            return   responseObject.ResponseObjectSuccess("đăng kí thành công",  converter_Register.EntityToDTO(register));
+            return   responseObject.ResponseObjectSuccess("Đăng kí thành công!",  converter_Register.EntityToDTO(register));
         }
+
         public async Task<ResponseObject<DTO_Token>> RenewAccessToken(DTO_Token request)
         {
             var jwtTokenHandler = new JwtSecurityTokenHandler();
@@ -225,7 +243,8 @@ namespace BigProject.Service.Implement
                 ValidateIssuerSigningKey = true,
                 ValidateAudience = false,
                 ValidateIssuer = false,
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration.GetSection("AppSettings:SecretKey").Value))
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration.GetSection("AppSettings:SecretKey").Value)),
+                ValidateLifetime = false
             };
 
             try
@@ -233,31 +252,51 @@ namespace BigProject.Service.Implement
                 var tokenAuthentication = jwtTokenHandler.ValidateToken(request.AccessToken, tokenValidation, out var validatedToken);
                 if (validatedToken is not JwtSecurityToken jwtSecurityToken || jwtSecurityToken.Header.Alg != SecurityAlgorithms.HmacSha256)
                 {
-                    return responseObjectToken.ResponseObjectError(StatusCodes.Status400BadRequest, "Token không hợp lệ", null);
+                    return responseObjectToken.ResponseObjectError(StatusCodes.Status400BadRequest, "Token không hợp lệ!", null);
                 }
+
+                var expClaim = jwtSecurityToken.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Exp)?.Value;
+                if (expClaim != null && long.TryParse(expClaim, out long exp))
+                {
+                    var tokenExpiry = DateTimeOffset.FromUnixTimeSeconds(exp).UtcDateTime;
+                    if (tokenExpiry > DateTime.UtcNow)
+                    {
+                        return responseObjectToken.ResponseObjectError(StatusCodes.Status400BadRequest, "AccessToken chưa hết hạn!", null);
+                    }
+                }
+
                 RefreshToken refreshToken = await dbContext.refreshTokens.FirstOrDefaultAsync(x => x.Token == request.RefreshToken);
                 if (refreshToken == null)
                 {
-                    return responseObjectToken.ResponseObjectError(StatusCodes.Status404NotFound, "RefreshToken không tồn tại trong database", null);
+                    return responseObjectToken.ResponseObjectError(StatusCodes.Status404NotFound, "RefreshToken không tồn tại trong database!", null);
                 }
+
                 if (refreshToken.Exprited < DateTime.Now)
                 {
-                    return responseObjectToken.ResponseObjectError(StatusCodes.Status401Unauthorized, "Token chưa hết hạn", null);
+                    return responseObjectToken.ResponseObjectError(StatusCodes.Status401Unauthorized, "Token dã hết hạn!", null);
                 }
+
                 var user = dbContext.users.FirstOrDefault(x => x.Id == refreshToken.UserId);
                 if (user == null)
                 {
-                    return responseObjectToken.ResponseObjectError(StatusCodes.Status404NotFound, "Người dùng không tồn tại", null);
+                    return responseObjectToken.ResponseObjectError(StatusCodes.Status404NotFound, "Người dùng không tồn tại!", null);
                 }
+
                 var newToken = GenerateAccessToken(user);
 
-                return responseObjectToken.ResponseObjectSuccess("Làm mới token thành công", newToken);
+                refreshToken.Token = GenerateRefreshToken();
+                refreshToken.Exprited = DateTime.UtcNow.AddDays(7);
+                dbContext.refreshTokens.Update(refreshToken);
+                await dbContext.SaveChangesAsync();
+
+                return responseObjectToken.ResponseObjectSuccess("Làm mới token thành công!", newToken);
             }
             catch (Exception ex)
             {
                 return responseObjectToken.ResponseObjectError(StatusCodes.Status500InternalServerError, ex.Message, null);
             }
         }
+
         private string GenerateRefreshToken()
         {
             var random = new byte[32];
@@ -267,6 +306,7 @@ namespace BigProject.Service.Implement
                 return Convert.ToBase64String(random);
             }
         }
+
         private DTO_Token GenerateAccessToken(User user)
         {
             var jwtTokenHandler = new JwtSecurityTokenHandler();
@@ -281,19 +321,17 @@ namespace BigProject.Service.Implement
                 Subject = new ClaimsIdentity(new[]
                 {
              new Claim("username", user.Username),
-              new Claim("Id", user.Id.ToString()),
+             new Claim("Id", user.Id.ToString()),
              new Claim("MaSV", user.MaSV),
-              new Claim("Email", user.Email),
-              new Claim("RoleId", user.RoleId.ToString()),
-            
-            
+             new Claim("Email", user.Email),
+             new Claim("RoleId", user.RoleId.ToString()),
              new Claim(ClaimTypes.Role, decentralization?.Name ?? ""),
-                 new Claim("FullName", get_FullName?.FullName ?? "")
-         }),
-
-                Expires = DateTime.UtcNow.AddHours(4),
+             new Claim("FullName", get_FullName?.FullName ?? "")
+                }),
+                Expires = DateTime.UtcNow.AddMinutes(2),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(secretKeyBytes), SecurityAlgorithms.HmacSha256Signature)
             };
+
             var token = jwtTokenHandler.CreateToken(tokenDescription);
             var accessToken = jwtTokenHandler.WriteToken(token);
             var refreshToken = GenerateRefreshToken();
@@ -301,7 +339,7 @@ namespace BigProject.Service.Implement
             RefreshToken rf = new RefreshToken
             {
                 Token = refreshToken,
-                Exprited = DateTime.Now.AddHours(4),
+                Exprited = DateTime.Now.AddDays(7),
                 UserId = user.Id
             };
 
@@ -318,22 +356,25 @@ namespace BigProject.Service.Implement
         
         
 
-        public ResponseBase ChangePassword(Request_ChangePassword requset,int userId)
+        public async Task<ResponseBase> ChangePassword(Request_ChangePassword requset,int userId)
         {
-            var change = dbContext.users.FirstOrDefault(x => x.Id == userId  );
+            var change =await dbContext.users.FirstOrDefaultAsync(x => x.Id == userId );
 
             if (!BCrypt.Net.BCrypt.Verify(requset.Password, change.Password))
             {
-                return responseBase.ResponseBaseError(404, "Mật khẩu không chính xác");
+                return responseBase.ResponseBaseError(404, "Mật khẩu không chính xác!");
             }
+
             if (requset.newpassword != requset.renewpassword)
             {
-                return responseBase.ResponseBaseError(404, "mật khẩu không trùng nhau");
+                return responseBase.ResponseBaseError(400, "Mật khẩu không trùng nhau!");
             }
+
             if (requset.newpassword == requset.Password)
             {
-                return responseBase.ResponseBaseError(404, "mật khẩu mới trùng mật khẩu cũ");
+                return responseBase.ResponseBaseError(400, "Mật khẩu mới trùng mật khẩu cũ!");
             }
+
             if (CheckInput.IsPassWord(requset.newpassword) != requset.newpassword)
             {
                 return responseBase.ResponseBaseError(404, CheckInput.IsPassWord(requset.newpassword));
@@ -341,9 +382,9 @@ namespace BigProject.Service.Implement
 
             change.Password = BCrypt.Net.BCrypt.HashPassword(requset.newpassword);
             dbContext.users.Update(change);
-            dbContext.SaveChanges();
+            await dbContext.SaveChangesAsync();
 
-            return responseBase.ResponseBaseSuccess("Đổi mật khẩu thành công");
+            return responseBase.ResponseBaseSuccess("Đổi mật khẩu thành công!");
         }
 
         public async Task<ResponseObject<List<DTO_Register>>> Authorization(int RoleId)
@@ -354,9 +395,9 @@ namespace BigProject.Service.Implement
 
             if (!listUserForRoleInput.Any())
             {
-                return responseObjectList.ResponseObjectError(StatusCodes.Status404NotFound, "Bảng không tồn tại", null);
+                return responseObjectList.ResponseObjectError(StatusCodes.Status404NotFound, "Bảng không tồn tại!", null);
             }
-            return responseObjectList.ResponseObjectSuccess("hiện thành công", listUserForRoleInput.Select(x => converter_Register.EntityToDTO(x)).ToList());
+            return responseObjectList.ResponseObjectSuccess("Hiện thành công!", listUserForRoleInput.Select(x => converter_Register.EntityToDTO(x)).ToList());
         }
 
         public IEnumerable<DTO_Register> GetListMember(int pageSize, int pageNumber)
@@ -366,17 +407,23 @@ namespace BigProject.Service.Implement
 
         public ResponseBase Activate_Password(string code, string email)
         {
-            var confirmEmailCheck = dbContext.emailConfirms.FirstOrDefault(x => x.Code == code&& x.IsActiveAccount==false);
-            if (confirmEmailCheck == null)
+            var user = dbContext.users.FirstOrDefault(x => x.Email == email);
+            if (user == null)
             {
-                return responseBase.ResponseBaseError(400, "Mã xác nhận không đúng !");
+                return responseBase.ResponseBaseError(404, "Email không tồn tại!");
             }
 
-         
+            var confirmEmailCheck = dbContext.emailConfirms.FirstOrDefault(x => x.Code == code&& x.IsActiveAccount==false && x.UserId==user.Id);
+            if (confirmEmailCheck == null)
+            {
+                return responseBase.ResponseBaseError(400, "Mã xác nhận không đúng!");
+            }
+
             if (confirmEmailCheck.Exprired < DateTime.Now)
             {
-                return responseBase.ResponseBaseError(400, "Mã xác nhận đã hết hạn !");
+                return responseBase.ResponseBaseError(400, "Mã xác nhận đã hết hạn!");
             }
+
             if (confirmEmailCheck.IsConfirmed )
             {
                 return responseBase.ResponseBaseError(400, "Mã xác nhận đã được sử dụng!");
@@ -384,13 +431,6 @@ namespace BigProject.Service.Implement
            
             confirmEmailCheck.IsConfirmed = true;
             dbContext.SaveChanges();
-
-
-            var user = dbContext.users.FirstOrDefault(x => x.Email == email);
-            if (user == null)
-            {
-                return responseBase.ResponseBaseError(404, "Email không tồn tại !");
-            }
 
             string newPassword = GenerateRandomPassword(8); 
 
@@ -424,7 +464,7 @@ namespace BigProject.Service.Implement
 
                 if (string.IsNullOrWhiteSpace(token))
                 {
-                    return await Task.FromResult(response.ResponseObjectError(StatusCodes.Status400BadRequest, "Token không được để trống", null));
+                    return await Task.FromResult(response.ResponseObjectError(StatusCodes.Status400BadRequest, "Token không được để trống!", null));
                 }
 
                 var handler = new JwtSecurityTokenHandler();
@@ -432,6 +472,16 @@ namespace BigProject.Service.Implement
                 {
                     var jwtToken = handler.ReadJwtToken(token);
                     var claims = jwtToken.Claims.ToDictionary(c => c.Type, c => c.Value);
+
+                    var expClaim = claims.FirstOrDefault(c => c.Key == "exp").Value;
+                    if (!string.IsNullOrEmpty(expClaim))
+                    {
+                        var expDate = DateTimeOffset.FromUnixTimeSeconds(long.Parse(expClaim)).UtcDateTime;
+                        if (expDate < DateTime.UtcNow)
+                        {
+                            return response.ResponseObjectError(StatusCodes.Status401Unauthorized, "Token đã hết hạn!", null);
+                        }
+                    }
 
                     var data = new Dictionary<string, string>();
                     if (claims.ContainsKey("Id")) data["Id"] = claims["Id"];
@@ -441,14 +491,13 @@ namespace BigProject.Service.Implement
                     if (claims.ContainsKey("Email")) data["Email"] = claims["Email"];
                     if (claims.ContainsKey("RoleId")) data["RoleId"] = claims["RoleId"];
 
-                    return await Task.FromResult(response.ResponseObjectSuccess("Giải mã token thành công", data));
+                    return await Task.FromResult(response.ResponseObjectSuccess("Giải mã token thành công!", data));
                 }
                 catch
                 {
-                    return await Task.FromResult(response.ResponseObjectError(StatusCodes.Status400BadRequest, "Token không hợp lệ hoặc bị lỗi", null));
+                    return await Task.FromResult(response.ResponseObjectError(StatusCodes.Status400BadRequest, "Token không hợp lệ hoặc bị lỗi!", null));
                 }
             }
-
         }
         }
     }

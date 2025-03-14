@@ -21,14 +21,12 @@ namespace BigProject.Controllers
         }
 
         [HttpGet("Get_List_Reward")]
-        [Authorize(Roles = "Liên chi đoàn khoa")]
         public IActionResult GetListProposeRewardFull( int pageSize = 10, int pageNumber = 1)
         {
             return Ok(service_RewardDiscipline.GetListReward(pageSize, pageNumber));
         }
 
         [HttpGet("Get_List_Discipline")]
-        [Authorize(Roles = "Liên chi đoàn khoa")]
         public IActionResult GetListProposeDisciplineFull( int pageSize = 10, int pageNumber = 1)
         {
             return Ok(service_RewardDiscipline.GetListDiscipline(pageSize, pageNumber));
