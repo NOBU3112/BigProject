@@ -17,7 +17,6 @@ namespace BigProject.Controllers
         }
 
         [HttpGet("Get_List_ApprovalHistories")]
-        [Authorize(Roles = "Liên chi đoàn khoa")]
         public IActionResult GetListApprovalHistories(int pageSize = 10, int pageNumber = 1)
         {
             return Ok(serviceApprovalHistory.GetListApprovalHistories(pageSize, pageNumber));

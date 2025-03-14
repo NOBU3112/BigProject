@@ -9,6 +9,7 @@ using System.Security.Cryptography;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Azure.Core;
+using BigProject.PayLoad.DTO;
 namespace BigProject.Controllers
 {
     [Route("api/[controller]")]
@@ -49,9 +50,9 @@ namespace BigProject.Controllers
         }
 
         [HttpPut("Active_Account")]
-        public IActionResult Activate([FromForm] string Opt)
+        public async Task<IActionResult> Activate([FromForm] string Opt,string email)
         {
-            return Ok(service_Authentic.Activate(Opt));
+            return Ok(await service_Authentic.Activate(Opt,email));
         }
 
         [HttpGet("Authorization")]
@@ -64,14 +65,14 @@ namespace BigProject.Controllers
         }
 
         [HttpPut("Change_Password")]
-        public IActionResult ChangePassword([FromForm] Request_ChangePassword request)
+        public async Task<IActionResult> ChangePassword([FromForm] Request_ChangePassword request)
         {
             if (!HttpContext.User.Identity.IsAuthenticated)
             {
                 return Ok("Vui lòng đăng nhập !");
             }
             int userId = int.Parse(HttpContext.User.FindFirst("Id").Value);
-            return Ok(service_Authentic.ChangePassword(request,userId));
+            return Ok(await service_Authentic.ChangePassword(request,userId));
         }
 
         [HttpPut("Activate_Password")]  
@@ -95,7 +96,11 @@ namespace BigProject.Controllers
             return Ok(service_Authentic.GetListMember(pageSize, pageNumber));
         }
 
-
+        [HttpPost("renew_token")]
+        public async Task<IActionResult> RenewToken([FromBody] DTO_Token request)
+        {
+            return Ok(await service_Authentic.RenewAccessToken(request));
+        }
     }
         
   
