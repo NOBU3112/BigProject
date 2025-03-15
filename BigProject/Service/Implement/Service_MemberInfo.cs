@@ -86,23 +86,27 @@ namespace BigProject.Service.Implement
         public async Task<ResponseObject<DTO_MemberInfo>> UpdateMenberInfo(Request_UpdateMemberInfo request, int userId)
         {
             var memberInfo = await DbContext.memberInfos.FirstOrDefaultAsync(x => x.UserId == userId);
+
             if (memberInfo == null)
             {
                 return responseObject.ResponseObjectError(StatusCodes.Status404NotFound, "Đoàn viên không tồn tại", null);
             }
-            memberInfo.Class = request.Class;
-            memberInfo.Birthdate = request.Birthdate;
-            memberInfo.PhoneNumber = request.PhoneNumber;
-            memberInfo.Nation = request.Nation; 
-            memberInfo.DateOfJoining = request.DateOfJoining;
-            memberInfo.FullName = request.FullName;
-            memberInfo.religion = request.religion;
-            memberInfo.PlaceOfJoining = request.PlaceOfJoining;
-            memberInfo.PoliticalTheory = request.PoliticalTheory;
 
+            // Chỉ cập nhật nếu request có dữ liệu, giữ lại giá trị cũ nếu request không có
+            memberInfo.Class = string.IsNullOrEmpty(request.Class) ? memberInfo.Class : request.Class;
+            memberInfo.Birthdate = request.Birthdate ?? memberInfo.Birthdate;
+            memberInfo.PhoneNumber = string.IsNullOrEmpty(request.PhoneNumber) ? memberInfo.PhoneNumber : request.PhoneNumber;
+            memberInfo.Nation = string.IsNullOrEmpty(request.Nation) ? memberInfo.Nation : request.Nation;
+            memberInfo.DateOfJoining = request.DateOfJoining ?? memberInfo.DateOfJoining;
+            memberInfo.FullName = string.IsNullOrEmpty(request.FullName) ? memberInfo.FullName : request.FullName;
+            memberInfo.religion = string.IsNullOrEmpty(request.religion) ? memberInfo.religion : request.religion;
+            memberInfo.PlaceOfJoining = string.IsNullOrEmpty(request.PlaceOfJoining) ? memberInfo.PlaceOfJoining : request.PlaceOfJoining;
+            memberInfo.PoliticalTheory = string.IsNullOrEmpty(request.PoliticalTheory) ? memberInfo.PoliticalTheory : request.PoliticalTheory;
+            
             DbContext.memberInfos.Update(memberInfo);
-            await DbContext.SaveChangesAsync();
-            return responseObject.ResponseObjectSuccess("Thêm thành công", converter_MemberInfo.EntityToDTO(memberInfo));
+            await DbContext.SaveChangesAsync(); 
+            
+            return responseObject.ResponseObjectSuccess("Cập nhật thành công", converter_MemberInfo.EntityToDTO(memberInfo));
         }
 
         public async Task<ResponseObject<DTO_MemberInfo>> UpdateUserImg(IFormFile? UrlAvatar, int userId)
