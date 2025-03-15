@@ -17,6 +17,10 @@ namespace BigProject.PayLoad.DTO
         public string PlaceOfJoining { get; set; }
         public bool IsOutstandingMember { get; set; } = false;
         public MemberInfoEnum Status { get; set; } = MemberInfoEnum.studying;
-        public int UserId { get; set; }
+        public string UserName { get; set; }
+        public string MaSV { get; set; }
+        public string Email { get; set; }
+        public bool IsActive { get; set; }
+        public string RoleName { get; set; }
     }
 }

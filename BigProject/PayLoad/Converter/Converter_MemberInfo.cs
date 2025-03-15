@@ -1,6 +1,7 @@
 ﻿using BigProject.DataContext;
 using BigProject.Entities;
 using BigProject.PayLoad.DTO;
+using System.Net.WebSockets;
 
 
 namespace BigProject.PayLoad.Converter
@@ -15,6 +16,7 @@ namespace BigProject.PayLoad.Converter
         }
 
         public DTO_MemberInfo EntityToDTO(MemberInfo memberInfo) {
+            var user = _context.users.FirstOrDefault(x=>x.Id==memberInfo.UserId);
             return new DTO_MemberInfo
             {
                 Class = memberInfo.Class,
@@ -30,7 +32,11 @@ namespace BigProject.PayLoad.Converter
                religion = memberInfo.religion,
                Status = memberInfo.Status,
                UrlAvatar = memberInfo.UrlAvatar,
-               UserId = memberInfo.UserId,   
+               UserName = user.Username,
+               Email = user.Email,
+               IsActive = user.IsActive,
+               MaSV = user.MaSV,
+               RoleName = _context.roles.FirstOrDefault(x=>x.Id==user.RoleId).Name,
             };
             }
     }

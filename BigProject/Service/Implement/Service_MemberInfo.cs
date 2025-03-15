@@ -27,45 +27,45 @@ namespace BigProject.Service.Implement
             this.responseBase = responseBase;
         }
 
-        public async Task<ResponseObject<DTO_MemberInfo>> AddMenberInfo(Request_AddMemberInfo request, int userId)
-        {
-            var Check_UserId = await DbContext.users.FirstOrDefaultAsync(x => x.Id == userId);
-            if (Check_UserId == null)
-            {
-                return responseObject.ResponseObjectError(StatusCodes.Status404NotFound, "Đoàn viên không tồn tại", null);
-            }
-            string UrlAvt = null;
-            var cloudinary = new CloudinaryService();
-            if (request.UrlAvatar == null)
-            {
-                UrlAvt = "https://media.istockphoto.com/id/1300845620/vector/user-icon-flat-isolated-on-white-background-user-symbol-vector-illustration.jpg?s=612x612&w=0&k=20&c=yBeyba0hUkh14_jgv1OKqIH0CCSWU_4ckRkAoy2p73o=";
-            }
-            else
-            {
-                if (!CheckInput.IsImage(request.UrlAvatar))
-                {
-                    return responseObject.ResponseObjectError(StatusCodes.Status400BadRequest, "Định dạng ảnh không hợp lệ !", null);
-                }
+        //public async Task<ResponseObject<DTO_MemberInfo>> AddMenberInfo(Request_AddMemberInfo request, int userId)
+        //{
+        //    var Check_UserId = await DbContext.users.FirstOrDefaultAsync(x => x.Id == userId);
+        //    if (Check_UserId == null)
+        //    {
+        //        return responseObject.ResponseObjectError(StatusCodes.Status404NotFound, "Đoàn viên không tồn tại", null);
+        //    }
+        //    string UrlAvt = null;
+        //    var cloudinary = new CloudinaryService();
+        //    if (request.UrlAvatar == null)
+        //    {
+        //        UrlAvt = "https://media.istockphoto.com/id/1300845620/vector/user-icon-flat-isolated-on-white-background-user-symbol-vector-illustration.jpg?s=612x612&w=0&k=20&c=yBeyba0hUkh14_jgv1OKqIH0CCSWU_4ckRkAoy2p73o=";
+        //    }
+        //    else
+        //    {
+        //        if (!CheckInput.IsImage(request.UrlAvatar))
+        //        {
+        //            return responseObject.ResponseObjectError(StatusCodes.Status400BadRequest, "Định dạng ảnh không hợp lệ !", null);
+        //        }
 
-                UrlAvt = await cloudinary.UploadImage(request.UrlAvatar);
-            }
-            var memberInfo = new MemberInfo();
-            memberInfo.Class = request.Class;
-            memberInfo.Birthdate = request.Birthdate;
-            memberInfo.PhoneNumber = request.PhoneNumber;
-            memberInfo.Nation = request.Nation;
-            memberInfo.DateOfJoining = request.DateOfJoining;
-            memberInfo.FullName = request.FullName;
-            memberInfo.religion = request.religion;
-            memberInfo.UrlAvatar = UrlAvt;
-            memberInfo.PlaceOfJoining = request.PlaceOfJoining;
-            memberInfo.PoliticalTheory = request.PoliticalTheory;
-            memberInfo.UserId = userId;
+        //        UrlAvt = await cloudinary.UploadImage(request.UrlAvatar);
+        //    }
+        //    var memberInfo = new MemberInfo();
+        //    memberInfo.Class = request.Class;
+        //    memberInfo.Birthdate = request.Birthdate;
+        //    memberInfo.PhoneNumber = request.PhoneNumber;
+        //    memberInfo.Nation = request.Nation;
+        //    memberInfo.DateOfJoining = request.DateOfJoining;
+        //    memberInfo.FullName = request.FullName;
+        //    memberInfo.religion = request.religion;
+        //    memberInfo.UrlAvatar = UrlAvt;
+        //    memberInfo.PlaceOfJoining = request.PlaceOfJoining;
+        //    memberInfo.PoliticalTheory = request.PoliticalTheory;
+        //    memberInfo.UserId = userId;
 
-            DbContext.memberInfos.Add(memberInfo);
-            await DbContext.SaveChangesAsync();
-            return responseObject.ResponseObjectSuccess("Thêm thành công", converter_MemberInfo.EntityToDTO(memberInfo));
-        }
+        //    DbContext.memberInfos.Add(memberInfo);
+        //    await DbContext.SaveChangesAsync();
+        //    return responseObject.ResponseObjectSuccess("Thêm thành công", converter_MemberInfo.EntityToDTO(memberInfo));
+        //}
 
 
         public IEnumerable<DTO_MemberInfo> GetListMenberInfo(int pageSize, int pageNumber)
@@ -128,7 +128,7 @@ namespace BigProject.Service.Implement
                 UrlAvt = await cloudinary.UploadImage(UrlAvatar);
             }
             memberInfo.UrlAvatar = UrlAvt;
-            DbContext.memberInfos.Add(memberInfo);
+            DbContext.memberInfos.Update(memberInfo);
             await DbContext.SaveChangesAsync();
             return responseObject.ResponseObjectSuccess("Thêm thành công", converter_MemberInfo.EntityToDTO(memberInfo));
         }
