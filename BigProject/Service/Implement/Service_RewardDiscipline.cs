@@ -33,11 +33,6 @@ namespace BigProject.Service.Implement
             {
                 return responseBase.ResponseBaseError(StatusCodes.Status404NotFound, "Đề xuất này không tồn tại!"); 
             };
-            var history = await dbContext.approvalHistories.FirstOrDefaultAsync(X => X.RewardDisciplineId == id);
-            if (history != null)
-            {
-               dbContext.approvalHistories.Remove(history);
-            };
             dbContext.rewardDisciplines.Remove(Reward);
             await dbContext.SaveChangesAsync();
             return responseBase.ResponseBaseSuccess("Xóa thành công!");
@@ -59,12 +54,12 @@ namespace BigProject.Service.Implement
             var proposerCheck = await dbContext.users.FirstOrDefaultAsync(x => x.Id == proposerId);
             if(proposerCheck == null)
             {
-                return responseObject.ResponseObjectError(404, "Người đề xuất không tồn tại!", null);
+                return responseObject.ResponseObjectError(StatusCodes.Status404NotFound, "Người đề xuất không tồn tại!", null);
             }
             var recipientCheck = await dbContext.users.FirstOrDefaultAsync(x => x.Id == request.RecipientId);
             if(recipientCheck == null)
             {
-                return responseObject.ResponseObjectError(404, "Người được đề xuất không tồn tại!", null);
+                return responseObject.ResponseObjectError(StatusCodes.Status404NotFound, "Người được đề xuất không tồn tại!", null);
             }
             //var rewardTypeCheck = await dbContext.rewardDisciplineTypes.FirstOrDefaultAsync(x => x.Id == request.RewardDisciplineTypeId && x.RewardOrDiscipline == true);
             //if(rewardTypeCheck == null)
@@ -80,7 +75,7 @@ namespace BigProject.Service.Implement
             proposer.ProposerId = proposerId;
             dbContext.rewardDisciplines.Add(proposer);
             await dbContext.SaveChangesAsync();
-            return responseObject.ResponseObjectSuccess("Đề xuất thành công!", converter_RewardDiscipline.EntityToDTO(proposer));
+            return responseObject.ResponseObjectSuccess("Thêm thành công!", converter_RewardDiscipline.EntityToDTO(proposer));
         }
 
         public async Task<ResponseObject<DTO_RewardDiscipline>> ProposeDiscipline(Request_ProposeRewardDiscipline request, int proposerId)
@@ -109,7 +104,7 @@ namespace BigProject.Service.Implement
             proposer.ProposerId = proposerId;
             dbContext.rewardDisciplines.Add(proposer);
             await dbContext.SaveChangesAsync();
-            return responseObject.ResponseObjectSuccess("Đề xuất thành công!", converter_RewardDiscipline.EntityToDTO(proposer));
+            return responseObject.ResponseObjectSuccess("Thêm thành công!", converter_RewardDiscipline.EntityToDTO(proposer));
         }
 
         public async Task<ResponseObject<DTO_RewardDiscipline>> AcceptPropose(int proposeId,int userId)
@@ -119,11 +114,6 @@ namespace BigProject.Service.Implement
             {
                 return responseObject.ResponseObjectError(StatusCodes.Status404NotFound, "Đề xuất không tồn tại!", null);
             }
-            if (propose.Status != RequestEnum.waiting)
-            {
-                return responseObject.ResponseObjectError(400, "Đề xuất này đã được xử lý trước đó!", null);
-            }
-
             propose.Status = RequestEnum.accept;
             dbContext.rewardDisciplines.Update(propose);
             await dbContext.SaveChangesAsync();
@@ -153,11 +143,6 @@ namespace BigProject.Service.Implement
             {
                 return responseObject.ResponseObjectError(StatusCodes.Status404NotFound, "Đề xuất không tồn tại!", null);
             }
-            if (propose.Status != RequestEnum.waiting)
-            {
-                return responseObject.ResponseObjectError(400, "Đề xuất này đã được xử lý trước đó!", null);
-            }
-
             propose.Status = RequestEnum.reject;
             propose.RejectReason = reject;
             dbContext.rewardDisciplines.Update(propose);
@@ -186,7 +171,7 @@ namespace BigProject.Service.Implement
 
         public IEnumerable<DTO_RewardDiscipline> GetListWaiting(int pageSize, int pageNumber)
         {
-            return dbContext.rewardDisciplines.Where(x => x.Status == RequestEnum.waiting).Skip((pageNumber - 1) * pageSize).Take(pageSize).Select(x => converter_RewardDiscipline.EntityToDTO(x));
+            return dbContext.rewardDisciplines.Where(x => x.RewardOrDiscipline == true).Skip((pageNumber - 1) * pageSize).Take(pageSize).Select(x => converter_RewardDiscipline.EntityToDTO(x));
         }
     }
 }
