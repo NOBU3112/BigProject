@@ -128,10 +128,15 @@ namespace BigProject.Service.Implement
             return responseObject.ResponseObjectSuccess("Gửi thành công!",null);
 
         }
+       
 
         public async Task<ResponseObject<DTO_Token>> Login(Request_Login request)
         {
-            var user = await dbContext.users.FirstOrDefaultAsync(x => x.Username == request.UserName || x.Email == request.UserName ||  x.MaSV == request.UserName);
+            var user = await dbContext.users.FirstOrDefaultAsync(x => 
+                x.Username == request.UserName || 
+                x.Email == request.UserName || 
+                x.MaSV == request.UserName);
+
             if (user == null)
             {
                 return responseObjectToken.ResponseObjectError(404, "Tài khoản không tồn tại!", null);
@@ -140,13 +145,34 @@ namespace BigProject.Service.Implement
             if (user.IsActive == false)
             {
                 return responseObjectToken.ResponseObjectError(400, "Tài khoản đã bị đóng!", null);
-
             }
 
-            var comfirmEmail = dbContext.emailConfirms.Where(x => x.UserId == user.Id).OrderByDescending(x => x.Id).FirstOrDefault();            
+            var comfirmEmail = dbContext.emailConfirms
+                .Where(x => x.UserId == user.Id)
+                .OrderByDescending(x => x.Id)
+                .FirstOrDefault();
+
             if (comfirmEmail.IsConfirmed == false)
             {
-                return responseObjectToken.ResponseObjectError(400, "Tài khoản chưa được kích hoạt!", null);
+                if (comfirmEmail.Exprired < DateTime.Now)
+                {
+                    Random random = new Random();
+                    int code = random.Next(100000, 999999);
+
+                    EmailTo emailTo = new EmailTo();
+                    emailTo.Mail = user.Email;
+                    emailTo.Subject = "MÃ XÁC NHẬN !";
+                    emailTo.Content = $"Mã xác nhận của bạn là: {code} mã sẽ hết hạn sau 5 phút!";
+                    emailTo.SendEmailAsync(emailTo);
+
+                    comfirmEmail.Code = code.ToString();
+                    comfirmEmail.Exprired = DateTime.Now.AddMinutes(5);
+                    dbContext.emailConfirms.Update(comfirmEmail);
+                    await dbContext.SaveChangesAsync();
+
+                    return responseObjectToken.ResponseObjectError(400, "Mã xác nhận đã hết hạn! Đã gửi mã mới qua email của bạn.", null);
+                }
+                return responseObjectToken.ResponseObjectError(400, "Tài khoản chưa được kích hoạt! Vui lòng kiểm tra email để kích hoạt.", null);
             }
 
             if (!BCrypt.Net.BCrypt.Verify(request.Password, user.Password))
