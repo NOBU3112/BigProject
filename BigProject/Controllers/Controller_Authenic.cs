@@ -80,6 +80,7 @@ namespace BigProject.Controllers
         {
             return Ok(service_Authentic.Activate_Password(code,email));
         }
+
         private string HashOtp(string otp)  
         {
             using (var sha256 = SHA256.Create())
@@ -88,7 +89,12 @@ namespace BigProject.Controllers
                 return BitConverter.ToString(hashedBytes).Replace("-", "").ToLower();
             }
         }
+        [HttpPut("Activate_NoActivateOTP")]
+        public IActionResult Activate_NoActivateOTP([FromForm] string code, string email)
+        {
+            return Ok(service_Authentic.Activate_NoActivateOTP(code, email));
 
+        }
         [Authorize(Roles = "Liên chi đoàn khoa")]
         [HttpGet("Get_List_Member")]
         public IActionResult GetListMember(int pageSize = 10, int pageNumber = 1)
@@ -102,7 +108,6 @@ namespace BigProject.Controllers
             return Ok(await service_Authentic.RenewAccessToken(request));
         }
     }
-        
-  
+
 
 }

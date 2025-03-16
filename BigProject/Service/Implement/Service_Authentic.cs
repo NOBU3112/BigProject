@@ -147,14 +147,14 @@ namespace BigProject.Service.Implement
                 return responseObjectToken.ResponseObjectError(400, "Tài khoản đã bị đóng!", null);
             }
 
-            var comfirmEmail = dbContext.emailConfirms
-                .Where(x => x.UserId == user.Id)
+            var confirmEmail = dbContext.emailConfirms
+                .Where(x => x.UserId == user.Id && x.IsActiveAccount == true)
                 .OrderByDescending(x => x.Id)
                 .FirstOrDefault();
 
-            if (comfirmEmail.IsConfirmed == false)
+            if (confirmEmail?.IsConfirmed == false)
             {
-                if (comfirmEmail.Exprired < DateTime.Now)
+                if (confirmEmail.Exprired < DateTime.Now)
                 {
                     Random random = new Random();
                     int code = random.Next(100000, 999999);
@@ -165,9 +165,9 @@ namespace BigProject.Service.Implement
                     emailTo.Content = $"Mã xác nhận của bạn là: {code} mã sẽ hết hạn sau 5 phút!";
                     emailTo.SendEmailAsync(emailTo);
 
-                    comfirmEmail.Code = code.ToString();
-                    comfirmEmail.Exprired = DateTime.Now.AddMinutes(5);
-                    dbContext.emailConfirms.Update(comfirmEmail);
+                    confirmEmail.Code = code.ToString();
+                    confirmEmail.Exprired = DateTime.Now.AddMinutes(5);
+                    dbContext.emailConfirms.Update(confirmEmail);
                     await dbContext.SaveChangesAsync();
 
                     return responseObjectToken.ResponseObjectError(400, "Mã xác nhận đã hết hạn! Đã gửi mã mới qua email của bạn.", null);
@@ -525,6 +525,46 @@ namespace BigProject.Service.Implement
                 }
             }
         }
+
+        public ResponseBase Activate_OTP(string code, string email)
+        {
+            var user = dbContext.users.FirstOrDefault(x => x.Email == email);
+            if (user == null)
+            {
+                return responseBase.ResponseBaseError(404, "Email không tồn tại!");
+            }
+
+            var confirmEmail = dbContext.emailConfirms
+                .Where(x => x.UserId == user.Id && x.IsActiveAccount == true)
+                .OrderByDescending(x => x.Id)
+                .FirstOrDefault();
+
+            if (confirmEmail == null)
+            {
+                return responseBase.ResponseBaseError(400, "Không tìm thấy yêu cầu xác thực!");
+            }
+
+            if (confirmEmail.Code != code)
+            {
+                return responseBase.ResponseBaseError(400, "Mã xác nhận không đúng!");
+            }
+
+            if (confirmEmail.Exprired < DateTime.Now)
+            {
+                return responseBase.ResponseBaseError(400, "Mã xác nhận đã hết hạn!");
+            }
+
+            if (confirmEmail.IsConfirmed)
+            {
+                return responseBase.ResponseBaseError(400, "Mã xác nhận đã được sử dụng!");
+            }
+
+            confirmEmail.IsConfirmed = true;
+            dbContext.emailConfirms.Update(confirmEmail);
+            dbContext.SaveChanges();
+
+            return responseBase.ResponseBaseSuccess("Kích hoạt tài khoản thành công!");
         }
+    }
     }
 

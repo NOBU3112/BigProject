@@ -16,6 +16,8 @@ namespace BigProject.Service.Interface
         Task<ResponseBase> Activate(string Opt, string email);
 
         ResponseBase Activate_Password (string code, string email);
+        
+        ResponseBase Activate_OTP(string code, string email);
 
         Task<ResponseBase> ChangePassword(Request_ChangePassword requset, int userId);
 
