@@ -96,6 +96,19 @@ namespace BigProject.Helper
             return false;
         }
 
-      
+        // Thêm phương thức kiểm tra MaSV
+        public static bool IsValidMaSV(string maSV)
+        {
+            // Kiểm tra null hoặc rỗng
+            if (string.IsNullOrWhiteSpace(maSV))
+                return false;
+
+            // Kiểm tra độ dài phải là 10 ký tự
+            if (maSV.Length != 10)
+                return false;
+
+            // Kiểm tra tất cả ký tự phải là số
+            return maSV.All(char.IsDigit);
+        }
     }
 }
