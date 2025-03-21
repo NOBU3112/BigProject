@@ -174,7 +174,7 @@ namespace BigProject.Service.Implement
 
                 return responseObjectToken.ResponseObjectError(400, 
                     "Tài khoản chưa được kích hoạt! Vui lòng kiểm tra email và kích hoạt tài khoản.",
-                      new DTO_Token { requireActivation = true });
+                      new DTO_Token { requireActivation = true,Email = user.Email });
             }
 
             return responseObjectToken.ResponseObjectSuccess("Đăng nhập thành công!", 
