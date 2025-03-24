@@ -10,6 +10,7 @@ namespace BigProject.Service.Interface
         Task<ResponseObject<DTO_MemberInfo>> UpdateMenberInfo(Request_UpdateMemberInfo request, int userId);
         Task<ResponseObject<DTO_MemberInfo>> UpdateUserImg(IFormFile? UrlAvatar, int userId);
         IEnumerable<DTO_MemberInfo> GetListMenberInfo(int pageSize, int pageNumber);
-        Task<ResponseObject<DTO_MemberInfo>> GetMemberInfo(int userId);
+        Task<ResponseObject<DTO_MemberInfo>> GetMemberInfo(int userId); 
+        Task<ResponseObject<List<DTO_MemberInfo>>> SearchMembers(Request_Search_Member request);
     }
 }

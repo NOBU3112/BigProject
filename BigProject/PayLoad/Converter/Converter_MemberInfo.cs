@@ -15,7 +15,7 @@ namespace BigProject.PayLoad.Converter
             _context = context;
         }
 
-        public DTO_MemberInfo EntityToDTO(MemberInfo memberInfo) {
+        public DTO_MemberInfo EntityToDTO( MemberInfo memberInfo) {
             var user = _context.users.FirstOrDefault(x=>x.Id==memberInfo.UserId);
             return new DTO_MemberInfo
             {

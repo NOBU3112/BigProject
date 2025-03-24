@@ -17,7 +17,7 @@ namespace BigProject.Entities
         public bool IsOutstandingMember { get; set; } = false;
         public MemberInfoEnum Status { get; set; } = MemberInfoEnum.studying;
         public int UserId { get; set; }
-        public User User { get; set; }
+        public virtual User User { get; set; }
         public ICollection<RequestToBeOutStandingMember> requestToBeOutStandingMembers { get; set; }
     }
 }   

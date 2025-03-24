@@ -1,5 +1,6 @@
 ﻿        using BigProject.DataContext;
-        using BigProject.Payload.Response;
+using BigProject.Middlewares;
+using BigProject.Payload.Response;
         using BigProject.PayLoad.Converter;
         using BigProject.PayLoad.DTO;
         using BigProject.Service.Implement;
@@ -123,6 +124,7 @@ builder.Services.AddScoped<ResponseObject<DTO_Register>>();
             app.UseSwagger();
             app.UseSwaggerUI();
         }
+        app.UseMiddleware<TokenValidationMiddleware>();
         app.UseCors("AllowAll");
         app.UseHttpsRedirection();
 

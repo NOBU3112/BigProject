@@ -13,7 +13,7 @@ namespace BigProject.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+   // [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class Controller_MemberInfo : ControllerBase
     {
         private readonly IService_MemberInfo memberInfo;
@@ -61,6 +61,16 @@ namespace BigProject.Controllers
             }
             int userId = int.Parse(HttpContext.User.FindFirst("Id").Value);
             return Ok(await memberInfo.GetMemberInfo(userId));
+        }
+
+        [HttpGet("Search_Member")]
+        public async Task<IActionResult> SearchMember([FromQuery] Request_Search_Member request)
+        {
+            var result = await memberInfo.SearchMembers(request);
+            if(result.Data.Count == 0)
+                return NotFound("Không tìm thấy member phù hợp !");
+
+            return Ok(result);
         }
 
     }

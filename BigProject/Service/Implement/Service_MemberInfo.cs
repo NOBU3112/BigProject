@@ -83,6 +83,27 @@ namespace BigProject.Service.Implement
             return responseObject.ResponseObjectSuccess("Lấy thông tin thành công!", converter_MemberInfo.EntityToDTO(memberInfo));
         }
 
+        public async  Task<ResponseObject<List<DTO_MemberInfo>>> SearchMembers(Request_Search_Member request)
+        {
+            var listMembers =  DbContext.memberInfos.AsQueryable(); //có 1 danh sách đầy đủ chưa lọc
+            if (request.MaSV != null) //nếu mã sinh viên được truyền vào => cần lọc theo mã sinh viên
+                listMembers =  listMembers.Where(x=>x.User.MaSV == request.MaSV);
+            if(request.FullName != null) //nếu tên đầy đủ có giá trị => cần lọc theo tên đầy đủ
+                listMembers = listMembers.Where(x=>x.FullName.Contains(request.FullName));
+            if(request.Email != null)
+                listMembers = listMembers.Where(x=>x.User.Email.Contains(request.Email));
+            if(request.PhoneNumber != null)
+                listMembers = listMembers.Where(x => x.PhoneNumber == request.PhoneNumber );
+            if (request.Status.HasValue)
+                listMembers = listMembers.Where(x => (int)x.Status == request.Status.Value);
+
+            return new ResponseObject<List<DTO_MemberInfo>>().ResponseObjectSuccess(
+                "Danh sách Member:",
+                listMembers.Skip((request.PageNumber - 1) * request.PageSize)
+                .Take(request.PageSize)
+                .Select(x => converter_MemberInfo.EntityToDTO(x)).ToList());
+        }
+
         public async Task<ResponseObject<DTO_MemberInfo>> UpdateMenberInfo(Request_UpdateMemberInfo request, int userId)
         {
             var memberInfo = await DbContext.memberInfos.FirstOrDefaultAsync(x => x.UserId == userId);
