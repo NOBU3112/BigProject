@@ -38,16 +38,51 @@ namespace BigProject.Service.Implement
             return responseBase.ResponseBaseSuccess("Xóa thành công!");
         }
 
-        public IEnumerable<DTO_RewardDiscipline> GetListDiscipline(int pageSize, int pageNumber)
+        public PagedResult<DTO_RewardDiscipline> GetListDiscipline(int pageSize, int pageNumber)
         {
-            return dbContext.rewardDisciplines.Where(x => x.RewardOrDiscipline == false).Skip((pageNumber - 1) * pageSize).Take(pageSize).Select(x => converter_RewardDiscipline.EntityToDTO(x));
+            var query = dbContext.rewardDisciplines.Where(x => x.RewardOrDiscipline == false);
+
+            int totalItems = query.Count();
+            int totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+
+            var items = query
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .Select(x => converter_RewardDiscipline.EntityToDTO(x))
+                .ToList(); // Chuyển sang List<T>
+
+            return new PagedResult<DTO_RewardDiscipline>
+            {
+                Items = items,
+                TotalItems = totalItems,
+                TotalPages = totalPages,
+                CurrentPage = pageNumber
+            };
         }
 
-        public IEnumerable<DTO_RewardDiscipline> GetListReward(int pageSize, int pageNumber)
-        {
-            return dbContext.rewardDisciplines.Where(x => x.RewardOrDiscipline == true).Skip((pageNumber - 1) * pageSize).Take(pageSize).Select(x => converter_RewardDiscipline.EntityToDTO(x));
 
+        public PagedResult<DTO_RewardDiscipline> GetListReward(int pageSize, int pageNumber)
+        {
+            var query = dbContext.rewardDisciplines.Where(x => x.RewardOrDiscipline == true);
+
+            int totalItems = query.Count();
+            int totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+
+            var items = query
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .Select(x => converter_RewardDiscipline.EntityToDTO(x))
+                .ToList(); // Chuyển sang List<T>
+
+            return new PagedResult<DTO_RewardDiscipline>
+            {
+                Items = items,
+                TotalItems = totalItems,
+                TotalPages = totalPages,
+                CurrentPage = pageNumber
+            };
         }
+
 
         public async Task<ResponseObject<DTO_RewardDiscipline>> ProposeReward(Request_ProposeRewardDiscipline request, int proposerId)
         {
@@ -169,10 +204,28 @@ namespace BigProject.Service.Implement
             return responseObject.ResponseObjectSuccess("Từ chối!", converter_RewardDiscipline.EntityToDTO(propose));
         }
 
-        public IEnumerable<DTO_RewardDiscipline> GetListWaiting(int pageSize, int pageNumber)
+        public PagedResult<DTO_RewardDiscipline> GetListWaiting(int pageSize, int pageNumber)
         {
-            return dbContext.rewardDisciplines.Where(x => x.RewardOrDiscipline == true).Skip((pageNumber - 1) * pageSize).Take(pageSize).Select(x => converter_RewardDiscipline.EntityToDTO(x));
+            var query = dbContext.rewardDisciplines.Where(x => x.RewardOrDiscipline == true);
+
+            int totalItems = query.Count();
+            int totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+
+            var items = query
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .Select(x => converter_RewardDiscipline.EntityToDTO(x))
+                .ToList(); // Chuyển thành List<T>
+
+            return new PagedResult<DTO_RewardDiscipline>
+            {
+                Items = items,
+                TotalItems = totalItems,
+                TotalPages = totalPages,
+                CurrentPage = pageNumber
+            };
         }
+
     }
 }
     

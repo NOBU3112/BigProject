@@ -67,11 +67,17 @@ namespace BigProject.Controllers
         public async Task<IActionResult> SearchMember([FromQuery] Request_Search_Member request)
         {
             var result = await memberInfo.SearchMembers(request);
-            if(result.Data.Count == 0)
-                return NotFound("Không tìm thấy member phù hợp !");
 
+            // Kiểm tra nếu không có dữ liệu
+            if (result?.Data == null || !result.Data.Items.Any())
+            {
+                return NotFound(new { message = "Không tìm thấy member phù hợp!" });
+            }
+
+            // Trả về kết quả thành công
             return Ok(result);
         }
+
 
     }
 }

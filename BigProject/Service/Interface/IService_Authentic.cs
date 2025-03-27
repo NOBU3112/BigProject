@@ -1,4 +1,5 @@
-﻿using BigProject.Payload.Response;
+﻿using BigProject.Entities;
+using BigProject.Payload.Response;
 using BigProject.PayLoad.DTO;
 using BigProject.PayLoad.Request;
 
@@ -21,7 +22,7 @@ namespace BigProject.Service.Interface
 
         Task<ResponseObject<List<DTO_Register>>> Authorization(int RoleId);
 
-        IEnumerable<DTO_Register> GetListMember(int pageSize, int pageNumber);
+        PagedResult<DTO_Register> GetListMember(int pageSize, int pageNumber);
 
         Task<ResponseObject<object>> DecodeJwtTokenAsync(string token);
 

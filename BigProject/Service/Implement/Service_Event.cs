@@ -82,10 +82,28 @@ namespace BigProject.Service.Implement
             return responseBase.ResponseBaseSuccess("Xóa thành công!");
         }
 
-        public IEnumerable<DTO_Event> GetListEvent(int pageSize, int pageNumber)
+        public PagedResult<DTO_Event> GetListEvent(int pageSize, int pageNumber)
         {
-            return dbContext.events.Skip((pageNumber - 1) * pageSize).Take(pageSize).Select(x => converter_Event.EntityToDTO(x));
+            var query = dbContext.events;
+
+            int totalItems = query.Count();
+            int totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+
+            var items = query
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .Select(x => converter_Event.EntityToDTO(x))
+                .ToList(); // Chuyển thành List<T>
+
+            return new PagedResult<DTO_Event>
+            {
+                Items = items,
+                TotalItems = totalItems,
+                TotalPages = totalPages,
+                CurrentPage = pageNumber
+            };
         }
+
 
         public async Task<ResponseObject<DTO_Event>> UpdateEvent(Request_UpdateEvent request)
         {
@@ -163,14 +181,49 @@ namespace BigProject.Service.Implement
             await dbContext.SaveChangesAsync();
             return responseBase.ResponseBaseSuccess("Bỏ tham gia thành công!");
         }
-        public IEnumerable<DTO_EventJoin> GetListAllEventUserJoin(int pageSize, int pageNumber, int userId)
+        public PagedResult<DTO_EventJoin> GetListAllEventUserJoin(int pageSize, int pageNumber, int userId)
         {
-            return dbContext.eventJoins.Skip((pageNumber - 1) * pageSize).Take(pageSize).Where(x=>x.UserId == userId).Select(x => converter_EventJoin.EntityToDTO(x));
+            var query = dbContext.eventJoins.Where(x => x.UserId == userId);
+
+            int totalItems = query.Count();
+            int totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+
+            var items = query
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .Select(x => converter_EventJoin.EntityToDTO(x))
+                .ToList(); // Chuyển thành List<T>
+
+            return new PagedResult<DTO_EventJoin>
+            {
+                Items = items,
+                TotalItems = totalItems,
+                TotalPages = totalPages,
+                CurrentPage = pageNumber
+            };
         }
 
-        public IEnumerable<DTO_EventJoin> GetListAllParticipantInAnEvent(int pageSize, int pageNumber, int eventId)
+        public PagedResult<DTO_EventJoin> GetListAllParticipantInAnEvent(int pageSize, int pageNumber, int eventId)
         {
-            return dbContext.eventJoins.Skip((pageNumber - 1) * pageSize).Take(pageSize).Where(x => x.EventId == eventId).Select(x => converter_EventJoin.EntityToDTO(x));
+            var query = dbContext.eventJoins.Where(x => x.EventId == eventId);
+
+            int totalItems = query.Count();
+            int totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+
+            var items = query
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .Select(x => converter_EventJoin.EntityToDTO(x))
+                .ToList(); // Chuyển thành List<T>
+
+            return new PagedResult<DTO_EventJoin>
+            {
+                Items = items,
+                TotalItems = totalItems,
+                TotalPages = totalPages,
+                CurrentPage = pageNumber
+            };
         }
+
     }
 }

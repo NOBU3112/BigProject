@@ -68,10 +68,26 @@ namespace BigProject.Service.Implement
         //}
 
 
-        public IEnumerable<DTO_MemberInfo> GetListMenberInfo(int pageSize, int pageNumber)
+        public PagedResult<DTO_MemberInfo> GetListMenberInfo(int pageSize, int pageNumber)
         {
-            return DbContext.memberInfos.Skip((pageNumber - 1) * pageSize).Take(pageSize).Select(x => converter_MemberInfo.EntityToDTO(x));
+            int totalItems = DbContext.memberInfos.Count();
+            int totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+
+            var items = DbContext.memberInfos
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .Select(x => converter_MemberInfo.EntityToDTO(x))
+                .ToList(); // Chuyển thành List<T>
+
+            return new PagedResult<DTO_MemberInfo>
+            {
+                Items = items,
+                TotalItems = totalItems,
+                TotalPages = totalPages,
+                CurrentPage = pageNumber
+            };
         }
+
 
         public async Task<ResponseObject<DTO_MemberInfo>> GetMemberInfo(int userId)
         {
@@ -83,26 +99,45 @@ namespace BigProject.Service.Implement
             return responseObject.ResponseObjectSuccess("Lấy thông tin thành công!", converter_MemberInfo.EntityToDTO(memberInfo));
         }
 
-        public async  Task<ResponseObject<List<DTO_MemberInfo>>> SearchMembers(Request_Search_Member request)
+        public async Task<ResponseObject<PagedResult<DTO_MemberInfo>>> SearchMembers(Request_Search_Member request)
         {
-            var listMembers =  DbContext.memberInfos.AsQueryable(); //có 1 danh sách đầy đủ chưa lọc
-            if (request.MaSV != null) //nếu mã sinh viên được truyền vào => cần lọc theo mã sinh viên
-                listMembers =  listMembers.Where(x=>x.User.MaSV == request.MaSV);
-            if(request.FullName != null) //nếu tên đầy đủ có giá trị => cần lọc theo tên đầy đủ
-                listMembers = listMembers.Where(x=>x.FullName.Contains(request.FullName));
-            if(request.Email != null)
-                listMembers = listMembers.Where(x=>x.User.Email.Contains(request.Email));
-            if(request.PhoneNumber != null)
-                listMembers = listMembers.Where(x => x.PhoneNumber == request.PhoneNumber );
+            var listMembers = DbContext.memberInfos.AsQueryable(); // Danh sách chưa lọc
+
+            // Lọc dữ liệu theo điều kiện
+            if (!string.IsNullOrEmpty(request.MaSV))
+                listMembers = listMembers.Where(x => x.User.MaSV == request.MaSV);
+            if (!string.IsNullOrEmpty(request.FullName))
+                listMembers = listMembers.Where(x => x.FullName.Contains(request.FullName));
+            if (!string.IsNullOrEmpty(request.Email))
+                listMembers = listMembers.Where(x => x.User.Email.Contains(request.Email));
+            if (!string.IsNullOrEmpty(request.PhoneNumber))
+                listMembers = listMembers.Where(x => x.PhoneNumber == request.PhoneNumber);
             if (request.Status.HasValue)
                 listMembers = listMembers.Where(x => (int)x.Status == request.Status.Value);
 
-            return new ResponseObject<List<DTO_MemberInfo>>().ResponseObjectSuccess(
-                "Danh sách Member:",
-                listMembers.Skip((request.PageNumber - 1) * request.PageSize)
+            // Tổng số phần tử sau khi lọc
+            int totalItems = await listMembers.CountAsync();
+            int totalPages = (int)Math.Ceiling(totalItems / (double)request.PageSize);
+
+            // Lấy danh sách sau khi phân trang
+            var items = await listMembers
+                .Skip((request.PageNumber - 1) * request.PageSize)
                 .Take(request.PageSize)
-                .Select(x => converter_MemberInfo.EntityToDTO(x)).ToList());
+                .Select(x => converter_MemberInfo.EntityToDTO(x))
+                .ToListAsync();
+
+            // Trả về kết quả dưới dạng `PagedResult<T>`
+            var pagedResult = new PagedResult<DTO_MemberInfo>
+            {
+                Items = items,
+                TotalItems = totalItems,
+                TotalPages = totalPages,
+                CurrentPage = request.PageNumber
+            };
+
+            return new ResponseObject<PagedResult<DTO_MemberInfo>>().ResponseObjectSuccess("Danh sách Member:", pagedResult);
         }
+
 
         public async Task<ResponseObject<DTO_MemberInfo>> UpdateMenberInfo(Request_UpdateMemberInfo request, int userId)
         {
