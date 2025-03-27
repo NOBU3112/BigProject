@@ -420,9 +420,24 @@ namespace BigProject.Service.Implement
             return responseObjectList.ResponseObjectSuccess("Hiện thành công!", listUserForRoleInput.Select(x => converter_Register.EntityToDTO(x)).ToList());
         }
 
-        public IEnumerable<DTO_Register> GetListMember(int pageSize, int pageNumber)
+        public PagedResult<DTO_Register> GetListMember(int pageSize, int pageNumber)
         {
-            return dbContext.users.Skip((pageNumber - 1) * pageSize).Take(pageSize).Select(x => converter_Register.EntityToDTO(x));
+            int totalItems = dbContext.users.Count();
+            int totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+
+            var items = dbContext.users
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .Select(x => converter_Register.EntityToDTO(x))
+                .ToList();
+
+            return new PagedResult<DTO_Register>
+            {
+                Items = items,
+                TotalItems = totalItems,
+                TotalPages = totalPages,
+                CurrentPage = pageNumber
+            };
         }
 
         public ResponseBase Activate_Password(string code, string email)

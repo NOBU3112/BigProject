@@ -70,10 +70,28 @@ namespace BigProject.Service.Implement
             return responseBase.ResponseBaseSuccess("Xóa thành công!");
         }
 
-        public IEnumerable<DTO_Document> GetListDocument(int pageSize, int pageNumber)
+        public PagedResult<DTO_Document> GetListDocument(int pageSize, int pageNumber)
         {
-            return dbContext.documents.Skip((pageNumber - 1) * pageSize).Take(pageSize).Select(x => converter_Document.EntityToDTO(x));
+            var query = dbContext.documents;
+
+            int totalItems = query.Count();
+            int totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+
+            var items = query
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .Select(x => converter_Document.EntityToDTO(x))
+                .ToList(); // Chuyển thành List<T>
+
+            return new PagedResult<DTO_Document>
+            {
+                Items = items,
+                TotalItems = totalItems,
+                TotalPages = totalPages,
+                CurrentPage = pageNumber
+            };
         }
+
 
         public async Task<ResponseObject<DTO_Document>> UpdateDocument(Request_UpdateDocument request)
         {
