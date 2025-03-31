@@ -352,7 +352,7 @@ namespace BigProject.Service.Implement
              new Claim(ClaimTypes.Role, decentralization?.Name ?? ""),
              new Claim("FullName", get_FullName?.FullName ?? "")
                 }),
-                Expires = DateTime.UtcNow.AddMinutes(2),
+                Expires = DateTime.UtcNow.AddHours(12),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(secretKeyBytes), SecurityAlgorithms.HmacSha256Signature)
             };
 
