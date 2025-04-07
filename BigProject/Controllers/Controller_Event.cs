@@ -67,7 +67,6 @@ namespace BigProject.Controllers
         }
         
         [HttpGet("Get_List_All_Participant_In_An_Event")]
-        [Authorize(Roles = "Liên chi đoàn khoa,Bí thư đoàn viên")]
        
         public IActionResult GetListAllParticipantInAnEvent( int eventId,int pageSize = 10, int pageNumber = 1)
         {

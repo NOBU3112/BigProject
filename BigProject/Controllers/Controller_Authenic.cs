@@ -89,7 +89,7 @@ namespace BigProject.Controllers
             }
         }
 
-        [Authorize(Roles = "Liên chi đoàn khoa")]
+      
         [HttpGet("Get_List_Member")]
         public IActionResult GetListMember(int pageSize = 10, int pageNumber = 1)
         {

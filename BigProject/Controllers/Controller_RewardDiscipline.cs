@@ -33,7 +33,6 @@ namespace BigProject.Controllers
         }
 
         [HttpGet("Get_List_Waiting")]
-        [Authorize(Roles = "Liên chi đoàn khoa")]
         public IActionResult GetListWaiting(int pageSize = 10, int pageNumber = 1)
         {
             return Ok(service_RewardDiscipline.GetListWaiting(pageSize, pageNumber));
