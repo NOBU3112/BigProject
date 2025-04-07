@@ -46,7 +46,6 @@ namespace BigProject.Controllers
         }
 
         [HttpGet("Get_List_Menber_Info")]
-        [Authorize(Roles = "Liên chi đoàn khoa,Bí thư đoàn viên")]
         public IActionResult GetListMenberInfo( int pageSize = 10, int pageNumber = 1)
         {
             return Ok(memberInfo.GetListMenberInfo(pageSize, pageNumber));
