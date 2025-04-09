@@ -84,5 +84,17 @@ namespace BigProject.Controllers
             int userId = int.Parse(HttpContext.User.FindFirst("Id").Value);
             return Ok(service_Event.GetListAllEventUserJoin(pageSize, pageNumber, userId));
         }
+
+        [HttpGet("Check_EventJoint_Status")]
+        public IActionResult CheckUserEventStatus(int eventId)
+        {
+            if (!HttpContext.User.Identity.IsAuthenticated)
+            {
+                return Ok("Vui lòng đăng nhập !");
+            }
+            int userId = int.Parse(HttpContext.User.FindFirst("Id").Value);
+            return Ok(service_Event.CheckStatus(userId,eventId));
+        }
+
     }
 }
