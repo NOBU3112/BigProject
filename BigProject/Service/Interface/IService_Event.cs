@@ -16,5 +16,6 @@ namespace BigProject.Service.Interface
         Task<ResponseBase> WithdrawFromAnEvent(int eventJoinId);
         PagedResult<DTO_EventJoin> GetListAllParticipantInAnEvent(int pageSize, int pageNumber,int eventId);
         PagedResult<DTO_EventJoin> GetListAllEventUserJoin(int pageSize, int pageNumber, int userId);
+        bool CheckStatus(int userId, int eventId);
     }
 }

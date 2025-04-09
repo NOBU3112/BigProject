@@ -225,5 +225,14 @@ namespace BigProject.Service.Implement
             };
         }
 
+        public bool CheckStatus(int userId, int eventId)
+        {
+            var eventCheck = dbContext.eventJoins.FirstOrDefault(x=> x.UserId == userId && x.EventId == eventId);
+            if (eventCheck == null || eventCheck.Status != Enums.EventJointEnum.registered) 
+            {
+                return false;
+            }
+            return true;
+        }
     }
 }
