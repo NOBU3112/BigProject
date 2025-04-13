@@ -40,7 +40,7 @@ namespace BigProject.Service.Implement
 
         public PagedResult<DTO_RewardDiscipline> GetListDiscipline(int pageSize, int pageNumber)
         {
-            var query = dbContext.rewardDisciplines.Where(x => x.RewardOrDiscipline == false);
+            var query = dbContext.rewardDisciplines.Where(x => x.RewardOrDiscipline == false && x.Status == RequestEnum.accept);
 
             int totalItems = query.Count();
             int totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
@@ -63,7 +63,7 @@ namespace BigProject.Service.Implement
 
         public PagedResult<DTO_RewardDiscipline> GetListReward(int pageSize, int pageNumber)
         {
-            var query = dbContext.rewardDisciplines.Where(x => x.RewardOrDiscipline == true);
+            var query = dbContext.rewardDisciplines.Where(x => x.RewardOrDiscipline == true && x.Status == RequestEnum.accept);
 
             int totalItems = query.Count();
             int totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
@@ -87,31 +87,29 @@ namespace BigProject.Service.Implement
         public async Task<ResponseObject<DTO_RewardDiscipline>> ProposeReward(Request_ProposeRewardDiscipline request, int proposerId)
         {
             var proposerCheck = await dbContext.users.FirstOrDefaultAsync(x => x.Id == proposerId);
-            if(proposerCheck == null)
+            if (proposerCheck == null)
             {
                 return responseObject.ResponseObjectError(StatusCodes.Status404NotFound, "Người đề xuất không tồn tại!", null);
             }
-            var recipientCheck = await dbContext.users.FirstOrDefaultAsync(x => x.Id == request.RecipientId);
-            if(recipientCheck == null)
+
+            // Tìm kiếm người nhận bằng MaSV
+            var recipientCheck = await dbContext.users.FirstOrDefaultAsync(x => x.MaSV == request.RecipientMaSV);
+            if (recipientCheck == null)
             {
                 return responseObject.ResponseObjectError(StatusCodes.Status404NotFound, "Người được đề xuất không tồn tại!", null);
             }
-            //var rewardTypeCheck = await dbContext.rewardDisciplineTypes.FirstOrDefaultAsync(x => x.Id == request.RewardDisciplineTypeId && x.RewardOrDiscipline == true);
-            //if(rewardTypeCheck == null)
-            //{
-            //    return responseObject.ResponseObjectError(StatusCodes.Status404NotFound, "Loại giải thưởng không tồn tại!", null);
-            //}
+
             var proposer = new RewardDiscipline();
             proposer.RewardOrDiscipline = true;
             proposer.Description = request.Description;
-            //proposer.RewardDisciplineTypeId = request.RewardDisciplineTypeId;
             proposer.Status = RequestEnum.waiting;
-            proposer.RecipientId = request.RecipientId;
-            proposer.ProposerId = proposerId;
+            proposer.RecipientId = recipientCheck.Id;  // Lưu Id của người nhận
+            proposer.ProposerId = proposerId;  // Giữ nguyên proposerId
             dbContext.rewardDisciplines.Add(proposer);
             await dbContext.SaveChangesAsync();
             return responseObject.ResponseObjectSuccess("Thêm thành công!", converter_RewardDiscipline.EntityToDTO(proposer));
         }
+
 
         public async Task<ResponseObject<DTO_RewardDiscipline>> ProposeDiscipline(Request_ProposeRewardDiscipline request, int proposerId)
         {
@@ -120,23 +118,20 @@ namespace BigProject.Service.Implement
             {
                 return responseObject.ResponseObjectError(StatusCodes.Status404NotFound, "Người đề xuất không tồn tại!", null);
             }
-            var recipientCheck = await dbContext.users.FirstOrDefaultAsync(x => x.Id == request.RecipientId);
+
+            // Tìm kiếm người nhận bằng MaSV
+            var recipientCheck = await dbContext.users.FirstOrDefaultAsync(x => x.MaSV == request.RecipientMaSV);
             if (recipientCheck == null)
             {
                 return responseObject.ResponseObjectError(StatusCodes.Status404NotFound, "Người được đề xuất không tồn tại!", null);
             }
-            ////var disciplineTypeCheck = await dbContext.rewardDisciplineTypes.FirstOrDefaultAsync(x => x.Id == request.RewardDisciplineTypeId && x.RewardOrDiscipline == false);
-            //if (disciplineTypeCheck == null)
-            //{
-            //    return responseObject.ResponseObjectError(StatusCodes.Status404NotFound, "Loại kỷ luật không tồn tại!", null);
-            //}
+
             var proposer = new RewardDiscipline();
             proposer.RewardOrDiscipline = false;
             proposer.Description = request.Description;
-            //proposer.RewardDisciplineTypeId = request.RewardDisciplineTypeId;
             proposer.Status = RequestEnum.waiting;
-            proposer.RecipientId = request.RecipientId;
-            proposer.ProposerId = proposerId;
+            proposer.RecipientId = recipientCheck.Id;  // Lưu Id của người nhận
+            proposer.ProposerId = proposerId;  // Giữ nguyên proposerId
             dbContext.rewardDisciplines.Add(proposer);
             await dbContext.SaveChangesAsync();
             return responseObject.ResponseObjectSuccess("Thêm thành công!", converter_RewardDiscipline.EntityToDTO(proposer));
@@ -206,7 +201,7 @@ namespace BigProject.Service.Implement
 
         public PagedResult<DTO_RewardDiscipline> GetListWaiting(int pageSize, int pageNumber)
         {
-            var query = dbContext.rewardDisciplines.Where(x => x.RewardOrDiscipline == true);
+            var query = dbContext.rewardDisciplines.Where( x=> x.Status == RequestEnum.waiting);
 
             int totalItems = query.Count();
             int totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);

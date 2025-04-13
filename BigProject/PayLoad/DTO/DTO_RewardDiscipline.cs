@@ -16,5 +16,6 @@ namespace BigProject.PayLoad.DTO
         public string ProposerName { get; set; }
         public string RecipientMaSV { get; set; }
         public string ProposerMaSV { get; set; }
+        public string MaSV { get; set; }    
     }
 }

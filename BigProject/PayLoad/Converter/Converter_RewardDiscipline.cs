@@ -28,6 +28,7 @@ namespace BigProject.PayLoad.Converter
                 Status = rewardDiscipline.Status,
                 RejectReason = rewardDiscipline.RejectReason,
                 RewardOrDiscipline = rewardDiscipline.RewardOrDiscipline,
+               MaSV = appDbContext.users.FirstOrDefault(X => X.Id == rewardDiscipline.RecipientId).MaSV,
             };
         }
     }
