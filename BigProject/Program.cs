@@ -78,10 +78,12 @@ builder.Services.AddSwaggerGen(x =>
         builder.Services.AddScoped<Converter_Login>();
         builder.Services.AddScoped<Converter_Event>();
         builder.Services.AddScoped<Converter_RewardDiscipline>();
+        builder.Services.AddScoped<Converter_RewardDisciplineApproval>();
         //builder.Services.AddScoped<Converter_RewardDisciplineType>();
         builder.Services.AddScoped<Converter_MemberInfo>();
         builder.Services.AddScoped<Converter_EventJoin>();
         builder.Services.AddScoped<Converter_OutstandingMember>();
+        builder.Services.AddScoped<Converter_OutstandingMemberApproval>();
         builder.Services.AddScoped<Converter_ApprovalHistory>();
         builder.Services.AddScoped<Converter_Document>();
 
@@ -95,17 +97,19 @@ builder.Services.AddSwaggerGen(x =>
         builder.Services.AddScoped<IService_ApprovalHistory, Service_ApprovalHistory>();
         builder.Services.AddScoped<IService_Document, Service_Document>();
       
-
-builder.Services.AddScoped<ResponseObject<DTO_Register>>();     
+    
+        builder.Services.AddScoped<ResponseObject<DTO_Register>>();     
         builder.Services.AddScoped<ResponseObject<DTO_Login>>();
         builder.Services.AddScoped<ResponseObject<DTO_Token>>();
         builder.Services.AddScoped<ResponseObject<List<DTO_Register>>>();
         builder.Services.AddScoped<ResponseObject<DTO_Event>>();
         builder.Services.AddScoped<ResponseObject<DTO_RewardDiscipline>>();
+        builder.Services.AddScoped<ResponseObject<DTO_RewardDisciplineApproval>>();
         //builder.Services.AddScoped<ResponseObject<DTO_RewardDisciplineType>>();
         builder.Services.AddScoped<ResponseObject<DTO_MemberInfo>>();
         builder.Services.AddScoped<ResponseObject<DTO_EventJoin>>();
         builder.Services.AddScoped<ResponseObject<DTO_OutstandingMember>>();
+        builder.Services.AddScoped<ResponseObject<DTO_OutstandingMemberApproval>>();
         builder.Services.AddScoped<ResponseObject<DTO_ApprovalHistory>>();
         builder.Services.AddScoped<ResponseObject<DTO_Document>>();
 

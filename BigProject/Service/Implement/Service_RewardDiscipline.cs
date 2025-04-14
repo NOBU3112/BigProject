@@ -15,14 +15,18 @@ namespace BigProject.Service.Implement
     {
         private readonly AppDbContext dbContext;
         private readonly ResponseObject<DTO_RewardDiscipline> responseObject;
+        private readonly ResponseObject<DTO_RewardDisciplineApproval> responseObject2;
         private readonly Converter_RewardDiscipline converter_RewardDiscipline;
+        private readonly Converter_RewardDisciplineApproval converter_RewardDiscipline2;
         private readonly ResponseBase responseBase;
 
-        public Service_RewardDiscipline(AppDbContext dbContext, ResponseObject<DTO_RewardDiscipline> responseObject, Converter_RewardDiscipline converter_RewardDiscipline, ResponseBase responseBase)
+        public Service_RewardDiscipline(AppDbContext dbContext, ResponseObject<DTO_RewardDiscipline> responseObject, ResponseObject<DTO_RewardDisciplineApproval> responseObject2, Converter_RewardDiscipline converter_RewardDiscipline, Converter_RewardDisciplineApproval converter_RewardDiscipline2, ResponseBase responseBase)
         {
             this.dbContext = dbContext;
             this.responseObject = responseObject;
+            this.responseObject2 = responseObject2;
             this.converter_RewardDiscipline = converter_RewardDiscipline;
+            this.converter_RewardDiscipline2 = converter_RewardDiscipline2;
             this.responseBase = responseBase;
         }
 
@@ -137,12 +141,16 @@ namespace BigProject.Service.Implement
             return responseObject.ResponseObjectSuccess("Thêm thành công!", converter_RewardDiscipline.EntityToDTO(proposer));
         }
 
-        public async Task<ResponseObject<DTO_RewardDiscipline>> AcceptPropose(int proposeId,int userId)
+        public async Task<ResponseObject<DTO_RewardDisciplineApproval>> AcceptPropose(int proposeId,int userId)
         {
             var propose = await dbContext.rewardDisciplines.FirstOrDefaultAsync(x => x.Id == proposeId);
             if (propose == null)
             {
-                return responseObject.ResponseObjectError(StatusCodes.Status404NotFound, "Đề xuất không tồn tại!", null);
+                return responseObject2.ResponseObjectError(StatusCodes.Status404NotFound, "Đề xuất không tồn tại!", null);
+            }
+            if (propose.Status != RequestEnum.waiting)
+            {
+                return responseObject2.ResponseObjectError(StatusCodes.Status400BadRequest, "Đề xuất đã được kiểm duyệt", null);
             }
             propose.Status = RequestEnum.accept;
             dbContext.rewardDisciplines.Update(propose);
@@ -163,15 +171,19 @@ namespace BigProject.Service.Implement
             }
             dbContext.approvalHistories.Add(history);
             await dbContext.SaveChangesAsync();
-            return responseObject.ResponseObjectSuccess("Chấp nhận!", converter_RewardDiscipline.EntityToDTO(propose));
+            return responseObject2.ResponseObjectSuccess("Chấp nhận!", converter_RewardDiscipline2.EntityToDTO(propose));
         }
 
-        public async Task<ResponseObject<DTO_RewardDiscipline>> RejectPropose(int proposeId,int userId, string reject)
+        public async Task<ResponseObject<DTO_RewardDisciplineApproval>> RejectPropose(int proposeId,int userId, string reject)
         {
             var propose = await dbContext.rewardDisciplines.FirstOrDefaultAsync(x => x.Id == proposeId);
             if (propose == null)
             {
-                return responseObject.ResponseObjectError(StatusCodes.Status404NotFound, "Đề xuất không tồn tại!", null);
+                return responseObject2.ResponseObjectError(StatusCodes.Status404NotFound, "Đề xuất không tồn tại!", null);
+            }
+            if (propose.Status != RequestEnum.waiting)
+            {
+                return responseObject2.ResponseObjectError(StatusCodes.Status400BadRequest, "Đề xuất đã được kiểm duyệt", null);
             }
             propose.Status = RequestEnum.reject;
             propose.RejectReason = reject;
@@ -196,7 +208,7 @@ namespace BigProject.Service.Implement
 
             await dbContext.SaveChangesAsync();
 
-            return responseObject.ResponseObjectSuccess("Từ chối!", converter_RewardDiscipline.EntityToDTO(propose));
+            return responseObject2.ResponseObjectSuccess("Từ chối!", converter_RewardDiscipline2.EntityToDTO(propose));
         }
 
         public PagedResult<DTO_RewardDiscipline> GetListWaiting(int pageSize, int pageNumber)

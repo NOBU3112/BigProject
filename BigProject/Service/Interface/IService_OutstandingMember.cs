@@ -11,9 +11,9 @@ namespace BigProject.Service.Interface
 
         //Task<ResponseObject<DTO_OutstandingMember>> WaitingOutstandingMenber(Request_waitingOutstandingMember request);
 
-        Task<ResponseObject<DTO_OutstandingMember>> AcceptOutstandingMember(Request_acceptOutstandingMember request,int UserId);
+        Task<ResponseObject<DTO_OutstandingMemberApproval>> AcceptOutstandingMember(Request_acceptOutstandingMember request,int UserId);
 
-        Task<ResponseObject<DTO_OutstandingMember>> RejectOutstandingMember(Request_rejectOutstandingMember request, int UserId);
+        Task<ResponseObject<DTO_OutstandingMemberApproval>> RejectOutstandingMember(Request_rejectOutstandingMember request, int UserId);
 
     }
 }
