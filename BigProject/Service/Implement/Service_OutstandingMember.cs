@@ -13,29 +13,33 @@ public class Service_OutstandingMember : IService_OutstandingMember
     {
     private readonly AppDbContext _appDbContext;
     private readonly ResponseObject<DTO_OutstandingMember> responseObject;
-    private readonly Converter_OutstandingMember converter_OutstandingMember;    
+    private readonly Converter_OutstandingMember converter_OutstandingMember;
+    private readonly ResponseObject<DTO_OutstandingMemberApproval> responseObject1;
+    private readonly Converter_OutstandingMemberApproval converter_OutstandingMember1;
     private readonly ResponseBase responseBase;
 
-    public Service_OutstandingMember(AppDbContext appDbContext, ResponseObject<DTO_OutstandingMember> responseObject, Converter_OutstandingMember converter_OutstandingMember, ResponseBase responseBase)
+    public Service_OutstandingMember(AppDbContext appDbContext, ResponseObject<DTO_OutstandingMember> responseObject, Converter_OutstandingMember converter_OutstandingMember, ResponseObject<DTO_OutstandingMemberApproval> responseObject1, Converter_OutstandingMemberApproval converter_OutstandingMember1, ResponseBase responseBase)
     {
         _appDbContext = appDbContext;
         this.responseObject = responseObject;
         this.converter_OutstandingMember = converter_OutstandingMember;
+        this.responseObject1 = responseObject1;
+        this.converter_OutstandingMember1 = converter_OutstandingMember1;
         this.responseBase = responseBase;
     }
 
-    public async Task<ResponseObject<DTO_OutstandingMember>> AcceptOutstandingMember(Request_acceptOutstandingMember request,int UserId )
+    public async Task<ResponseObject<DTO_OutstandingMemberApproval>> AcceptOutstandingMember(Request_acceptOutstandingMember request,int UserId )
     {
 
         var Check_MenberInfoId = await _appDbContext.requestToBeOutStandingMembers.FirstOrDefaultAsync(x => x.MemberInfoId == request.MemberInfoId);
         if (Check_MenberInfoId == null)
         {
-            return responseObject.ResponseObjectError(StatusCodes.Status404NotFound, "Không có đoàn viên ", null);
+            return responseObject1.ResponseObjectError(StatusCodes.Status404NotFound, "Không có đoàn viên ", null);
 
         }
         if (Check_MenberInfoId.Status == RequestEnum.accept.ToString())
         {
-            return responseObject.ResponseObjectError(StatusCodes.Status404NotFound, "Đoàn viên đã được duyệt rồi ", null);
+            return responseObject1.ResponseObjectError(StatusCodes.Status404NotFound, "Đoàn viên đã được duyệt rồi ", null);
         }
         Check_MenberInfoId.MemberInfoId = request.MemberInfoId;
         Check_MenberInfoId.Status = RequestEnum.accept.ToString();
@@ -53,7 +57,7 @@ public class Service_OutstandingMember : IService_OutstandingMember
         _appDbContext.approvalHistories.Add(IsAccept);
         await _appDbContext.SaveChangesAsync();
 
-        return responseObject.ResponseObjectSuccess("Chấp nhận đoàn viên ưu tú thành công", converter_OutstandingMember.EntityToDTO(Check_MenberInfoId));
+        return responseObject1.ResponseObjectSuccess("Chấp nhận đoàn viên ưu tú thành công", converter_OutstandingMember1.EntityToDTO(Check_MenberInfoId));
 
     }
 
@@ -80,16 +84,16 @@ public class Service_OutstandingMember : IService_OutstandingMember
 
     }
 
-    public async Task<ResponseObject<DTO_OutstandingMember>> RejectOutstandingMember(Request_rejectOutstandingMember request, int UserId)
+    public async Task<ResponseObject<DTO_OutstandingMemberApproval>> RejectOutstandingMember(Request_rejectOutstandingMember request, int UserId)
     {
        var Check_MenberInfoId = await _appDbContext.requestToBeOutStandingMembers.FirstOrDefaultAsync(x=>x.MemberInfoId == request.MemberInfoId);
         if (Check_MenberInfoId == null)
         {
-            return responseObject.ResponseObjectError(StatusCodes.Status404NotFound, "Không có đoàn viên", null);
+            return responseObject1.ResponseObjectError(StatusCodes.Status404NotFound, "Không có đoàn viên", null);
         }
         if (Check_MenberInfoId.Status == RequestEnum.reject.ToString())
         {
-            return responseObject.ResponseObjectError(StatusCodes.Status404NotFound, "Đoàn viên đã từ chối rồi ", null);
+            return responseObject1.ResponseObjectError(StatusCodes.Status404NotFound, "Đoàn viên đã từ chối rồi ", null);
         }
 
         Check_MenberInfoId.MemberInfoId = request.MemberInfoId;
@@ -108,7 +112,7 @@ public class Service_OutstandingMember : IService_OutstandingMember
         //IsAccept.RejectReason = request.RejectReason;
         _appDbContext.approvalHistories.Add(IsAccept);
         await _appDbContext.SaveChangesAsync();
-        return responseObject.ResponseObjectSuccess("Đã từ chối đoàn viên ưu tú", converter_OutstandingMember.EntityToDTO(Check_MenberInfoId));
+        return responseObject1.ResponseObjectSuccess("Đã từ chối đoàn viên ưu tú", converter_OutstandingMember1.EntityToDTO(Check_MenberInfoId));
     }
 
     //public async Task<ResponseObject<DTO_OutstandingMember>> WaitingOutstandingMenber(Request_waitingOutstandingMember request)
