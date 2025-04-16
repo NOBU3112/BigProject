@@ -17,6 +17,7 @@ namespace BigProject.PayLoad.Converter
         {
             return new DTO_EventJoin()
             {
+                Id = eventJoint.Id,
                 Class = _context.memberInfos.SingleOrDefault(x => x.UserId == eventJoint.UserId).Class,
                 EventName = _context.events.SingleOrDefault(x => x.Id == eventJoint.EventId).EventName,
                 FullName = _context.memberInfos.SingleOrDefault(x => x.UserId == eventJoint.UserId).FullName,

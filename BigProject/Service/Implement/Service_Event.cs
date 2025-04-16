@@ -172,12 +172,12 @@ namespace BigProject.Service.Implement
 
         public async Task<ResponseBase> WithdrawFromAnEvent(int eventJoinId)
         {
-            var eventJoin = await dbContext.events.FirstOrDefaultAsync(x=>x.Id == eventJoinId);
+            var eventJoin = await dbContext.eventJoins.FirstOrDefaultAsync(x=>x.Id == eventJoinId);
             if(eventJoin == null)
             {
                 return responseBase.ResponseBaseError(StatusCodes.Status404NotFound, "Bạn chưa tham gia hoạt động này!");
             }
-            dbContext.events.Remove(eventJoin);
+            dbContext.eventJoins.Remove(eventJoin);
             await dbContext.SaveChangesAsync();
             return responseBase.ResponseBaseSuccess("Bỏ tham gia thành công!");
         }
