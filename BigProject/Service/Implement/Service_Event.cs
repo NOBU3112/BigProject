@@ -170,9 +170,9 @@ namespace BigProject.Service.Implement
             return responseObjectEventJoin.ResponseObjectSuccess("Tham gia thành công!", converter_EventJoin.EntityToDTO(eventJoin));
         }
 
-        public async Task<ResponseBase> WithdrawFromAnEvent(int eventJoinId)
+        public async Task<ResponseBase> WithdrawFromAnEvent(int eventId, int userId)
         {
-            var eventJoin = await dbContext.eventJoins.FirstOrDefaultAsync(x=>x.Id == eventJoinId);
+            var eventJoin = await dbContext.eventJoins.FirstOrDefaultAsync(x=>x.UserId == userId && x.EventId ==eventId);
             if(eventJoin == null)
             {
                 return responseBase.ResponseBaseError(StatusCodes.Status404NotFound, "Bạn chưa tham gia hoạt động này!");

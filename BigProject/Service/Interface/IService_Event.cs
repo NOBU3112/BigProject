@@ -13,7 +13,7 @@ namespace BigProject.Service.Interface
         Task<ResponseBase> DeleteEvent(int Id);
         PagedResult<DTO_Event> GetListEvent(int pageSize, int pageNumber);
         Task<ResponseObject<DTO_EventJoin>> JoinAnEvent(int userId, int eventId);
-        Task<ResponseBase> WithdrawFromAnEvent(int eventJoinId);
+        Task<ResponseBase> WithdrawFromAnEvent(int eventId, int userId);
         PagedResult<DTO_EventJoin> GetListAllParticipantInAnEvent(int pageSize, int pageNumber,int eventId);
         PagedResult<DTO_EventJoin> GetListAllEventUserJoin(int pageSize, int pageNumber, int userId);
         bool CheckStatus(int userId, int eventId);

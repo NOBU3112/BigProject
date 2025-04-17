@@ -61,9 +61,14 @@ namespace BigProject.Controllers
         }
 
         [HttpDelete("Unsubscribe_from_activities")]
-        public async Task<IActionResult> WithdrawFromAnEvent([FromForm] int eventJoinId)
+        public async Task<IActionResult> WithdrawFromAnEvent([FromForm] int eventId)
         {
-            return Ok(await service_Event.WithdrawFromAnEvent(eventJoinId));
+            if (!HttpContext.User.Identity.IsAuthenticated)
+            {
+                return Ok("Vui lòng đăng nhập !");
+            }
+            int userId = int.Parse(HttpContext.User.FindFirst("Id").Value);
+            return Ok(await service_Event.WithdrawFromAnEvent(eventId,userId));
         }
         
         [HttpGet("Get_List_All_Participant_In_An_Event")]
