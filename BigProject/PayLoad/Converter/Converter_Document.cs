@@ -21,7 +21,7 @@ namespace BigProject.PayLoad.Converter
                 CreateAt = document.CreateAt,
                 UrlAvatar = document.UrlAvatar,
                 UserId = document.UserId,
-                UserName = _context.users.SingleOrDefault(x => x.Id == document.Id).Username,
+                UserName = _context.users.SingleOrDefault(x => x.Id == document.UserId).Username,
             };
         }
     }
