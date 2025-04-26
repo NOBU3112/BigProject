@@ -47,7 +47,7 @@ namespace BigProject.Service.Implement
             var query = dbContext.rewardDisciplines.Where(x => x.RewardOrDiscipline == false && x.Status == RequestEnum.accept);
 
             int totalItems = query.Count();
-            int totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+            int totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);  
 
             var items = query
                 .Skip((pageNumber - 1) * pageSize)
@@ -161,14 +161,10 @@ namespace BigProject.Service.Implement
             history.ApprovedDate = DateTime.Now;
             history.ApprovedById = userId;
             history.RewardDisciplineId = propose.Id;
-            if (propose.RewardOrDiscipline)
-            {
-                history.HistoryType = HistoryEnum.reward.ToString();
-            }
-            else
-            {
-                history.HistoryType = HistoryEnum.discipline.ToString();
-            }
+
+            history.HistoryType = propose.RewardOrDiscipline
+               ? HistoryEnum.reward.ToString()
+                 : HistoryEnum.discipline.ToString();
             dbContext.approvalHistories.Add(history);
             await dbContext.SaveChangesAsync();
             return responseObject2.ResponseObjectSuccess("Chấp nhận!", converter_RewardDiscipline2.EntityToDTO(propose));
@@ -195,14 +191,9 @@ namespace BigProject.Service.Implement
             history.ApprovedDate = DateTime.Now;
             history.ApprovedById = userId;
             history.RewardDisciplineId = propose.Id;
-            if (propose.RewardOrDiscipline)
-            {
-                history.HistoryType = HistoryEnum.reward.ToString();
-            }
-            else
-            {
-                history.HistoryType = HistoryEnum.discipline.ToString();
-            }
+
+            history.HistoryType = propose.RewardOrDiscipline ? HistoryEnum.reward.ToString():HistoryEnum.discipline.ToString();
+      
             //history.RejectReason = reject;
             dbContext.approvalHistories.Add(history);
 

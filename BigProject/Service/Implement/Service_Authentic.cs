@@ -94,12 +94,11 @@ namespace BigProject.Service.Implement
 
             Random random = new Random();
             int code = random.Next(100000, 999999);
-
             EmailTo emailTo = new EmailTo();
             emailTo.Mail = request.Email;
             emailTo.Subject = "MÃ XÁC NHẬN QUÊN MẬT KHẨU";
             emailTo.Content = $"Mã xác nhận của bạn là: {code} mã sẽ hết hạn sau 5 phút!";
-            emailTo.SendEmailAsync(emailTo);
+            await emailTo.SendEmailAsync(emailTo);
 
             EmailConfirm confirmEmail = new EmailConfirm();
             confirmEmail.UserId = user.Id;
@@ -183,7 +182,10 @@ namespace BigProject.Service.Implement
 
         public async Task<ResponseObject<DTO_Register>> Register(Request_Register request)
         {
-            var existingUser = await dbContext.users.Where(x => x.MaSV == request.MaSV && x.Username == request.Username && x.Email == request.Email).FirstOrDefaultAsync();
+            var existingUser = await dbContext.users.Where(x => x.MaSV.Equals(request.MaSV)
+            && x.Username.Equals(request.Username)
+            && x.Email.Equals(request.Email))
+            .FirstOrDefaultAsync();
             if (existingUser != null)
             {
                 var existingCode = await dbContext.emailConfirms.FirstOrDefaultAsync(x => x.UserId == existingUser.Id && x.IsActiveAccount == true && x.IsConfirmed == false);
@@ -195,9 +197,14 @@ namespace BigProject.Service.Implement
                     dbContext.emailConfirms.Remove(existingCode);
                     await dbContext.SaveChangesAsync();
                 }
-            }
+            }   
 
-            var CheckUser = await dbContext.users.Where(x => x.MaSV == request.MaSV || x.Username == request.Username || x.Email == request.Email).FirstOrDefaultAsync();
+            var CheckUser = await dbContext.users
+                            .Where(x => x.MaSV.Equals(request.MaSV)
+                            || x.Username.Equals(request.Username)
+                            || x.Email.Equals(request.Email))
+                            .FirstOrDefaultAsync();
+
             if (CheckUser != null)
             {
                 if (CheckUser.Username == request.Username)
