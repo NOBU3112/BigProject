@@ -31,7 +31,9 @@ public class Service_OutstandingMember : IService_OutstandingMember
     public async Task<ResponseObject<DTO_OutstandingMemberApproval>> AcceptOutstandingMember(Request_acceptOutstandingMember request,int UserId )
     {
 
-        var Check_MenberInfoId = await _appDbContext.requestToBeOutStandingMembers.FirstOrDefaultAsync(x => x.MemberInfoId == request.MemberInfoId);
+        var Check_MenberInfoId = await _appDbContext.requestToBeOutStandingMembers
+            .FirstOrDefaultAsync(x => x.MemberInfoId == request.MemberInfoId);
+
         if (Check_MenberInfoId == null)
         {
             return responseObject1.ResponseObjectError(StatusCodes.Status404NotFound, "Không có đoàn viên ", null);
@@ -68,7 +70,9 @@ public class Service_OutstandingMember : IService_OutstandingMember
         {
             return responseObject.ResponseObjectError(StatusCodes.Status404NotFound, "Đoàn viên không tồn tại", null);
         }
-        var Check_MenberInfoId = await _appDbContext.requestToBeOutStandingMembers.FirstOrDefaultAsync(x=>x.MemberInfoId == request.MemberInfoId);
+        var Check_MenberInfoId = await _appDbContext.requestToBeOutStandingMembers
+            .FirstOrDefaultAsync(x=>x.MemberInfoId == request.MemberInfoId);
+
         if (Check_MenberInfoId != null)
         {
             return responseObject.ResponseObjectError(StatusCodes.Status404NotFound, "Đoàn viên đã được đề xuất", null);
@@ -86,7 +90,9 @@ public class Service_OutstandingMember : IService_OutstandingMember
 
     public async Task<ResponseObject<DTO_OutstandingMemberApproval>> RejectOutstandingMember(Request_rejectOutstandingMember request, int UserId)
     {
-       var Check_MenberInfoId = await _appDbContext.requestToBeOutStandingMembers.FirstOrDefaultAsync(x=>x.MemberInfoId == request.MemberInfoId);
+       var Check_MenberInfoId = await _appDbContext.requestToBeOutStandingMembers
+            .FirstOrDefaultAsync(x=>x.MemberInfoId == request.MemberInfoId);
+
         if (Check_MenberInfoId == null)
         {
             return responseObject1.ResponseObjectError(StatusCodes.Status404NotFound, "Không có đoàn viên", null);

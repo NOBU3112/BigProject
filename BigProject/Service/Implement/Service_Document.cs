@@ -28,7 +28,9 @@ namespace BigProject.Service.Implement
 
         public async Task<ResponseObject<DTO_Document>> AddDocument(Request_AddDocument request,int userId)
         {
-            var documentTitle_check = await dbContext.documents.FirstOrDefaultAsync(x => x.DocumentTitle == request.DocumentTitle);
+            var documentTitle_check = await dbContext.documents
+                .FirstOrDefaultAsync(x => x.DocumentTitle.Equals(request.DocumentTitle));
+
             if (documentTitle_check != null)
             {
                 return responseObject.ResponseObjectError(StatusCodes.Status400BadRequest, " Tiêu đề văn bản không được trùng! ", null);

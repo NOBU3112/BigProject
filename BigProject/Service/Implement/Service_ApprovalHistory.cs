@@ -51,7 +51,7 @@ namespace BigProject.Service.Implement
                                                                          // Lọc dữ liệu theo điều kiện
             if (!string.IsNullOrEmpty(request.MaSV))
             {
-                var member = dbContext.users.FirstOrDefault(x => x.MaSV == request.MaSV);
+                var member = dbContext.users.FirstOrDefault(x => x.MaSV.Equals(request.MaSV));
 
                 listHistory = listHistory.Where(x =>
                     (x.RequestToBeOutstandingMemberId != null
@@ -64,7 +64,7 @@ namespace BigProject.Service.Implement
             }
 
             if (!string.IsNullOrEmpty(request.HistoryType))
-                listHistory = listHistory.Where(x => x.HistoryType == request.HistoryType);
+                listHistory = listHistory.Where(x => x.HistoryType.Equals(request.HistoryType));
 
             if (request.IsAccept == true)
                 listHistory = listHistory.Where(x => x.IsAccept == true);
