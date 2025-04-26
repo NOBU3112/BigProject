@@ -105,13 +105,13 @@ namespace BigProject.Service.Implement
 
             // Lọc dữ liệu theo điều kiện
             if (!string.IsNullOrEmpty(request.MaSV))
-                listMembers = listMembers.Where(x => x.User.MaSV == request.MaSV);
+                listMembers = listMembers.Where(x => x.User.MaSV.Equals(request.MaSV));
             if (!string.IsNullOrEmpty(request.FullName))
                 listMembers = listMembers.Where(x => x.FullName.Contains(request.FullName));
             if (!string.IsNullOrEmpty(request.Email))
                 listMembers = listMembers.Where(x => x.User.Email.Contains(request.Email));
             if (!string.IsNullOrEmpty(request.PhoneNumber))
-                listMembers = listMembers.Where(x => x.PhoneNumber == request.PhoneNumber);
+                listMembers = listMembers.Where(x => x.PhoneNumber.Equals(request.PhoneNumber));
             if (request.Status.HasValue)
                 listMembers = listMembers.Where(x => (int)x.Status == request.Status.Value);
 
@@ -149,16 +149,16 @@ namespace BigProject.Service.Implement
             }
 
             // Chỉ cập nhật nếu request có dữ liệu, giữ lại giá trị cũ nếu request không có
-            memberInfo.Class = string.IsNullOrEmpty(request.Class) ? memberInfo.Class : request.Class;
+            memberInfo.Class = request.Class ?? memberInfo.Class;
             memberInfo.Birthdate = request.Birthdate ?? memberInfo.Birthdate;
-            memberInfo.PhoneNumber = string.IsNullOrEmpty(request.PhoneNumber) ? memberInfo.PhoneNumber : request.PhoneNumber;
-            memberInfo.Nation = string.IsNullOrEmpty(request.Nation) ? memberInfo.Nation : request.Nation;
+            memberInfo.PhoneNumber = request.PhoneNumber ?? memberInfo.PhoneNumber;
+            memberInfo.Nation = request.Nation ?? memberInfo.Nation;
             memberInfo.DateOfJoining = request.DateOfJoining ?? memberInfo.DateOfJoining;
-            memberInfo.FullName = string.IsNullOrEmpty(request.FullName) ? memberInfo.FullName : request.FullName;
-            memberInfo.religion = string.IsNullOrEmpty(request.religion) ? memberInfo.religion : request.religion;
-            memberInfo.PlaceOfJoining = string.IsNullOrEmpty(request.PlaceOfJoining) ? memberInfo.PlaceOfJoining : request.PlaceOfJoining;
-            memberInfo.PoliticalTheory = string.IsNullOrEmpty(request.PoliticalTheory) ? memberInfo.PoliticalTheory : request.PoliticalTheory;
-            
+            memberInfo.FullName = request.FullName ?? memberInfo.FullName;
+            memberInfo.religion = request.religion ?? memberInfo.religion;
+            memberInfo.PlaceOfJoining = request.PlaceOfJoining ?? memberInfo.PlaceOfJoining;
+            memberInfo.PoliticalTheory = request.PoliticalTheory ?? memberInfo.PoliticalTheory;
+
             DbContext.memberInfos.Update(memberInfo);
             await DbContext.SaveChangesAsync(); 
             

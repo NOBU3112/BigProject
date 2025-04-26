@@ -17,7 +17,9 @@ namespace BigProject.PayLoad.Converter
         {
             if (approvalHistory.HistoryType == HistoryEnum.outstandingMember.ToString())
             {
-                var member = _context.requestToBeOutStandingMembers.FirstOrDefault(x => x.Id == approvalHistory.RequestToBeOutstandingMemberId);
+                var member = _context.requestToBeOutStandingMembers
+                    .FirstOrDefault(x => x.Id == approvalHistory.RequestToBeOutstandingMemberId);
+
                 return new DTO_ApprovalHistory
                 {
                     ApprovedById = approvalHistory.ApprovedById,
@@ -34,7 +36,9 @@ namespace BigProject.PayLoad.Converter
                     rejectReason = member.RejectReason,
                 };
             }
-            var member1 = _context.rewardDisciplines.FirstOrDefault(x => x.Id == approvalHistory.RewardDisciplineId);
+            var member1 = _context.rewardDisciplines
+                .FirstOrDefault(x => x.Id == approvalHistory.RewardDisciplineId);
+
             return new DTO_ApprovalHistory
             {
                 ApprovedById = approvalHistory.ApprovedById,

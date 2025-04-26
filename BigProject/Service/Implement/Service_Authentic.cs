@@ -49,8 +49,11 @@ namespace BigProject.Service.Implement
 
         public async Task<ResponseBase> Activate(string Opt, string email)
         {
-            var checkUser = await dbContext.users.FirstOrDefaultAsync(x => x.Email == email);
-            var comfirmEmail = await dbContext.emailConfirms.Where(x => x.Code == Opt && x.IsActiveAccount == true && x.UserId == checkUser.Id).OrderByDescending(x => x.Id).FirstOrDefaultAsync();
+            var checkUser = await dbContext.users.FirstOrDefaultAsync(x => x.Email.Equals(email));
+            var comfirmEmail = await dbContext.emailConfirms
+                .Where(x => x.Code.Equals(Opt) && x.IsActiveAccount == true && x.UserId == checkUser.Id)
+                .OrderByDescending(x => x.Id)
+                .FirstOrDefaultAsync();
 
             if (comfirmEmail == null)
             {
@@ -76,16 +79,18 @@ namespace BigProject.Service.Implement
 
         public async Task<ResponseObject<DTO_Register>> ForgotPassword(Request_forgot request)
         {
-            var user = await dbContext.users.FirstOrDefaultAsync(x => x.Email == request.Email);
+            var user = await dbContext.users.FirstOrDefaultAsync(x => x.Email.Equals(request.Email));
             if (user == null)
             {
                 return responseObject.ResponseObjectError(StatusCodes.Status404NotFound, "Email không tồn tại!", null);
             }
 
             var oldConfirm = await dbContext.emailConfirms
-                .FirstOrDefaultAsync(x => x.UserId == user.Id && 
-                                         !x.IsConfirmed && 
-                                         x.IsActiveAccount == false);
+                .FirstOrDefaultAsync(x =>
+                  x.UserId == user.Id && 
+                  !x.IsConfirmed && 
+                  x.IsActiveAccount == false);
+
             if (oldConfirm != null)
             {
                 dbContext.emailConfirms.Remove(oldConfirm);
@@ -114,9 +119,9 @@ namespace BigProject.Service.Implement
         public async Task<ResponseObject<DTO_Token>> Login(Request_Login request)
         {
             var user = await dbContext.users.FirstOrDefaultAsync(x => 
-                x.Username == request.UserName || 
-                x.Email == request.UserName || 
-                x.MaSV == request.UserName);
+                x.Username.Equals(request.UserName) || 
+                x.Email.Equals(request.UserName) || 
+                x.MaSV.Equals(request.UserName));
 
             if (user == null)
             {
@@ -149,7 +154,7 @@ namespace BigProject.Service.Implement
                     emailTo.Mail = user.Email;
                     emailTo.Subject = "MÃ KÍCH HOẠT TÀI KHOẢN";
                     emailTo.Content = $"Mã kích hoạt tài khoản của bạn là: {code} mã sẽ hết hạn sau 5 phút!";
-                    emailTo.SendEmailAsync(emailTo);
+                    await emailTo.SendEmailAsync(emailTo);
 
                     if (activationEmail == null)
                     {
@@ -188,10 +193,17 @@ namespace BigProject.Service.Implement
             .FirstOrDefaultAsync();
             if (existingUser != null)
             {
-                var existingCode = await dbContext.emailConfirms.FirstOrDefaultAsync(x => x.UserId == existingUser.Id && x.IsActiveAccount == true && x.IsConfirmed == false);
+                var existingCode = await dbContext.emailConfirms
+                    .FirstOrDefaultAsync(x => 
+                      x.UserId == existingUser.Id && 
+                      x.IsActiveAccount == true && 
+                      x.IsConfirmed == false);
+
                 if (existingCode != null)
                 {
-                    var existingMemberInfo = await dbContext.memberInfos.FirstOrDefaultAsync(x => x.UserId == existingUser.Id);
+                    var existingMemberInfo = await dbContext.memberInfos
+                        .FirstOrDefaultAsync(x => x.UserId == existingUser.Id);
+
                     dbContext.memberInfos.Remove(existingMemberInfo);
                     dbContext.users.Remove(existingUser);
                     dbContext.emailConfirms.Remove(existingCode);
@@ -207,13 +219,13 @@ namespace BigProject.Service.Implement
 
             if (CheckUser != null)
             {
-                if (CheckUser.Username == request.Username)
+                if (CheckUser.Username.Equals(request.Username))
                     return responseObject.ResponseObjectError(StatusCodes.Status400BadRequest, "Tên tài khoản đã tồn tại!", null);
 
-                if (CheckUser.MaSV == request.MaSV)
+                if (CheckUser.MaSV.Equals(request.MaSV))
                     return responseObject.ResponseObjectError(StatusCodes.Status400BadRequest, "Mã Sinh viên đã tồn tại!", null);
 
-                if (CheckUser.Email == request.Email)
+                if (CheckUser.Email.Equals(request.Email))
                     return responseObject.ResponseObjectError(StatusCodes.Status400BadRequest, "Email đã tồn tại!", null);
             }
 
@@ -246,7 +258,9 @@ namespace BigProject.Service.Implement
             dbContext.users.Add(register);
             await dbContext.SaveChangesAsync();
 
-            var user = await dbContext.users.FirstOrDefaultAsync(x => x.Username == request.Username);
+            var user = await dbContext.users
+                .FirstOrDefaultAsync(x => x.Username.Equals(request.Username));
+
             var memberInfo = new MemberInfo();
             memberInfo.UserId = user.Id;
             memberInfo.FullName = request.FullName;
@@ -394,17 +408,17 @@ namespace BigProject.Service.Implement
                 return responseBase.ResponseBaseError(404, "Mật khẩu không chính xác!");
             }
 
-            if (requset.newpassword != requset.renewpassword)
+            if (!requset.newpassword.Equals(requset.renewpassword))
             {
                 return responseBase.ResponseBaseError(400, "Mật khẩu không trùng nhau!");
             }
 
-            if (requset.newpassword == requset.Password)
+            if (requset.newpassword.Equals(requset.Password))
             {
                 return responseBase.ResponseBaseError(400, "Mật khẩu mới trùng mật khẩu cũ!");
             }
 
-            if (CheckInput.IsPassWord(requset.newpassword) != requset.newpassword)
+            if (!CheckInput.IsPassWord(requset.newpassword).Equals(requset.newpassword))
             {
                 return responseBase.ResponseBaseError(404, CheckInput.IsPassWord(requset.newpassword));
             }
@@ -418,7 +432,10 @@ namespace BigProject.Service.Implement
 
         public async Task<ResponseObject<List<DTO_Register>>> Authorization(int RoleId)
         {
-            var listUserForRoleInput = dbContext.users.Include(user => user.Role).AsNoTracking().Where(user => user.Role.Id == RoleId);
+            var listUserForRoleInput = dbContext.users
+                .Include(user => user.Role)
+                .AsNoTracking()
+                .Where(user => user.Role.Id == RoleId);
 
             if (!listUserForRoleInput.Any())
             {
@@ -449,14 +466,14 @@ namespace BigProject.Service.Implement
 
         public ResponseBase Activate_Password(string code, string email)
         {
-            var user = dbContext.users.FirstOrDefault(x => x.Email == email);
+            var user = dbContext.users.FirstOrDefault(x => x.Email.Equals(email));
             if (user == null)
             {
                 return responseBase.ResponseBaseError(404, "Email không tồn tại!");
             }
 
             var confirmEmailCheck = dbContext.emailConfirms
-                .FirstOrDefault(x => x.Code == code && 
+                .FirstOrDefault(x => x.Code.Equals(code) && 
                                     x.IsActiveAccount == false && 
                                     x.UserId == user.Id);
 

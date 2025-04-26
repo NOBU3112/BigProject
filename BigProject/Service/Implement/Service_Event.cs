@@ -37,7 +37,9 @@ namespace BigProject.Service.Implement
             //{
             //    return responseObject.ResponseObjectError(StatusCodes.Status404NotFound, " Loại hoạt động không tồn tại! ", null);
             //}
-            var eventName_check = await dbContext.events.FirstOrDefaultAsync(x => x.EventName == request.EventName);
+            var eventName_check = await dbContext.events
+                .FirstOrDefaultAsync(x => x.EventName.Equals(request.EventName));
+
             if (eventName_check != null)
             {
                 return responseObject.ResponseObjectError(StatusCodes.Status400BadRequest, " Tên hoạt động không được trùng! ", null);
@@ -117,8 +119,10 @@ namespace BigProject.Service.Implement
             //{
             //    return responseObject.ResponseObjectError(StatusCodes.Status404NotFound, "Loại hoạt động không tồn tại!", null);
             //}
-            var eventName_check = await dbContext.events.FirstOrDefaultAsync(x => x.EventName == request.EventName);
-            if (eventName_check != null && event1.EventName != request.EventName)
+            var eventName_check = await dbContext.events
+                .FirstOrDefaultAsync(x => x.EventName.Equals(request.EventName));
+
+            if (eventName_check != null && !event1.EventName.Equals(request.EventName))
             {
                 return responseObject.ResponseObjectError(StatusCodes.Status400BadRequest, "Tên hoạt động không được trùng! ", null);
             }
@@ -156,7 +160,9 @@ namespace BigProject.Service.Implement
             {
                 return responseObjectEventJoin.ResponseObjectError(StatusCodes.Status404NotFound, "Hoạt động này không tồn tại!",null);
             }
-            var eventJoinCheck = await dbContext.eventJoins.FirstOrDefaultAsync(x=>x.EventId==eventId && x.UserId==userId);
+            var eventJoinCheck = await dbContext.eventJoins
+                .FirstOrDefaultAsync(x=>x.EventId==eventId && x.UserId==userId);
+
             if(eventJoinCheck != null)
             {
                 return responseObjectEventJoin.ResponseObjectError(StatusCodes.Status400BadRequest, "Bạn đã tham gia hoạt động này!", null);
@@ -172,7 +178,9 @@ namespace BigProject.Service.Implement
 
         public async Task<ResponseBase> WithdrawFromAnEvent(int eventId, int userId)
         {
-            var eventJoin = await dbContext.eventJoins.FirstOrDefaultAsync(x=>x.UserId == userId && x.EventId ==eventId);
+            var eventJoin = await dbContext.eventJoins
+                .FirstOrDefaultAsync(x=>x.UserId == userId && x.EventId ==eventId);
+
             if(eventJoin == null)
             {
                 return responseBase.ResponseBaseError(StatusCodes.Status404NotFound, "Bạn chưa tham gia hoạt động này!");

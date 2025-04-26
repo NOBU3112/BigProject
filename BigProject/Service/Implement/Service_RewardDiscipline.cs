@@ -44,7 +44,8 @@ namespace BigProject.Service.Implement
 
         public PagedResult<DTO_RewardDiscipline> GetListDiscipline(int pageSize, int pageNumber)
         {
-            var query = dbContext.rewardDisciplines.Where(x => x.RewardOrDiscipline == false && x.Status == RequestEnum.accept);
+            var query = dbContext.rewardDisciplines
+                .Where(x => x.RewardOrDiscipline == false && x.Status == RequestEnum.accept);
 
             int totalItems = query.Count();
             int totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);  
@@ -67,7 +68,8 @@ namespace BigProject.Service.Implement
 
         public PagedResult<DTO_RewardDiscipline> GetListReward(int pageSize, int pageNumber)
         {
-            var query = dbContext.rewardDisciplines.Where(x => x.RewardOrDiscipline == true && x.Status == RequestEnum.accept);
+            var query = dbContext.rewardDisciplines
+                .Where(x => x.RewardOrDiscipline == true && x.Status == RequestEnum.accept);
 
             int totalItems = query.Count();
             int totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
@@ -97,7 +99,7 @@ namespace BigProject.Service.Implement
             }
 
             // Tìm kiếm người nhận bằng MaSV
-            var recipientCheck = await dbContext.users.FirstOrDefaultAsync(x => x.MaSV == request.RecipientMaSV);
+            var recipientCheck = await dbContext.users.FirstOrDefaultAsync(x => x.MaSV.Equals(request.RecipientMaSV));
             if (recipientCheck == null)
             {
                 return responseObject.ResponseObjectError(StatusCodes.Status404NotFound, "Người được đề xuất không tồn tại!", null);
@@ -124,7 +126,7 @@ namespace BigProject.Service.Implement
             }
 
             // Tìm kiếm người nhận bằng MaSV
-            var recipientCheck = await dbContext.users.FirstOrDefaultAsync(x => x.MaSV == request.RecipientMaSV);
+            var recipientCheck = await dbContext.users.FirstOrDefaultAsync(x => x.MaSV.Equals(request.RecipientMaSV));
             if (recipientCheck == null)
             {
                 return responseObject.ResponseObjectError(StatusCodes.Status404NotFound, "Người được đề xuất không tồn tại!", null);
@@ -192,7 +194,8 @@ namespace BigProject.Service.Implement
             history.ApprovedById = userId;
             history.RewardDisciplineId = propose.Id;
 
-            history.HistoryType = propose.RewardOrDiscipline ? HistoryEnum.reward.ToString():HistoryEnum.discipline.ToString();
+            history.HistoryType = propose.RewardOrDiscipline 
+                ? HistoryEnum.reward.ToString():HistoryEnum.discipline.ToString();
       
             //history.RejectReason = reject;
             dbContext.approvalHistories.Add(history);
