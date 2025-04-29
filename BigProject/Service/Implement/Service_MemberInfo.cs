@@ -70,14 +70,21 @@ namespace BigProject.Service.Implement
 
         public PagedResult<DTO_MemberInfo> GetListMenberInfo(int pageSize, int pageNumber)
         {
-            int totalItems = DbContext.memberInfos.Count();
+            // Lọc chỉ lấy memberInfo có User đã xác nhận email
+            var filteredMembers = DbContext.memberInfos
+                .Where(x => DbContext.emailConfirms.Any(e => e.UserId == x.User.Id && e.IsConfirmed));
+
+            // Tính tổng số phần tử sau khi lọc
+            int totalItems = filteredMembers.Count();
             int totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
 
-            var items = DbContext.memberInfos
+            // Lấy danh sách đã phân trang
+            var items = filteredMembers
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .Select(x => converter_MemberInfo.EntityToDTO(x))
-                .ToList(); // Chuyển thành List<T>
+                .ToList();
+            // Chuyển thành List<T>
 
             return new PagedResult<DTO_MemberInfo>
             {
@@ -87,28 +94,6 @@ namespace BigProject.Service.Implement
                 CurrentPage = pageNumber
             };
         }
-
-        public PagedResult<DTO_MemberInfo> GetListMenberInfoByMajor(int pageSize, int pageNumber, string major)
-        {
-            int totalItems = DbContext.memberInfos.Count();
-            int totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
-
-            var items = DbContext.memberInfos
-                .Where(x => x.Major.Equals(major))
-                .Skip((pageNumber - 1) * pageSize)
-                .Take(pageSize)
-                .Select(x => converter_MemberInfo.EntityToDTO(x))
-                .ToList(); // Chuyển thành List<T>
-
-            return new PagedResult<DTO_MemberInfo>
-            {
-                Items = items,
-                TotalItems = totalItems,
-                TotalPages = totalPages,
-                CurrentPage = pageNumber
-            };
-        }
-
 
         public async Task<ResponseObject<DTO_MemberInfo>> GetMemberInfo(int userId)
         {
@@ -124,6 +109,10 @@ namespace BigProject.Service.Implement
         {
             var listMembers = DbContext.memberInfos.AsQueryable(); // Danh sách chưa lọc
 
+            listMembers = listMembers
+                .Where(x =>DbContext.emailConfirms
+                .Any(e => e.UserId == x.User.Id && e.IsConfirmed)); //Bỏ qua tài khoản chưa xác nhận Email 
+
             // Lọc dữ liệu theo điều kiện
             if (!string.IsNullOrEmpty(request.MaSV))
                 listMembers = listMembers.Where(x => x.User.MaSV.Equals(request.MaSV));
@@ -135,6 +124,10 @@ namespace BigProject.Service.Implement
                 listMembers = listMembers.Where(x => x.PhoneNumber.Equals(request.PhoneNumber));
             if (request.Status.HasValue)
                 listMembers = listMembers.Where(x => (int)x.Status == request.Status.Value);
+            if (!string.IsNullOrEmpty(request.Major))
+                listMembers = listMembers.Where(x => x.Major.Contains(request.Major));
+            if (!string.IsNullOrEmpty(request.CourseIntake))
+                listMembers = listMembers.Where(x => x.CourseIntake.Contains(request.CourseIntake));
 
             // Tổng số phần tử sau khi lọc
             int totalItems = await listMembers.CountAsync();

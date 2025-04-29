@@ -51,12 +51,6 @@ namespace BigProject.Controllers
             return Ok(memberInfo.GetListMenberInfo(pageSize, pageNumber));
         }
 
-        [HttpGet("Get_List_Menber_Info_By_Major")]
-        public IActionResult GetListMenberInfoByMajor(string major,int pageSize = 10, int pageNumber = 1)
-        {
-            return Ok(memberInfo.GetListMenberInfoByMajor(pageSize, pageNumber,major));
-        }
-
         [HttpGet("Get_Menber_Info")]
         public async Task<IActionResult> GetMemberInfo()
         {

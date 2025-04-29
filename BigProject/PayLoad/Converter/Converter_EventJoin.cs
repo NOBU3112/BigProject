@@ -24,6 +24,7 @@ namespace BigProject.PayLoad.Converter
                 FullName = memberInfo.FullName,
                 MaSV = _context.users.SingleOrDefault(x => x.Id == eventJoint.UserId).MaSV,
                 Major = memberInfo.Major,
+                CourseIntake = memberInfo.CourseIntake,
                 Status = eventJoint.Status,
             };
         }

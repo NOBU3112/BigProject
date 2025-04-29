@@ -2,8 +2,11 @@
 {
     public enum MajorEnum
     {
-        CNTT,
-        TT,
-        CC,
+        CongNghePhanMem,
+        TinHocKinhTe,
+        TinHocTracDia,
+        MangMayTinh,
+        KhoaHocMayTinh,
+        HeThongThongTinVaTriThuc
     }
 }

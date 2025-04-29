@@ -10,6 +10,7 @@ namespace BigProject.PayLoad.DTO
         public string MaSV { get; set; }
         public string Class {  get; set; }
         public string Major {  get; set; }
+        public string CourseIntake { get; set; }
         public EventJointEnum Status { get; set; } = EventJointEnum.registered;
     }
 }

@@ -22,6 +22,7 @@ namespace BigProject.PayLoad.Converter
                Class = memberInfo.Class,
                Major = memberInfo.Major,
                Gender = memberInfo.Gender,
+               CourseIntake = memberInfo.CourseIntake,
                Birthdate = memberInfo.Birthdate,
                DateOfJoining = memberInfo.DateOfJoining,
                FullName = memberInfo.FullName,
