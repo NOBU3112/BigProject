@@ -83,6 +83,20 @@ namespace BigProject.Controllers
             return Ok(result);
         }
 
+        [HttpGet("Get_All_majors")]
+        public IActionResult GetMajors()
+        {
+            var enumValues = Enum.GetValues(typeof(Enums.MajorEnum))
+                                 .Cast<Enums.MajorEnum>()
+                                 .Select(e => new
+                                 {
+                                     Name = e.ToString(),
+                                     Value = (int)e
+                                 })
+                                 .ToList();
+
+            return Ok(enumValues);
+        }
 
     }
 }
