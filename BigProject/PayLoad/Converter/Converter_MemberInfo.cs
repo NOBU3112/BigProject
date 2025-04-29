@@ -19,7 +19,8 @@ namespace BigProject.PayLoad.Converter
             var user = _context.users.FirstOrDefault(x=>x.Id==memberInfo.UserId);
             return new DTO_MemberInfo
             {
-                Class = memberInfo.Class,
+               Class = memberInfo.Class,
+               Major = memberInfo.Major,
                Birthdate = memberInfo.Birthdate,
                DateOfJoining = memberInfo.DateOfJoining,
                FullName = memberInfo.FullName,

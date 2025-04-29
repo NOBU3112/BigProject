@@ -15,13 +15,15 @@ namespace BigProject.PayLoad.Converter
         }
         public DTO_EventJoin EntityToDTO(EventJoin eventJoint) 
         {
+            var memberInfo = _context.memberInfos.SingleOrDefault(x => x.UserId == eventJoint.UserId);
             return new DTO_EventJoin()
             {
                 Id = eventJoint.Id,
-                Class = _context.memberInfos.SingleOrDefault(x => x.UserId == eventJoint.UserId).Class,
+                Class = memberInfo.Class,
                 EventName = _context.events.SingleOrDefault(x => x.Id == eventJoint.EventId).EventName,
-                FullName = _context.memberInfos.SingleOrDefault(x => x.UserId == eventJoint.UserId).FullName,
+                FullName = memberInfo.FullName,
                 MaSV = _context.users.SingleOrDefault(x => x.Id == eventJoint.UserId).MaSV,
+                Major = memberInfo.Major,
                 Status = eventJoint.Status,
             };
         }
