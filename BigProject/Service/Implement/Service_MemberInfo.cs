@@ -88,6 +88,27 @@ namespace BigProject.Service.Implement
             };
         }
 
+        public PagedResult<DTO_MemberInfo> GetListMenberInfoByMajor(int pageSize, int pageNumber, string major)
+        {
+            int totalItems = DbContext.memberInfos.Count();
+            int totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+
+            var items = DbContext.memberInfos
+                .Where(x => x.Major.Equals(major))
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .Select(x => converter_MemberInfo.EntityToDTO(x))
+                .ToList(); // Chuyển thành List<T>
+
+            return new PagedResult<DTO_MemberInfo>
+            {
+                Items = items,
+                TotalItems = totalItems,
+                TotalPages = totalPages,
+                CurrentPage = pageNumber
+            };
+        }
+
 
         public async Task<ResponseObject<DTO_MemberInfo>> GetMemberInfo(int userId)
         {
@@ -158,6 +179,7 @@ namespace BigProject.Service.Implement
             memberInfo.religion = request.religion ?? memberInfo.religion;
             memberInfo.PlaceOfJoining = request.PlaceOfJoining ?? memberInfo.PlaceOfJoining;
             memberInfo.PoliticalTheory = request.PoliticalTheory ?? memberInfo.PoliticalTheory;
+            memberInfo.Major = request.Major ?? memberInfo.Major;
 
             DbContext.memberInfos.Update(memberInfo);
             await DbContext.SaveChangesAsync(); 
