@@ -180,6 +180,7 @@ namespace BigProject.Service.Implement
             memberInfo.PlaceOfJoining = request.PlaceOfJoining ?? memberInfo.PlaceOfJoining;
             memberInfo.PoliticalTheory = request.PoliticalTheory ?? memberInfo.PoliticalTheory;
             memberInfo.Major = request.Major ?? memberInfo.Major;
+            memberInfo.Gender = request.Gender ?? memberInfo.Gender;
 
             DbContext.memberInfos.Update(memberInfo);
             await DbContext.SaveChangesAsync(); 

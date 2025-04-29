@@ -5,6 +5,7 @@ namespace BigProject.Entities
     public class MemberInfo : EntityBase
     {
         public string? Class { get; set; }
+        public string? Gender { get; set; }
         public string? Major {  get; set; }
         public DateTime? Birthdate { get; set; } = null;
         public string? FullName { get; set; }
