@@ -8,12 +8,10 @@ namespace BigProject.Entities
         public DateTime CreateDate { get; set; } = DateTime.Now;
         public bool RewardOrDiscipline { get; set; }
         public RequestEnum Status { get; set; }
+        public string Class {  get; set; }
+        public string UrlFile { get; set; }
         public string? RejectReason { get; set; }
-        //public int RewardDisciplineTypeId { get; set; }
-        public int RecipientId { get; set; }
-        public User Recipient { get; set; } 
         public int ProposerId { get; set; }
         public User Proposer { get; set; }
-        //public RewardDisciplineType RewardDisciplineType { get; set; }
     }
 }

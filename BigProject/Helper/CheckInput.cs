@@ -110,5 +110,17 @@ namespace BigProject.Helper
             // Kiểm tra tất cả ký tự phải là số
             return maSV.All(char.IsDigit);
         }
+
+        public static bool IsExcelFile(IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+                return false;
+
+            var allowedExtensions = new[] { ".xls", ".xlsx" };
+            var fileExtension = Path.GetExtension(file.FileName).ToLower();
+
+            return allowedExtensions.Contains(fileExtension);
+        }
+
     }
 }

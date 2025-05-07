@@ -110,7 +110,7 @@ namespace BigProject.Service.Implement
             var listMembers = DbContext.memberInfos.AsQueryable(); // Danh sách chưa lọc
 
             listMembers = listMembers
-                .Where(x =>DbContext.emailConfirms
+                .Where(x => DbContext.emailConfirms
                 .Any(e => e.UserId == x.User.Id && e.IsConfirmed)); //Bỏ qua tài khoản chưa xác nhận Email 
 
             // Lọc dữ liệu theo điều kiện
@@ -152,7 +152,6 @@ namespace BigProject.Service.Implement
             return new ResponseObject<PagedResult<DTO_MemberInfo>>().ResponseObjectSuccess("Danh sách Member:", pagedResult);
         }
 
-
         public async Task<ResponseObject<DTO_MemberInfo>> UpdateMenberInfo(Request_UpdateMemberInfo request, int userId)
         {
             var memberInfo = await DbContext.memberInfos.FirstOrDefaultAsync(x => x.UserId == userId);
@@ -176,8 +175,8 @@ namespace BigProject.Service.Implement
             memberInfo.Gender = request.Gender ?? memberInfo.Gender;
 
             DbContext.memberInfos.Update(memberInfo);
-            await DbContext.SaveChangesAsync(); 
-            
+            await DbContext.SaveChangesAsync();
+
             return responseObject.ResponseObjectSuccess("Cập nhật thành công", converter_MemberInfo.EntityToDTO(memberInfo));
         }
 

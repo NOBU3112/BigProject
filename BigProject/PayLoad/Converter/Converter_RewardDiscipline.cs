@@ -17,14 +17,13 @@ namespace BigProject.PayLoad.Converter
         {
             return new DTO_RewardDiscipline()
             {
-                Id = rewardDiscipline.Id,   
+                Id = rewardDiscipline.Id,
                 Description = rewardDiscipline.Description,
                 CreateDate = rewardDiscipline.CreateDate,
                 ProposerName = appDbContext.memberInfos.FirstOrDefault(x => x.UserId == rewardDiscipline.ProposerId).FullName,
-                RecipientName = appDbContext.memberInfos.FirstOrDefault(x => x.UserId == rewardDiscipline.RecipientId).FullName,
-                ProposerMaSV = appDbContext.users.FirstOrDefault(x=>x.Id ==  rewardDiscipline.ProposerId).MaSV,
-                RecipientMaSV = appDbContext.users.FirstOrDefault(X=> X.Id == rewardDiscipline.RecipientId).MaSV,
-                //RewardDisciplineType = appDbContext.rewardDisciplineTypes.SingleOrDefault(x=>x.Id == rewardDiscipline.RewardDisciplineTypeId).RewardDisciplineTypeName,
+                ProposerMaSV = appDbContext.users.FirstOrDefault(x => x.Id == rewardDiscipline.ProposerId).MaSV,
+                Class = rewardDiscipline.Class,
+                UrlFile = rewardDiscipline.UrlFile,
                 Status = rewardDiscipline.Status,
                 RejectReason = rewardDiscipline.RejectReason,
                 RewardOrDiscipline = rewardDiscipline.RewardOrDiscipline,

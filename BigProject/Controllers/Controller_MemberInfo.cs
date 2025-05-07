@@ -13,7 +13,7 @@ namespace BigProject.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-   // [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class Controller_MemberInfo : ControllerBase
     {
         private readonly IService_MemberInfo memberInfo;
@@ -91,6 +91,5 @@ namespace BigProject.Controllers
 
             return Ok(enumValues);
         }
-
     }
 }

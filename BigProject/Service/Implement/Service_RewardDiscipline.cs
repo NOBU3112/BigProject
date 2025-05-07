@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using System.Reflection.Metadata.Ecma335;
 using BigProject.Entities;
 using BigProject.Enums;
+using BigProject.Helper;
+using System.Reflection;
 
 namespace BigProject.Service.Implement
 {
@@ -37,6 +39,16 @@ namespace BigProject.Service.Implement
             {
                 return responseBase.ResponseBaseError(StatusCodes.Status404NotFound, "Đề xuất này không tồn tại!"); 
             };
+            var cloudinary = new CloudinaryService();
+            try
+            {
+                bool isDeleted = await cloudinary.DeleteFile(Reward.UrlFile);
+            }
+            catch (Exception ex)
+            {
+                // Ghi log nếu cần thiết
+                return responseBase.ResponseBaseError(StatusCodes.Status500InternalServerError, $"Lỗi khi xóa file: {ex.Message}");
+            }
             dbContext.rewardDisciplines.Remove(Reward);
             await dbContext.SaveChangesAsync();
             return responseBase.ResponseBaseSuccess("Xóa thành công!");
@@ -98,19 +110,21 @@ namespace BigProject.Service.Implement
                 return responseObject.ResponseObjectError(StatusCodes.Status404NotFound, "Người đề xuất không tồn tại!", null);
             }
 
-            // Tìm kiếm người nhận bằng MaSV
-            var recipientCheck = await dbContext.users.FirstOrDefaultAsync(x => x.MaSV.Equals(request.RecipientMaSV));
-            if (recipientCheck == null)
+            string UrlFile = null;
+            var cloudinary = new CloudinaryService();
+            if (!CheckInput.IsExcelFile(request.Url))
             {
-                return responseObject.ResponseObjectError(StatusCodes.Status404NotFound, "Người được đề xuất không tồn tại!", null);
+                return responseObject.ResponseObjectError(StatusCodes.Status400BadRequest, "Định dạng ảnh không hợp lệ !", null);
             }
+            UrlFile = await cloudinary.UploadFile(request.Url);
 
             var proposer = new RewardDiscipline();
             proposer.RewardOrDiscipline = true;
             proposer.Description = request.Description;
             proposer.Status = RequestEnum.waiting;
-            proposer.RecipientId = recipientCheck.Id;  // Lưu Id của người nhận
-            proposer.ProposerId = proposerId;  // Giữ nguyên proposerId
+            proposer.Class = request.Class;
+            proposer.UrlFile = UrlFile;
+            proposer.ProposerId = proposerId;
             dbContext.rewardDisciplines.Add(proposer);
             await dbContext.SaveChangesAsync();
             return responseObject.ResponseObjectSuccess("Thêm thành công!", converter_RewardDiscipline.EntityToDTO(proposer));
@@ -125,19 +139,21 @@ namespace BigProject.Service.Implement
                 return responseObject.ResponseObjectError(StatusCodes.Status404NotFound, "Người đề xuất không tồn tại!", null);
             }
 
-            // Tìm kiếm người nhận bằng MaSV
-            var recipientCheck = await dbContext.users.FirstOrDefaultAsync(x => x.MaSV.Equals(request.RecipientMaSV));
-            if (recipientCheck == null)
+            string UrlFile = null;
+            var cloudinary = new CloudinaryService();
+            if (!CheckInput.IsExcelFile(request.Url))
             {
-                return responseObject.ResponseObjectError(StatusCodes.Status404NotFound, "Người được đề xuất không tồn tại!", null);
+                return responseObject.ResponseObjectError(StatusCodes.Status400BadRequest, "Định dạng ảnh không hợp lệ !", null);
             }
+            UrlFile = await cloudinary.UploadFile(request.Url);
 
             var proposer = new RewardDiscipline();
             proposer.RewardOrDiscipline = false;
             proposer.Description = request.Description;
             proposer.Status = RequestEnum.waiting;
-            proposer.RecipientId = recipientCheck.Id;  // Lưu Id của người nhận
-            proposer.ProposerId = proposerId;  // Giữ nguyên proposerId
+            proposer.Class = request.Class;
+            proposer.UrlFile = UrlFile;
+            proposer.ProposerId = proposerId; 
             dbContext.rewardDisciplines.Add(proposer);
             await dbContext.SaveChangesAsync();
             return responseObject.ResponseObjectSuccess("Thêm thành công!", converter_RewardDiscipline.EntityToDTO(proposer));

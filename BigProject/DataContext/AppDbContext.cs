@@ -21,12 +21,6 @@ namespace BigProject.DataContext
                 .HasForeignKey(x => x.ProposerId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<RewardDiscipline>()
-                .HasOne(x => x.Recipient)
-                .WithMany()
-                .HasForeignKey(x => x.RecipientId)
-                .OnDelete(DeleteBehavior.Restrict);
-
             // Mật khẩu là 123456789@A
             var password ="$2a$12$umDEKg3yORpv174r7kzKxO7Z.BVbw0HDzb44jCsvgjHGGn5rM6/Ky";
             var user1 = new User { Id =1 ,Username="admin",Email ="admin@gmail.com", Password = password, RoleId=3,MaSV="1111111111", IsActive = true, };

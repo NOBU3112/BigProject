@@ -17,9 +17,9 @@ namespace BigProject.PayLoad.Converter
         {
             if (approvalHistory.HistoryType == HistoryEnum.outstandingMember.ToString())
             {
-                var member = _context.requestToBeOutStandingMembers
+                var request = _context.requestToBeOutStandingMembers
                     .FirstOrDefault(x => x.Id == approvalHistory.RequestToBeOutstandingMemberId);
-
+                var member = _context.memberInfos.FirstOrDefault(x => x.UserId == request.MemberInfoId);
                 return new DTO_ApprovalHistory
                 {
                     ApprovedById = approvalHistory.ApprovedById,
@@ -31,9 +31,10 @@ namespace BigProject.PayLoad.Converter
                     ApprovedDate = approvalHistory.ApprovedDate,
                     ApprovedByMaSV = _context.users.FirstOrDefault(x=>x.Id == approvalHistory.ApprovedById).MaSV,
                     ApprovedByName = _context.memberInfos.FirstOrDefault(x=>x.UserId == approvalHistory.ApprovedById).FullName,
-                    memberMaSV = _context.users.FirstOrDefault(x => x.Id == member.MemberInfoId).MaSV,
-                    MemberName = _context.memberInfos.FirstOrDefault(x => x.UserId == member.MemberInfoId).FullName,
-                    rejectReason = member.RejectReason,
+                    memberMaSV = _context.users.FirstOrDefault(x => x.Id == request.MemberInfoId).MaSV,
+                    MemberName = member.FullName,
+                    Class = member.Class,
+                    rejectReason = request.RejectReason,
                 };
             }
             var member1 = _context.rewardDisciplines
@@ -50,8 +51,8 @@ namespace BigProject.PayLoad.Converter
                 ApprovedDate = approvalHistory.ApprovedDate,
                 ApprovedByMaSV = _context.users.FirstOrDefault(x => x.Id == approvalHistory.ApprovedById).MaSV,
                 ApprovedByName = _context.memberInfos.FirstOrDefault(x => x.UserId == approvalHistory.ApprovedById).FullName,
-                memberMaSV = _context.users.FirstOrDefault(x => x.Id == member1.RecipientId).MaSV,
-                MemberName = _context.memberInfos.FirstOrDefault(x => x.UserId == member1.RecipientId).FullName,
+                Class = member1.Class,
+                UrlFile = member1.UrlFile,
                 description = member1.Description,
                 rejectReason = member1.RejectReason,
             };
