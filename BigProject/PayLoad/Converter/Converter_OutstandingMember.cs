@@ -20,6 +20,7 @@ namespace BigProject.PayLoad.Converter
                 CreatedDate = requestToBeOutStandingMember.CreatedDate,
                 MemberInfoMaSV = _context.users.FirstOrDefault(x=>x.Id == requestToBeOutStandingMember.MemberInfoId).MaSV,
                 MemberInfoName = _context.memberInfos.FirstOrDefault(x=>x.UserId == requestToBeOutStandingMember.MemberInfoId).FullName,
+                Class = _context.memberInfos.FirstOrDefault(x => x.UserId == requestToBeOutStandingMember.MemberInfoId).Class,
                 Status = requestToBeOutStandingMember.Status,
                 RejectReason = requestToBeOutStandingMember.RejectReason,
             };

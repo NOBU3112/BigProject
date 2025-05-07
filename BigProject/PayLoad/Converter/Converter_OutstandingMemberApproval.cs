@@ -26,6 +26,7 @@ namespace BigProject.PayLoad.Converter
                 CreatedDate = requestToBeOutStandingMember.CreatedDate,
                 MemberInfoMaSV = appDbContext.users.FirstOrDefault(x => x.Id == requestToBeOutStandingMember.MemberInfoId).MaSV,
                 MemberInfoName = appDbContext.memberInfos.FirstOrDefault(x => x.UserId == requestToBeOutStandingMember.MemberInfoId).FullName,
+                Class = appDbContext.memberInfos.FirstOrDefault(x => x.UserId == requestToBeOutStandingMember.MemberInfoId).Class,
                 Status = requestToBeOutStandingMember.Status,
                 RejectReason = requestToBeOutStandingMember.RejectReason,
                 HistoryType = approvalHistory.HistoryType,

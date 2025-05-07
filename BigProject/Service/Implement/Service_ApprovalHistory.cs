@@ -57,9 +57,6 @@ namespace BigProject.Service.Implement
                     (x.RequestToBeOutstandingMemberId != null
                         && x.RequestToBeOutstandingMember != null
                         && x.RequestToBeOutstandingMember.MemberInfoId == member.Id)
-                    || (x.RewardDisciplineId != null
-                        && x.RewardDiscipline != null
-                        && x.RewardDiscipline.RecipientId == member.Id)
                 );
             }
 

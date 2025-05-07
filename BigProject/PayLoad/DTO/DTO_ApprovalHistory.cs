@@ -11,8 +11,10 @@
         public string ApprovedByMaSV { get; set; }
         public bool IsAccept { get; set; }
         public DateTime ApprovedDate { get; set; }
-        public string memberMaSV {  get; set; }
-        public string MemberName { get; set; }
+        public string Class {  get; set; }
+        public string? UrlFile {  get; set; }
+        public string? memberMaSV {  get; set; }
+        public string? MemberName { get; set; }
         public string? description {  get; set; }
         public string? rejectReason { get; set; }
         //public string? RejectReason { get; set; }

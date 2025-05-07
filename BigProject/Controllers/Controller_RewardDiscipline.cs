@@ -39,7 +39,7 @@ namespace BigProject.Controllers
         }
 
         [HttpPost("Propose_Reward")]
-        [Authorize(Roles = "Bí thư đoàn viên")]
+        [Authorize(Roles = "Bí thư đoàn viên,Liên chi đoàn khoa")]
         public async Task<IActionResult> ProposeReward([FromForm] Request_ProposeRewardDiscipline request)
         {
             if (!HttpContext.User.Identity.IsAuthenticated)

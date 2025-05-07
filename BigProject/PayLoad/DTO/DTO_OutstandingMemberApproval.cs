@@ -7,6 +7,7 @@
         public string MemberInfoMaSV { get; set; }
         public DateTime CreatedDate { get; set; } = DateTime.Now;
         public string Status { get; set; }
+        public string Class {  get; set; }
         public string? RejectReason { get; set; }
         public string HistoryType { get; set; }
         public string ApprovedByName { get; set; }
