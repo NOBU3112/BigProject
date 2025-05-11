@@ -50,5 +50,11 @@ namespace BigProject.Controllers
         {
             return Ok(service_Document.GetListDocument(pageSize, pageNumber));
         }
+
+        [HttpGet("Get_Newest_Document")]
+        public IActionResult GetNewestDocument()
+        {
+            return Ok(service_Document.GetNewestDocument());
+        }
     }
 }

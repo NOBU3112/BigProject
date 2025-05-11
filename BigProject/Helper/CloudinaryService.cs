@@ -103,26 +103,15 @@ namespace BigProject.Helper
         {
             try
             {
-                var split = url.Split(new[] { $"raw/upload/" }, StringSplitOptions.None);
-                if (split.Length < 2) return null;
+                var parts = url.Split(new[] { "raw/upload/" }, StringSplitOptions.None);
+                if (parts.Length < 2) return null; // Nếu URL không hợp lệ, trả về null
 
-                var path = split[1];
+                var publicIdWithExtension = parts[1].Substring(parts[1].IndexOf('/') + 1);
 
-                // Bỏ domain version nếu có (vXXXXXXXXX)
-                var versionPattern = @"^v\d+/";
-                path = Regex.Replace(path, versionPattern, "");
+                // Loại bỏ phần mở rộng (.jpg, .png, ...)
+                var oldPublicId = publicIdWithExtension.Substring(0, publicIdWithExtension.LastIndexOf('.'));
 
-                // Decode URL nếu có ký tự đặc biệt bị mã hóa
-                path = Uri.UnescapeDataString(path);
-
-                // Xoá phần mở rộng (".xlsx", ".pdf",...) để lấy publicId
-                var lastDot = path.LastIndexOf('.');
-                if (lastDot > 0)
-                {
-                    path = path.Substring(0, lastDot);
-                }
-
-                return path;
+                return oldPublicId;
             }
             catch
             {

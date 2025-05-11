@@ -74,7 +74,7 @@ namespace BigProject.Service.Implement
 
         public PagedResult<DTO_Document> GetListDocument(int pageSize, int pageNumber)
         {
-            var query = dbContext.documents;
+            var query = dbContext.documents.OrderByDescending(x=>x.Id);
 
             int totalItems = query.Count();
             int totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
@@ -94,6 +94,16 @@ namespace BigProject.Service.Implement
             };
         }
 
+        public ResponseObject<DTO_Document> GetNewestDocument()
+        {
+            var document = dbContext.documents.OrderByDescending(x => x.Id).FirstOrDefault();
+
+            if (document == null)
+            {
+                return responseObject.ResponseObjectError(400, "Không có văn bản nào!", null);
+            }
+            return responseObject.ResponseObjectSuccess("Lấy thành công!", converter_Document.EntityToDTO(document));
+        }
 
         public async Task<ResponseObject<DTO_Document>> UpdateDocument(Request_UpdateDocument request)
         {
