@@ -2,6 +2,7 @@
 using BigProject.Entities;
 using BigProject.PayLoad.DTO;
 using Microsoft.EntityFrameworkCore;
+using System.IO;
 
 namespace BigProject.PayLoad.Converter
 {
@@ -24,6 +25,7 @@ namespace BigProject.PayLoad.Converter
                 ProposerMaSV = appDbContext.users.FirstOrDefault(x => x.Id == rewardDiscipline.ProposerId).MaSV,
                 Class = rewardDiscipline.Class,
                 UrlFile = rewardDiscipline.UrlFile,
+                UrlDecodeFile = Uri.EscapeDataString(rewardDiscipline.UrlFile),
                 Status = rewardDiscipline.Status,
                 RejectReason = rewardDiscipline.RejectReason,
                 RewardOrDiscipline = rewardDiscipline.RewardOrDiscipline,

@@ -14,6 +14,7 @@ namespace BigProject.PayLoad.DTO
         public string? RejectReason { get; set; }
         public string Class { get; set; }
         public string UrlFile { get; set; }
+        public string UrlDecodeFile { get; set; }
         public string ProposerName { get; set; }
         public string ProposerMaSV { get; set; }  
     }
