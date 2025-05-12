@@ -11,6 +11,7 @@ namespace BigProject.Controllers
 
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class Controller_RewardDiscipline : ControllerBase
     {
         private readonly IService_RewardDiscipline service_RewardDiscipline;
@@ -51,7 +52,7 @@ namespace BigProject.Controllers
         }
 
         [HttpPost("Propose_Discipline")]
-        [Authorize(Roles = "Bí thư đoàn viên")]
+        [Authorize(Roles = "Bí thư đoàn viên,Liên chi đoàn khoa")]
         public async Task<IActionResult> ProposeDiscipline([FromForm] Request_ProposeRewardDiscipline request)
         {
             if (!HttpContext.User.Identity.IsAuthenticated)

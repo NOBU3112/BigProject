@@ -112,10 +112,6 @@ namespace BigProject.Service.Implement
 
             string UrlFile = null;
             var cloudinary = new CloudinaryService();
-            if (!CheckInput.IsExcelFile(request.Url))
-            {
-                return responseObject.ResponseObjectError(StatusCodes.Status400BadRequest, "Định dạng ảnh không hợp lệ !", null);
-            }
             UrlFile = await cloudinary.UploadFile(request.Url);
 
             var proposer = new RewardDiscipline();
@@ -141,10 +137,6 @@ namespace BigProject.Service.Implement
 
             string UrlFile = null;
             var cloudinary = new CloudinaryService();
-            if (!CheckInput.IsExcelFile(request.Url))
-            {
-                return responseObject.ResponseObjectError(StatusCodes.Status400BadRequest, "Định dạng ảnh không hợp lệ !", null);
-            }
             UrlFile = await cloudinary.UploadFile(request.Url);
 
             var proposer = new RewardDiscipline();

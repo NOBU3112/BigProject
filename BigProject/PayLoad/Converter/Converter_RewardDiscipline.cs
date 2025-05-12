@@ -25,7 +25,7 @@ namespace BigProject.PayLoad.Converter
                 ProposerMaSV = appDbContext.users.FirstOrDefault(x => x.Id == rewardDiscipline.ProposerId).MaSV,
                 Class = rewardDiscipline.Class,
                 UrlFile = rewardDiscipline.UrlFile,
-                UrlDecodeFile = Uri.EscapeDataString(rewardDiscipline.UrlFile),
+                UrlDecodeFile = $"https://docs.google.com/gview?url={Uri.EscapeDataString(rewardDiscipline.UrlFile)}&embedded=true",
                 Status = rewardDiscipline.Status,
                 RejectReason = rewardDiscipline.RejectReason,
                 RewardOrDiscipline = rewardDiscipline.RewardOrDiscipline,
