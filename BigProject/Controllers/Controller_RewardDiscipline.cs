@@ -93,5 +93,11 @@ namespace BigProject.Controllers
         {
             return Ok(await service_RewardDiscipline.DeleteRewardDiscipline(proposeId));
         }
+
+        [HttpGet("Get_RewardDiscipline_Detail")]
+        public IActionResult GetRewardDisciplineDetail(int id)
+        {
+            return Ok(service_RewardDiscipline.GetRewardDisciplineDetail(id));
+        }
     }
 }
