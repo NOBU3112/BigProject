@@ -91,5 +91,21 @@ namespace BigProject.Controllers
 
             return Ok(enumValues);
         }
+
+        [HttpGet("Get_All_courseIntake")]
+        public IActionResult GetCourseIntake()
+        {
+            int currentYear = DateTime.Now.Year;
+            int startYear = 1959;
+            int numberOfYears = 5; // 1966 + 4 năm = 1970
+
+            var intakeYears = Enumerable.Range(currentYear - startYear, numberOfYears)
+                                        .Select(y => y.ToString())
+                                        .ToList();
+
+            return Ok(intakeYears);
+        }
+
+
     }
 }
