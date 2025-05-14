@@ -97,7 +97,7 @@ namespace BigProject.Controllers
         {
             int currentYear = DateTime.Now.Year;
             int startYear = 1959;
-            int numberOfYears = 5; // 1966 + 4 năm = 1970
+            int numberOfYears = 5; 
 
             var intakeYears = Enumerable.Range(currentYear - startYear, numberOfYears)
                                         .Select(y => y.ToString())

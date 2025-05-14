@@ -51,10 +51,10 @@ namespace BigProject.Controllers
             return Ok(service_Document.GetListDocument(pageSize, pageNumber));
         }
 
-        [HttpGet("Get_Newest_Document")]
-        public IActionResult GetNewestDocument()
+        [HttpGet("Get_Document")]
+        public IActionResult GetDocument(int id)
         {
-            return Ok(service_Document.GetNewestDocument());
+            return Ok(service_Document.GetDocument(id));
         }
     }
 }
