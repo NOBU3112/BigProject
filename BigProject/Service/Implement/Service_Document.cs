@@ -94,13 +94,13 @@ namespace BigProject.Service.Implement
             };
         }
 
-        public ResponseObject<DTO_Document> GetNewestDocument()
+        public ResponseObject<DTO_Document> GetDocument(int id)
         {
-            var document = dbContext.documents.OrderByDescending(x => x.Id).FirstOrDefault();
+            var document = dbContext.documents.FirstOrDefault(x => x.Id == id);
 
             if (document == null)
             {
-                return responseObject.ResponseObjectError(400, "Không có văn bản nào!", null);
+                return responseObject.ResponseObjectError(400, "Văn bản không tồn tại!", null);
             }
             return responseObject.ResponseObjectSuccess("Lấy thành công!", converter_Document.EntityToDTO(document));
         }
