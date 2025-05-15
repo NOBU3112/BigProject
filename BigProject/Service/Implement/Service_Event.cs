@@ -114,43 +114,41 @@ namespace BigProject.Service.Implement
             {
                 return responseObject.ResponseObjectError(StatusCodes.Status404NotFound, "Hoạt động không tồn tại!", null);
             }
-            //var eventType_check = await dbContext.eventTypes.FirstOrDefaultAsync(x => x.Id == request.EventTypeId);
-            //if (eventType_check == null)
-            //{
-            //    return responseObject.ResponseObjectError(StatusCodes.Status404NotFound, "Loại hoạt động không tồn tại!", null);
-            //}
+
             var eventName_check = await dbContext.events
                 .FirstOrDefaultAsync(x => x.EventName.Equals(request.EventName));
 
             if (eventName_check != null && !event1.EventName.Equals(request.EventName))
             {
-                return responseObject.ResponseObjectError(StatusCodes.Status400BadRequest, "Tên hoạt động không được trùng! ", null);
+                return responseObject.ResponseObjectError(StatusCodes.Status400BadRequest, "Tên hoạt động không được trùng!", null);
             }
-            string UrlAvt = null;
+
+            string UrlAvt = event1.UrlAvatar; // 👈 giữ lại avatar cũ
             var cloudinary = new CloudinaryService();
-            if (request.UrlAvatar == null)
-            {
-                UrlAvt = "https://media.istockphoto.com/id/1300845620/vector/user-icon-flat-isolated-on-white-background-user-symbol-vector-illustration.jpg?s=612x612&w=0&k=20&c=yBeyba0hUkh14_jgv1OKqIH0CCSWU_4ckRkAoy2p73o=";
-            }
-            else
+
+            // Nếu có file mới gửi lên thì xử lý
+            if (request.UrlAvatar != null)
             {
                 if (!CheckInput.IsImage(request.UrlAvatar))
                 {
-                    return responseObject.ResponseObjectError(StatusCodes.Status400BadRequest, "Định dạng ảnh không hợp lệ !", null);
+                    return responseObject.ResponseObjectError(StatusCodes.Status400BadRequest, "Định dạng ảnh không hợp lệ!", null);
                 }
 
-                UrlAvt = await cloudinary.UploadImage(request.UrlAvatar);
+                UrlAvt = await cloudinary.UploadImage(request.UrlAvatar); // upload ảnh mới
             }
+
+            // Cập nhật thông tin
             event1.EventName = request.EventName;
             event1.EventLocation = request.EventLocation;
             event1.EventStartDate = request.EventStartDate;
             event1.EventEndDate = request.EventEndDate;
             event1.Description = request.Description;
-            //event1.EventTypeId = request.EventTypeId;
             event1.UrlAvatar = UrlAvt;
+
             dbContext.events.Update(event1);
             await dbContext.SaveChangesAsync();
-            return responseObject.ResponseObjectSuccess("Sửa thành công!", converter_Event.EntityToDTO(event1));
+
+            return responseObject.ResponseObjectSuccess("Cập nhật thành công!", converter_Event.EntityToDTO(event1));
         }
 
         public async Task<ResponseObject<DTO_EventJoin>> JoinAnEvent(int userId, int eventId)
