@@ -173,6 +173,7 @@ namespace BigProject.Service.Implement
             memberInfo.PoliticalTheory = request.PoliticalTheory ?? memberInfo.PoliticalTheory;
             memberInfo.Major = request.Major ?? memberInfo.Major;
             memberInfo.Gender = request.Gender ?? memberInfo.Gender;
+            memberInfo.CourseIntake = request.CourseIntake ?? memberInfo.CourseIntake;
 
             DbContext.memberInfos.Update(memberInfo);
             await DbContext.SaveChangesAsync();

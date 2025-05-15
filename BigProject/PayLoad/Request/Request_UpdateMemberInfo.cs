@@ -3,6 +3,7 @@
     public class Request_UpdateMemberInfo
     {
         public string ?Class { get; set; }
+        public string? CourseIntake {  get; set; }
         public string? Major { get; set; }
         public string? Gender { get; set; }
         public DateTime ? Birthdate { get; set; }
