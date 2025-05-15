@@ -15,5 +15,6 @@ namespace BigProject.Service.Interface
         PagedResult<DTO_RewardDiscipline> GetListWaiting(int pageSize, int pageNumber);
         Task<ResponseObject<DTO_RewardDisciplineApproval>> AcceptPropose(int proposeId, int userId);
         Task<ResponseObject<DTO_RewardDisciplineApproval>> RejectPropose(int proposeId, int userId, string reject);
+        ResponseObject<DTO_RewardDisciplineApproval> GetRewardDisciplineDetail(int id);
     }
 }

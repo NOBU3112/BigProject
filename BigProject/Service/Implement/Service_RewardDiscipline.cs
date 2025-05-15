@@ -235,6 +235,15 @@ namespace BigProject.Service.Implement
             };
         }
 
+        public ResponseObject<DTO_RewardDisciplineApproval> GetRewardDisciplineDetail(int id)
+        {
+            var rewardDiscipline = dbContext.rewardDisciplines.FirstOrDefault(x => x.Id == id);
+            if(rewardDiscipline == null)
+            {
+                return responseObject2.ResponseObjectError(400, "Không tồn tại!", null);
+            }
+            return responseObject2.ResponseObjectSuccess("Thành công!", converter_RewardDiscipline2.EntityToDTO(rewardDiscipline));
+        }
     }
 }
     

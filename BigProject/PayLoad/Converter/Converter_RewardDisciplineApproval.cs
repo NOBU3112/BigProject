@@ -1,5 +1,6 @@
 ﻿using BigProject.DataContext;
 using BigProject.Entities;
+using BigProject.Helper;
 using BigProject.PayLoad.DTO;
 
 namespace BigProject.PayLoad.Converter
@@ -16,6 +17,7 @@ namespace BigProject.PayLoad.Converter
         public DTO_RewardDisciplineApproval EntityToDTO(RewardDiscipline rewardDiscipline)
         {
             var approvalHistory = appDbContext.approvalHistories.FirstOrDefault(x => x.RewardDisciplineId == rewardDiscipline.Id);
+            var cloudinary = new CloudinaryService();
             return new DTO_RewardDisciplineApproval()
             {
                 Id = rewardDiscipline.Id,
@@ -24,6 +26,7 @@ namespace BigProject.PayLoad.Converter
                 ProposerMaSV = appDbContext.users.FirstOrDefault(x => x.Id == rewardDiscipline.ProposerId).MaSV,
                 Class = rewardDiscipline.Class,
                 UrlFile = rewardDiscipline.UrlFile,
+                UrlDecodeFile = cloudinary.GetEmbeddedUrl(rewardDiscipline.UrlFile),
                 RejectReason = rewardDiscipline.RejectReason,
                 RewardOrDiscipline = rewardDiscipline.RewardOrDiscipline,
                 ApprovedDate = approvalHistory.ApprovedDate,
