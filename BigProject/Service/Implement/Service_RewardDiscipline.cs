@@ -244,6 +244,47 @@ namespace BigProject.Service.Implement
             }
             return responseObject2.ResponseObjectSuccess("Thành công!", converter_RewardDiscipline2.EntityToDTO(rewardDiscipline));
         }
+
+        public async Task<ResponseObject<PagedResult<DTO_RewardDiscipline>>> SearchRewardDisciplines(Request_Search_RewardDiscipline request)
+        {
+            var listRewardDiscipline = dbContext.rewardDisciplines.AsQueryable(); // Danh sách chưa lọc
+
+            listRewardDiscipline = listRewardDiscipline.Where(x => x.RewardOrDiscipline == request.RewardOrDiscipline);
+            if (!string.IsNullOrEmpty(request.Description))
+                listRewardDiscipline = listRewardDiscipline.Where(x => x.Description.Contains(request.Description));
+            if (!string.IsNullOrEmpty(request.Class))
+                listRewardDiscipline = listRewardDiscipline.Where(x => x.Class.Contains(request.Class));
+            if (!string.IsNullOrEmpty(request.Status) && Enum.TryParse<RequestEnum>(request.Status, ignoreCase: true, out var parsedStatus))
+                listRewardDiscipline = listRewardDiscipline.Where(x => x.Status == parsedStatus);
+            if (request.CreateDay.HasValue)
+                listRewardDiscipline = listRewardDiscipline.Where(x => x.CreateDate.Day == request.CreateDay.Value);
+            if (request.CreateMonth.HasValue)
+                listRewardDiscipline = listRewardDiscipline.Where(x => x.CreateDate.Month == request.CreateMonth.Value);
+            if (request.CreateYear.HasValue)
+                listRewardDiscipline = listRewardDiscipline.Where(x => x.CreateDate.Year == request.CreateYear.Value);
+
+            // Tổng số phần tử sau khi lọc
+            int totalItems = await listRewardDiscipline.CountAsync();
+            int totalPages = (int)Math.Ceiling(totalItems / (double)request.PageSize);
+
+            // Lấy danh sách sau khi phân trang
+            var items = await listRewardDiscipline
+                .Skip((request.PageNumber - 1) * request.PageSize)
+                .Take(request.PageSize)
+                .Select(x => converter_RewardDiscipline.EntityToDTO(x))
+                .ToListAsync();
+
+            // Trả về kết quả dưới dạng `PagedResult<T>`
+            var pagedResult = new PagedResult<DTO_RewardDiscipline>
+            {
+                Items = items,
+                TotalItems = totalItems,
+                TotalPages = totalPages,
+                CurrentPage = request.PageNumber
+            };
+
+            return new ResponseObject<PagedResult<DTO_RewardDiscipline>>().ResponseObjectSuccess("Danh sách :", pagedResult);
+        }
     }
 }
     
