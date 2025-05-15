@@ -127,7 +127,14 @@ namespace BigProject.Service.Implement
             if (!string.IsNullOrEmpty(request.Major))
                 listMembers = listMembers.Where(x => x.Major.Contains(request.Major));
             if (!string.IsNullOrEmpty(request.CourseIntake))
-                listMembers = listMembers.Where(x => x.CourseIntake.Contains(request.CourseIntake));
+                listMembers = listMembers.Where(x =>
+                    x.CourseIntake != null &&
+                    (
+                        x.CourseIntake.Trim() == request.CourseIntake.Trim() ||
+                        x.CourseIntake.Trim() == $"Khóa {request.CourseIntake.Trim()}" ||
+                        x.CourseIntake.Trim().Replace("Khóa ", "") == request.CourseIntake.Trim()
+                    )
+                );
 
             // Tổng số phần tử sau khi lọc
             int totalItems = await listMembers.CountAsync();
