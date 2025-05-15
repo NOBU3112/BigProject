@@ -1,5 +1,6 @@
 ﻿using BigProject.DataContext;
 using BigProject.Entities;
+using BigProject.Helper;
 using BigProject.PayLoad.DTO;
 using Microsoft.EntityFrameworkCore;
 using System.IO;
@@ -16,6 +17,7 @@ namespace BigProject.PayLoad.Converter
         }
         public DTO_RewardDiscipline EntityToDTO(RewardDiscipline rewardDiscipline)
         {
+            var cloudinary = new CloudinaryService();
             return new DTO_RewardDiscipline()
             {
                 Id = rewardDiscipline.Id,
@@ -25,7 +27,7 @@ namespace BigProject.PayLoad.Converter
                 ProposerMaSV = appDbContext.users.FirstOrDefault(x => x.Id == rewardDiscipline.ProposerId).MaSV,
                 Class = rewardDiscipline.Class,
                 UrlFile = rewardDiscipline.UrlFile,
-                UrlDecodeFile = $"https://docs.google.com/gview?url={Uri.EscapeDataString(rewardDiscipline.UrlFile)}&embedded=true",
+                UrlDecodeFile = cloudinary.GetEmbeddedUrl(rewardDiscipline.UrlFile),
                 Status = rewardDiscipline.Status,
                 RejectReason = rewardDiscipline.RejectReason,
                 RewardOrDiscipline = rewardDiscipline.RewardOrDiscipline,
