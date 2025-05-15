@@ -113,7 +113,7 @@ namespace BigProject.Service.Implement
                 return responseObject.ResponseObjectError(StatusCodes.Status404NotFound, "Văn bản không tồn tại!", null);
             }
 
-            var documentTitle_Check = await dbContext.documents.FirstOrDefaultAsync(x => x.DocumentTitle == request.DocumentTitle);
+            var documentTitle_Check = await dbContext.documents.FirstOrDefaultAsync(x => x.DocumentTitle == request.DocumentTitle && !request.DocumentTitle.Equals(document.DocumentTitle));
             if (documentTitle_Check != null)
             {
                 return responseObject.ResponseObjectError(StatusCodes.Status400BadRequest, "Tiêu đề văn bản không được trùng!", null);
