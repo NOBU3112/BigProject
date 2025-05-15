@@ -13,7 +13,8 @@ namespace BigProject.Service.Interface
         PagedResult<DTO_RewardDiscipline> GetListReward(int pageSize, int pageNumber);
         PagedResult<DTO_RewardDiscipline> GetListDiscipline(int pageSize, int pageNumber);
         PagedResult<DTO_RewardDiscipline> GetListWaiting(int pageSize, int pageNumber);
-        Task<ResponseObject<PagedResult<DTO_RewardDiscipline>>> SearchRewardDisciplines(Request_Search_RewardDiscipline request);
+        Task<ResponseObject<PagedResult<DTO_RewardDiscipline>>> SearchReward(Request_Search_RewardDiscipline request);
+        Task<ResponseObject<PagedResult<DTO_RewardDiscipline>>> SearchDisciplines(Request_Search_RewardDiscipline request);
         Task<ResponseObject<DTO_RewardDisciplineApproval>> AcceptPropose(int proposeId, int userId);
         Task<ResponseObject<DTO_RewardDisciplineApproval>> RejectPropose(int proposeId, int userId, string reject);
         ResponseObject<DTO_RewardDisciplineApproval> GetRewardDisciplineDetail(int id);

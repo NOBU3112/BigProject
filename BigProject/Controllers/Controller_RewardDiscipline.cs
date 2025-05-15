@@ -100,15 +100,30 @@ namespace BigProject.Controllers
             return Ok(service_RewardDiscipline.GetRewardDisciplineDetail(id));
         }
 
-        [HttpGet("Search_RewardDiscipline")]
-        public async Task<IActionResult> SearchRewardDiscipline([FromQuery] Request_Search_RewardDiscipline request)
+        [HttpGet("Search_Reward")]
+        public async Task<IActionResult> SearchReward([FromQuery] Request_Search_RewardDiscipline request)
         {
-            var result = await service_RewardDiscipline.SearchRewardDisciplines(request);
+            var result = await service_RewardDiscipline.SearchReward(request);
 
             // Kiểm tra nếu không có dữ liệu
             if (result?.Data == null || !result.Data.Items.Any())
             {
-                return NotFound(new { message = "Không tìm thấy member phù hợp!" });
+                return NotFound(new { message = "Không tìm thấy kết quả phù hợp!" });
+            }
+
+            // Trả về kết quả thành công
+            return Ok(result);
+        }
+
+        [HttpGet("Search_Discipline")]
+        public async Task<IActionResult> SearchDiscipline([FromQuery] Request_Search_RewardDiscipline request)
+        {
+            var result = await service_RewardDiscipline.SearchDisciplines(request);
+
+            // Kiểm tra nếu không có dữ liệu
+            if (result?.Data == null || !result.Data.Items.Any())
+            {
+                return NotFound(new { message = "Không tìm thấy kết quả phù hợp!" });
             }
 
             // Trả về kết quả thành công
